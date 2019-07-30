@@ -5,10 +5,15 @@ import re
 
 def yaml_dict(yaml):
     yaml_cached = yaml.split("\n")
-    yaml_d = {}
+    yaml_d = {"slave" : "False"}
     for i in yaml_cached:
         j = i.split(": ")
-        yaml_d[j[0]] = j[1]
+        if i.split(" | ")[0] == "s" and yaml_d['slave'] == "True":
+            yaml_d[j[0].split(" | ")[1]] = j[1]
+        elif i.split(" | ")[0] == "m" and yaml_d['slave'] == "False":
+            yaml_d[j[0].split(" | ")[1]] = j[1]
+        elif not " | " in i:
+            yaml_d[j[0]] = j[1]
     return yaml_d
 
 
@@ -17,13 +22,13 @@ def tokenize_f(file, inside=False):
         file_cached = ""
         for i in filew:
             if i[:5] == "Inc: ":
-                for pattern in i[5:-1].split("; "):
+                for pattern in i[5:-1].split(";"):
                     for f in os.listdir():
-                        if re.search(pattern, f):
-                            try:
+                        if re.search(pattern.strip(" "), f):
+                            if inside:
                                 file_cached = f"{file_cached}{tokenize_f(f, True)}\n"
-                            except:
-                                pass
+                            else:
+                                file_cached = f"{file_cached}---\nslave: True\n---\n{tokenize_f(f, True)}\n---\nslave: False\n---\n"
                 file_cached = file_cached[:-1]
             else:
                 file_cached = f"{file_cached}{i}"

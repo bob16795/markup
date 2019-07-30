@@ -2,11 +2,11 @@ from docx.shared import RGBColor
 from docx import Document
 from markup.decorators import Formater
 from pygments.formatter import Formatter
-
+import subprocess
 
 @Formater
 class terminal():
-    def outer_init(self, out):
+    def outer_init(self, out, info):
         self.out = out
 
     def outer_add(self, out):
@@ -101,7 +101,7 @@ class terminal():
 
 @Formater
 class html():
-    def outer_init(self, out):
+    def outer_init(self, out, info):
         self.out = out
 
     def outer_add(self, out):
@@ -246,7 +246,7 @@ class html():
 
 @Formater
 class docx():
-    def outer_init(self, out):
+    def outer_init(self, out, info):
         self.doc = Document()
 
     def outer_add(self, out):
@@ -422,11 +422,17 @@ class docx():
 
 @Formater
 class pdf_groff():
-    def outer_init(self, out):
+    def outer_init(self, out, info):
         self.out = out
         self.pp = False
+        self.title_heading_level = 0
+        if "title_head" in info:
+            self.title_heading_level = int(info["title_head"])
 
     def outer_add(self, out):
+        out = out.replace("()HL1()", str(self.title_heading_level))
+        out = out.replace("()HL2()", str(self.title_heading_level + 1))
+        out = out.replace("()HL3()", str(self.title_heading_level + 2))
         if not out == "":
             if out[0] == "\n" or out[:3] == ".SH" or \
                     out[:3] == "LI;":
@@ -513,13 +519,13 @@ class pdf_groff():
         return f".B {text}\n"
 
     def add_header_1(text):
-        return f".OH '{text}''%'\n.EH '''%'\n.pg@begin\n.NH 1\n{text}\n.XS\n.nr PS 9000\n.B\n{text}\n.XE\n.PP\n"
+        return f".OH '{text}''%'\n.EH '''%'\n.pg@begin\n.NH ()HL1()\n{text}\n.XS\n.nr PS 9000\n.B\n{text}\n.XE\n.PP\n"
 
     def add_header_2(text):
-        return f".NH 2\n{text}\n.XS\n.nr PS 8000\n\t{text}\n.XE\n.PP\n"
+        return f".NH ()HL2()\n{text}\n.XS\n.nr PS 8000\n\t{text}\n.XE\n.PP\n"
 
     def add_header_3(text):
-        return f".NH 3\n{text}\n.XS\n.nr PS 7000\n\t\t{text}\n.XE\n.PP\n"
+        return f".NH ()HL3()\n{text}\n.XS\n.nr PS 7000\n\t\t{text}\n.XE\n.PP\n"
 
     def start_list():
         return ".IP \\(bu 2\n"
@@ -578,8 +584,9 @@ class pdf_groff():
     def end(out, to):
         out += ".de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n.OH 'Table Of Contents''%'\n.EH '''%'\n..\n.TC"
         out.out = out.out.replace("\n\n", "\n")
-        with open(to, "w+") as file:
-            file.write(out.out)
+        o = subprocess.Popen(f"groff -Tpdf -dpaper=a5 -P-pa5 -ms".split(" "), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        with open(to, "wb") as file:
+            file.write(o.communicate(input=out.out.encode())[0])
 
     def tag(text):
         if "](" in text:

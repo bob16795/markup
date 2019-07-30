@@ -5,10 +5,10 @@ from pygments.lexers import PythonLexer
 import importlib
 
 
-def add_to_doc(file, parsed, to, adderstr, addermodstr):
+def add_to_doc(file, parsed, to, adderstr, addermodstr, info):
     module = importlib.import_module(addermodstr)
     adder = getattr(module, adderstr)
-    out = adder.outer()(adder.start()())
+    out = adder.outer()(adder.start()(), info)
     if type(parsed) is not nullNode:
         for i in parsed.paragraphs:
             if type(i) is HeadNode or type(i) is Node or type(i) is nullNode:
