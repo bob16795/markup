@@ -1,5 +1,4 @@
-from markup.nodes import *
-
+from markup.nodes import nullNode, Node
 
 def match_first(tokens, matches):
     for j in matches:
@@ -20,8 +19,6 @@ def match_star(tokens, With):
         "PLUS": "+",
         "MINUS": "-",
         "HASH": "#",
-        "TAGO": "[",
-        "TAGC": ")",
         "TAGO": "<",
         "TAGC": ">",
         "NEWLINE": "\n",

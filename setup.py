@@ -11,7 +11,7 @@ setup(
     version="0.1.0",
     keywords="example documentation tutorial",
     packages=['markup', 'markup.formaters', 'markup.data'],
-    long_description=read('README.md'),
+    long_description=read('README.mu'),
     install_requires=[
         'click',
         'pathlib',
@@ -19,7 +19,8 @@ setup(
         'pygments'
     ],
     entry_points={
-        'console_scripts': ['markup = markup.cli:start']
+        'console_scripts': ['markup = markup.cli:start',
+        'mu = markup.cli:start']
     },
     classifiers=[
         "Development Status :: 3 - Alpha",

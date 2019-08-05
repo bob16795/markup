@@ -1,42 +1,23 @@
-from markup.token_class import *
-import os
-import re
-
+from markup.token_class import Token, Token_List
 
 def yaml_dict(yaml):
-    yaml_cached = yaml.split("\n")
-    yaml_d = {"slave" : "False"}
-    for i in yaml_cached:
-        j = i.split(": ")
-        if i.split(" | ")[0] == "s" and yaml_d['slave'] == "True":
-            yaml_d[j[0].split(" | ")[1]] = j[1]
-        elif i.split(" | ")[0] == "m" and yaml_d['slave'] == "False":
-            yaml_d[j[0].split(" | ")[1]] = j[1]
-        elif not " | " in i:
-            yaml_d[j[0]] = j[1]
-    return yaml_d
+    if yaml.strip(" \n") != "":
+      yaml_cached = yaml.split("\n")
+      yaml_d = {"slave" : "False"}
+      for i in yaml_cached:
+          j = i.split(":")
+          if i.split(" | ")[0] == "s" and yaml_d['slave'] == "True":
+              yaml_d[j[0].split(" | ")[1]] = j[1].strip(" ")
+          elif i.split(" | ")[0] == "m" and yaml_d['slave'] == "False":
+              yaml_d[j[0].split(" | ")[1]] = j[1].strip(" ")
+          elif not " | " in i:
+              yaml_d[j[0]] = j[1].strip(" ")
+      return yaml_d
+    else:
+      return {}
 
 
-def tokenize_f(file, inside=False):
-    with open(file, encoding='utf-8') as filew:
-        file_cached = ""
-        for i in filew:
-            if i[:5] == "Inc: ":
-                for pattern in i[5:-1].split(";"):
-                    for f in os.listdir():
-                        if re.search(pattern.strip(" "), f):
-                            if inside:
-                                file_cached = f"{file_cached}{tokenize_f(f, True)}\n"
-                            else:
-                                file_cached = f"{file_cached}---\nslave: True\n---\n{tokenize_f(f, True)}\n---\nslave: False\n---\n"
-                file_cached = file_cached[:-1]
-            else:
-                file_cached = f"{file_cached}{i}"
-    return file_cached
-
-
-def tokenize(file):
-    file_cached = tokenize_f(file)
+def tokenize(file_cached, yaml_app):
     file_cached = file_cached.split("\n")
     mu = True
     token_dict = {
@@ -85,4 +66,4 @@ def tokenize(file):
             else:
                 yaml += f"{l}\n"
     md_tokens.append(Token("EOF", "", f"End"))
-    return Token_List(md_tokens), yaml_dict(yaml[:-1])
+    return Token_List(md_tokens), yaml_dict(yaml[:-1] + yaml_app)

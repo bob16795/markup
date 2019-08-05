@@ -1,5 +1,5 @@
-from markup.nodes import *
-from markup.match import *
+from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, ParagraphNode, BodyNode
+from markup.match import match_first, match_star, match_star_err
 
 
 def Parse_Text(tokens):

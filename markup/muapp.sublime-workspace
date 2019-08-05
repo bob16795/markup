@@ -1,0 +1,472 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "/home/john/cod/muapp/markup/output.py",
+			"settings":
+			{
+				"buffer_size": 17351,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/john/cod/muapp/main.py",
+			"settings":
+			{
+				"buffer_size": 591,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/john/cod/muapp/markup/cli.py",
+			"settings":
+			{
+				"buffer_size": 392,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/john/cod/muapp/markup/commands.py",
+			"settings":
+			{
+				"buffer_size": 1020,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/home/john/cod/muapp/markup/doc.py",
+			"settings":
+			{
+				"buffer_size": 2892,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"W",
+				"Tasks: Archive within selection(s)"
+			],
+			[
+				"w",
+				"Tasks: Archive within selection(s)"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 209.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/john/cod/muapp",
+		"/home/john/cod/muapp/markup"
+	],
+	"file_history":
+	[
+		"/home/john/cod/muapp/markup/doc.py",
+		"/home/john/cod/muapp/markup/cli.py",
+		"/home/john/.bashrc",
+		"/home/john/doc/repos/markup/markup/commands.py",
+		"/home/john/.config/i3/config",
+		"/home/john/doc/repos/markup/setup.py",
+		"/home/john/doc/src/main.mu",
+		"/home/john/doc/src/de_Final_Notes.mu",
+		"/home/john/doc/repos/markup/markup/markup_tokenize.py",
+		"/home/john/doc/repos/markup/markup/output.py",
+		"/home/john/doc/repos/markup/markup/doc.py",
+		"/home/john/doc/src/ela_master.mu",
+		"/home/john/doc/repos/markup/markup/markup_parse.py",
+		"/home/john/doc/src/de_master.mu",
+		"/home/john/doc/repos/markup/markup/cli.py",
+		"/home/john/doc/src/de_Quiz_Notes.doc",
+		"/home/john/doc/src/de.mu",
+		"/home/john/doc/src/de.terminal",
+		"/home/john/doc/pdf/de_Final_Notes.pdf",
+		"/home/john/doc/pdf/de_Final_Notes.pdf.ms",
+		"/home/john/doc/src/de_Final_Notes.doc",
+		"/home/john/scr/wall.sh",
+		"/home/john/scr/file/thunarIPC.py",
+		"/home/john/scr/polymediatitle",
+		"/home/john/.config/sxiv/thumbs.c",
+		"/home/john/.config/sxiv/config.h",
+		"/home/john/.config/polybar/config",
+		"/home/john/scr/tools/lmc",
+		"/home/john/scr/refocus",
+		"/home/john/scr/whosplaying",
+		"/home/john/.config/mondo/generator/sublime3/_mondo-template",
+		"/home/john/.config/mondo/themes/buddybud",
+		"/home/john/.config/mondo/themes/forest",
+		"/home/john/.config/mondo/generator/Xresources/_mondo-template",
+		"/home/john/.config/sxiv/thumbs.",
+		"/home/john/.config/mondo/themes/paraiso-dark",
+		"/home/john/.config/mondo/post-apply",
+		"/home/john/.config/mondo/generator/Xresources/_mondo-apply",
+		"/home/john/.config/mondo/generator/post/_mondo-apply",
+		"/home/john/.config/mondo/generator/rofi/_mondo-template",
+		"/home/john/.config/mondo/generator/i3/_mondo-template",
+		"/home/john/.config/mondo/generator/wall/_mondo-template",
+		"/home/john/.config/mondo/generator/Xresources/_mondo-settings",
+		"/home/john/scr/vid.sh",
+		"/home/john/vid/youtube.txt",
+		"/home/john/scr/tools/youdown",
+		"/home/john/scr/chroot.sh",
+		"/home/john/scr/dwmcmds/web",
+		"/home/john/.config/mondo/generator/vid/_mondo-template",
+		"/home/john/cod/clickable/launcher/qml/launcher.py",
+		"/home/john/.config/mondo/generator/polybar/_mondo-settings",
+		"/home/john/.config/mondo/generator/polybar/_mondo-template",
+		"/home/john/.config/polybar/colors",
+		"/home/john/cod/clickable/launcher/qml/Main.qml",
+		"/home/john/.config/mondo/generator/sublime2/_mondo-settings",
+		"/home/john/scr/pkger/pkger",
+		"/home/john/.config/mondo/generator/sublime2/_mondo-template",
+		"/home/john/.config/mondo/themes/notepad",
+		"/home/john/scr/file/thunarIPC",
+		"/home/john/.config/mondo/generator/sublime3/_mondo-settings",
+		"/home/john/.config/mondo/themes/paraiso-light",
+		"/home/john/.config/mondo/themes/graygrey",
+		"/home/john/.config/mondo/themes/solarized",
+		"/home/john/.config/mondo/themes/n0ne",
+		"/home/john/.config/mondo/themes/hyper",
+		"/home/john/.config/mondo/generator/sublime/_mondo-template",
+		"/home/john/.config/mondo/generator/i3/forest",
+		"/home/john/.config/mondo/generator/alacritty/_mondo-template",
+		"/home/john/.config/mondo/generator/post/_mondo-template",
+		"/home/john/.config/mondo/generator/dunst/_mondo-template",
+		"/home/john/.config/mondo/generator/mondocolors/_mondo-generate",
+		"/home/john/.config/mondo/generator/mondocolors/_mondo-settings",
+		"/home/john/.config/mondo/generator/i3/_mondo-settings",
+		"/home/john/.config/colors",
+		"/home/john/.config/mondo/generator/mondocolors/_mondo-template",
+		"/home/john/0a",
+		"/home/john/.config/mondo/generator/icons/_mondo-settings",
+		"/home/john/.config/mondo/generator/post/_mondo-settings",
+		"/home/john/.config/mondo/generator/icons/_mondo-template",
+		"/home/john/cfg/config/user-dirs.dirs",
+		"/home/john/cfg/config/Thunar/dir-rules",
+		"/home/john/scr/file/updatefm",
+		"/home/john/scr/file/parserules",
+		"/home/john/scr/file/actionfm",
+		"/home/john/.config/mondo/generator/dunst/",
+		"/home/john/.config/mondo/generator/rofi/_mondo-settings",
+		"/home/john/.config/mondo/themes/.current",
+		"/home/john/snd/youtube.txt",
+		"/home/john/.config/sublime-text-3/Packages/User/PlainTasks.sublime-settings",
+		"/home/john/.config/sublime-text-3/Packages/User/Default (Linux).sublime-keymap",
+		"/home/john/.config/sublime-text-3/Packages/Zen Tabs/Default.sublime-keymap",
+		"/home/john/.config/sublime-text-3/Packages/PlainTasks/PlainTasks (Linux).sublime-settings",
+		"/home/john/doc/proj/school.sublime-project",
+		"/home/john/doc/proj/web.sublime-project",
+		"/home/john/doc/proj/git.sublime-project",
+		"/home/john/doc/proj/config.sublime-project",
+		"/home/john/doc/proj/dwm.sublime-project",
+		"/home/john/doc/proj/youtube.sublime-project",
+		"/home/john/doc/proj/cod.sublime-project",
+		"/home/john/.config/sublime-text-3/Packages/budlime/post-install.md"
+	],
+	"find":
+	{
+		"height": 22.0
+	},
+	"find_in_files":
+	{
+		"height": 121.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": true,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "/home/john/cod/muapp/markup/output.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 17351,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								31,
+								31
+							]
+						],
+						"settings":
+						{
+							"apply_syntax_touched": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/home/john/cod/muapp/main.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 591,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								510,
+								510
+							]
+						],
+						"settings":
+						{
+							"apply_syntax_touched": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "/home/john/cod/muapp/markup/cli.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 392,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								351,
+								351
+							]
+						],
+						"settings":
+						{
+							"apply_syntax_touched": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/home/john/cod/muapp/markup/commands.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1020,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3,
+								3
+							]
+						],
+						"settings":
+						{
+							"apply_syntax_touched": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "/home/john/cod/muapp/markup/doc.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2892,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2713,
+								2713
+							]
+						],
+						"settings":
+						{
+							"apply_syntax_touched": true,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 15.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 19.0
+	},
+	"input":
+	{
+		"height": 43.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "muapp.sublime-project",
+	"replace":
+	{
+		"height": 40.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 548.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/.config/sublime-text-3/Packages/User/Projects/doc.sublime-project"
+			]
+		],
+		"width": 996.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 207.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

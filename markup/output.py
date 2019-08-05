@@ -58,7 +58,7 @@ class terminal():
         return text
 
     def start_list():
-        return "\n"
+        return "\n-"
 
     def start_code():
         return "\n"
@@ -79,7 +79,7 @@ class terminal():
         return "\n    -"
 
     def end_list(l):
-        return "\n-"
+        return "\n"
 
     def emph_list_text(text):
         return text
@@ -90,10 +90,9 @@ class terminal():
     def add_list_text(text):
         return text
 
-    def end(out, to):
+    def end(out):
         out += "\n"
-        with open(to, "w+") as file:
-            file.write(out.out)
+        return out.out.encode()
 
     def tag(text):
         return f"link: [{text}]"
@@ -227,10 +226,9 @@ class html():
     def add_list_text(text):
         return text
 
-    def end(out, to):
+    def end(out):
         out += "</div>\n</body>\n</html>"
-        with open(to, "w+") as file:
-            file.write(out.out)
+        return out.out.encode()
 
     def tag(text):
         if "](" in text:
@@ -247,7 +245,10 @@ class html():
 @Formater
 class docx():
     def outer_init(self, out, info):
-        self.doc = Document()
+        if "template" in info:
+            self.doc = Document(info["template"])
+        else:
+            self.doc = Document()
 
     def outer_add(self, out):
         for i in out:
@@ -291,7 +292,6 @@ class docx():
         # we iterate over the `_styles` attribute of a style item
         # that contains the parsed style values.
         for token, style in self.style:
-            start = end = ''
             # a style item is a tuple in the following form:
             # colors are readily specified in hex: 'RRGGBB'
             if style['color'] == None:
@@ -405,8 +405,11 @@ class docx():
     def add_list_text(text):
         return [f"{text}"]
 
-    def end(out, to):
-        out.doc.save(to)
+    def end(out):
+        out.doc.save("/tmp/tmp.docx")
+        with open("/tmp/tmp.docx", "rb") as f:
+            text = f.read()
+        return text
 
     def tag(text):
         if "](" in text:
@@ -423,11 +426,22 @@ class docx():
 @Formater
 class pdf_groff():
     def outer_init(self, out, info):
-        self.out = out
         self.pp = False
         self.title_heading_level = 0
+        self.author = ""
+        self.title  = ""
+        if "author" in  info:
+            self.author = info["author"]
+        if "title" in  info:
+            self.title = info["title"]
+            if "title_page" in info:
+                out += "\n()TTL()\n.bp\n"
         if "title_head" in info:
             self.title_heading_level = int(info["title_head"])
+
+        out = out.replace("()TTL()", self.title)
+        out = out.replace("()AUT()", self.author)
+        self.out = out
 
     def outer_add(self, out):
         out = out.replace("()HL1()", str(self.title_heading_level))
@@ -454,7 +468,6 @@ class pdf_groff():
         Formatter.__init__(self, **options)
         self.styles = {}
         for token, style in self.style:
-            start = end = ''
             if style['color'] == None:
                 color = "000000"
             else:
@@ -512,20 +525,20 @@ class pdf_groff():
         return f".UL \"{text}\"\n"
 
     def start():
-        return "\\X'papersize=5.5i,8.5i'\n.nr PO .3i\n.nr LL 4.9i\n.nr FM .3i\n.nr HM .3i\n.nr LT 4.9i\n.color 1\nTitle\n.OF 'Author'''\n.EF '''Title'\n.pg@begin 1 1\n"
-        # return "\n"
+        # \\X'papersize=5.5i,8.5i'\n
+        return "\n.OH '''%'\n.EH '''%'\n.nr PO .3i\n.nr LL 7.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i\n.color 1\n.OF '()AUT()'''\n.EF '''()TTL()'\n"
 
     def bold_text(text):
         return f".B {text}\n"
 
     def add_header_1(text):
-        return f".OH '{text}''%'\n.EH '''%'\n.pg@begin\n.NH ()HL1()\n{text}\n.XS\n.nr PS 9000\n.B\n{text}\n.XE\n.PP\n"
+        return f".OH '%'-{text}-''\n.EH ''-{text}-'%'\n.bp\n.NH ()HL1()\n{text}\n.XS\n.B\n{text}\n.XE\n.PP\n"
 
     def add_header_2(text):
-        return f".NH ()HL2()\n{text}\n.XS\n.nr PS 8000\n\t{text}\n.XE\n.PP\n"
+        return f".NH ()HL2()\n{text}\n.XS\n\t{text}\n.XE\n.PP\n"
 
     def add_header_3(text):
-        return f".NH ()HL3()\n{text}\n.XS\n.nr PS 7000\n\t\t{text}\n.XE\n.PP\n"
+        return f".NH ()HL3()\n{text}\n.XS\n\t\t{text}\n.XE\n.PP\n"
 
     def start_list():
         return ".IP \\(bu 2\n"
@@ -581,12 +594,11 @@ class pdf_groff():
     def add_list_text(text):
         return f"LI;{text}"
 
-    def end(out, to):
-        out += ".de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n.OH 'Table Of Contents''%'\n.EH '''%'\n..\n.TC"
+    def end(out):
+        out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n..\n.TC"
         out.out = out.out.replace("\n\n", "\n")
-        o = subprocess.Popen(f"groff -Tpdf -dpaper=a5 -P-pa5 -ms".split(" "), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-        with open(to, "wb") as file:
-            file.write(o.communicate(input=out.out.encode())[0])
+        o = subprocess.Popen(f"groff -Tpdf -dpaper=a4 -P-pa4 -ms".split(" "), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+        return o.communicate(input=out.out.encode())[0]
 
     def tag(text):
         if "](" in text:
@@ -598,6 +610,45 @@ class pdf_groff():
             link = text[0]
             text = text[-1]
         if link == "COL":
-            return f".MC {text}i\n"
+            return f"\n.MC {text}i\n"
         # return f"<a href={text}> {link} </a><br/>"
         return f"{text}\n"
+
+class pdf_latex():
+    def outer_init(self, out, info):
+        self.pp = False
+        self.title_heading_level = 0
+        self.author = ""
+        self.title  = ""
+        if "author" in  info:
+            self.author = info["author"]
+        if "title" in  info:
+            self.title = info["title"]
+            if "title_page" in info:
+                #   \begin{titlepage}
+                #     \begin{center}
+                #         \vspace*{1cm}
+                #         \Huge
+                #         \textbf{Thesis Title}
+                #         \vspace{2.0cm}
+                #         \textbf{Author Name}
+                #         \vfill
+                #         A thesis presented for the degree of\\
+                #         Doctor of Philosophy
+                #         \vspace{0.8cm}
+                #         \includegraphics[width=0.4\textwidth]{university}
+                #         \Large
+                #         Department Name\\
+                #         University Name\\
+                #         Country\\
+                #         Date
+                #     \end{center}
+                # \end{titlepage}
+                out += "\\begin{titlepage}\n\\begin{center}\\vspace*{1cm}\n\\Huge\n\\textbf{()TTL()}\n\\vspace{2.0cm}\n\textbf{()AUT()}\n\\end{center}\n\\end{titlepage}"
+        if "title_head" in info:
+            self.title_heading_level = int(info["title_head"])
+
+        out = out.replace("()TTL()", self.title)
+        out = out.replace("()AUT()", self.author)
+        self.out = out
+

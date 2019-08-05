@@ -1,6 +1,3 @@
-from copy import deepcopy as copy
-
-
 class blank():
     def __init__(self, out):
         pass

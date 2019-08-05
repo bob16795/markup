@@ -1,11 +1,10 @@
-from markup.nodes import *
-from docx.shared import RGBColor
+from markup.nodes import nullNode, Node, HeadNode, ListNode, CodeNode
 from pygments import highlight
 from pygments.lexers import PythonLexer
 import importlib
 
 
-def add_to_doc(file, parsed, to, adderstr, addermodstr, info):
+def add_to_doc(parsed, adderstr, addermodstr, info):
     module = importlib.import_module(addermodstr)
     adder = getattr(module, adderstr)
     out = adder.outer()(adder.start()(), info)
@@ -59,4 +58,4 @@ def add_to_doc(file, parsed, to, adderstr, addermodstr, info):
                     elif j.value != "" and j.value != " " and j.type == "BOLD":
                         out += adder.bold_text()(f"{j.value}")
                 out += adder.add_new_line()()
-    adder.end()(out, to)
+    return adder.end()(out)
