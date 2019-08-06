@@ -11,7 +11,7 @@ setup(
     version="0.1.0",
     keywords="example documentation tutorial",
     packages=['markup', 'markup.formaters', 'markup.data'],
-    long_description=read('README.mu'),
+    long_description=read('README.md'),
     install_requires=[
         'click',
         'pathlib',
