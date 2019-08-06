@@ -1,4 +1,4 @@
-# markup - SHORT DESCRIPTION 
+# markup - A Markup Impersonation 
 
 ```text
 markup --help|-h
@@ -18,6 +18,12 @@ Compiles a document
 
 ## updates
 
+# Decided to use bashbud to generate documentation
+
+**08-06-2019**
+
+first release using a bashbud generated README.
+[http://github.com/budlabs/bashbud]
 
 
 ## license
