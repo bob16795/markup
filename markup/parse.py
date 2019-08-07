@@ -1,4 +1,4 @@
-import markup.markup_parser as parser
+import markup.parser as parser
 
 
 def parse_markdown(tokens):
