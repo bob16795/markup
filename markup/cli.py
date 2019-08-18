@@ -8,22 +8,22 @@ from pathlib import Path
 @click.argument('files', nargs=-1, required=True)
 @click.option('--fileout/--stdout', help='The person to greet.', default=True)
 @click.option('-v', '--verbose', count=True)
-@click.option('-V', '--full-verbose', is_flag=True, default=False)
-@click.option('--append-yaml', '-y', multiple=True)
+@click.option('-V', '--fullverbose', is_flag=True, default=False)
+@click.option('--appendyaml', '-y', multiple=True)
 @click.option('--output', '-o')
-def compile(files, fileout, verbose, full_verbose, append_yaml, output):
-    """Compiles docments using RMarkdown."""
-    if full_verbose:
+def compile(files, fileout, verbose, fullverbose, appendyaml, output):
+    """Compiles docments using Markup."""
+    if fullverbose:
         verbose = 1000
     for file in files:
         if verbose >= 1:
             print(f"+ processing {file}")
         text = _read(file)
         os.chdir(Path(file).parent)
-        append_yaml = "\n"+"\n".join(append_yaml)
-        if append_yaml != "\n\n":
-            append_yaml = ""
-        text, yaml = _compile(text, verbose, append_yaml)
+        appendyaml = "\n"+"\n".join(appendyaml)
+        if appendyaml != "\n\n":
+            appendyaml = ""
+        text, yaml = _compile(text, verbose, appendyaml)
         if text != "":
             if fileout:
                 _output(text, file, yaml)

@@ -1,0 +1,74 @@
+.TH MARKUP 1 2019\-08\-18 Linx "User Manuals"
+.SH NAME
+.PP
+\fB\fCmarkup\fR \- A markup parity
+
+.SH SYNOPSIS
+.PP
+.RS
+
+.nf
+markup \-\-help|\-h
+markup \-\-verbose|\-v
+markup \-\-fullverbose|\-V
+markup \-\-appendyaml|\-y
+markup \-\-output|\-o
+markup \-\-fileout
+markup \-\-stdout
+
+.fi
+.RE
+
+.SH DESCRIPTION
+.PP
+Compiles using my parity of markdown markup.
+
+.SH OPTIONS
+.PP
+\fB\fC\-\-help\fR|\fB\fC\-h\fR
+.br
+Show help and exit.
+
+.PP
+\fB\fC\-\-verbose\fR|\fB\fC\-v\fR
+.br
+Increases the verbosity, can be used more than
+once.
+
+.PP
+\fB\fC\-\-fullverbose\fR|\fB\fC\-V\fR
+.br
+Sets verbosity to 1000.
+
+.PP
+\fB\fC\-\-appendyaml\fR|\fB\fC\-y\fR
+.br
+Appends yaml to the document overriding any tag.
+
+.PP
+\fB\fC\-\-output\fR|\fB\fC\-o\fR
+.br
+Appends yaml to override the output of a
+document.
+
+.PP
+\fB\fC\-\-fileout\fR
+.br
+forces the document to output to a file.
+
+.PP
+\fB\fC\-\-stdout\fR
+.br
+forces the document to output to stdout.
+
+.SH DEPENDENCIES
+.PP
+\fB\fCclick\fR \fB\fCpathlib\fR \fB\fCpython\-docx\fR \fB\fCpygments\fR
+
+.PP
+bob16795 
+\[la]https://github.com/bob16795/markup\[ra]
+
+.SH SEE ALSO
+.PP
+python(1),
