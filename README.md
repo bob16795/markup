@@ -1,14 +1,13 @@
-# markup - A markup parity 
+# markup - A markup parity
 
 ```text
-███╗   ███╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗ 
+███╗   ███╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗
 ████╗ ████║██╔══██╗██╔══██╗██║ ██╔╝██║   ██║██╔══██╗
 ██╔████╔██║███████║██████╔╝█████╔╝ ██║   ██║██████╔╝
-██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║██╔═══╝ 
-██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗╚██████╔╝██║     
-╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     
+██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║██╔═══╝
+██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗╚██████╔╝██║
+╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝
 ```
-
 
 ## installation
 
@@ -19,7 +18,6 @@ git clone http://github.com/bob16795/markup
 cd markup
 python3 setup.py install
 ```
-
 
 ## usage
 
@@ -34,7 +32,6 @@ markup --output|-o
 markup --fileout
 markup --stdout
 ```
-
 
 `--help`|`-h`  
 Show help and exit.
@@ -72,12 +69,10 @@ first release using a bashbud generated README.
 
 ### 08-18-19
 
-
 **more options**
 
 added more options to the compiler like --appendyaml and
 --output.
-
 
 **got readme up to date**
 
@@ -90,5 +85,3 @@ I finished the readme for now
 ## license
 
 **markup** is licensed with the **license ^^ license**
-
-

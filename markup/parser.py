@@ -2,13 +2,22 @@ from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, Paragraph
 from markup.match import match_first, match_star, match_star_err
 
 
-def Parse_Text(tokens):
+def Text_Parser(tokens):
+    """
+    Text:
+        Text
+    """
     if tokens.peek(["TEXT"]):
         return Node("TEXT", tokens.grab(0).value, 1)
     return nullNode()
 
 
-def single_newline(tokens):
+def Singlenewline_Parser(tokens):
+    """
+    Singlenewline:
+        "\n"
+        !"\n"
+    """
     node = nullNode()
     if tokens.peek(["NEWLINE"]):
         node = Node("TEXT", " ", 1)
@@ -17,33 +26,65 @@ def single_newline(tokens):
     return node
 
 
-def multi_newline(tokens):
+def Multinewline_Parser(tokens):
+    """
+    Multinewline:
+        "\n"
+    """
     node = nullNode()
     if tokens.peek(["NEWLINE"]):
         node = Node("TEXT", " ", 1)
     return node
 
 
-def Parse_Bold(tokens):
+def Bold_Parser(tokens):
+    """
+    Bold:
+        ( "**"
+          Text
+          "**" ) |
+        ( "__"
+          Text
+          "__")
+    """
     if tokens.peek_or([["STAR", "STAR", "TEXT", "STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE", "TEXT", "UNDERSCORE", "UNDERSCORE"]]):
         return Node("BOLD", tokens.grab(2).value, 5)
     return nullNode()
 
 
-def Parse_Emph(tokens):
+def Emph_Parser(tokens):
+    """
+    Emph:
+        ( "*"
+          Text
+          "*" ) |
+        ( "_"
+          Text
+          "_")
+    """
     if tokens.peek_or([["STAR", "TEXT", "STAR"], ["UNDERSCORE", "TEXT", "UNDERSCORE"]]):
         return Node("EMPH", tokens.grab(1).value, 3)
     return nullNode()
 
 
-def Parse_Tag(tokens):
+def Tag_Parser(tokens):
+    """
+    Tag:
+        "<"
+        Text
+        ">"
+    """
     if tokens.peek(["TAGO", "TEXT", "TAGC"]):
         return Node("TAG", tokens.grab(1).value, 3)
     return nullNode()
 
 
-def Parse_Tags(tokens):
-    node = match_first(tokens, [single_newline, Parse_Tag])
+def Multi_Tag_Parser(tokens):
+    """
+    Tags:
+        NL | Tag
+    """
+    node = match_first(tokens, [Singlenewline_Parser, Tag_Parser])
     if type(node) == nullNode:
         return nullNode()
     if not tokens.peek_at(node.consumed, ['NEWLINE', 'NEWLINE']):
@@ -53,24 +94,44 @@ def Parse_Tags(tokens):
 
 
 def H1_Parser(tokens):
+    """
+    H3:
+        "#"
+        Text
+    """
     if tokens.peek(["HASH", "TEXT"]):
         return HeadNode("HEAD1", tokens.grab(1).value, 2)
     return nullNode()
 
 
 def H2_Parser(tokens):
+    """
+    H3:
+        "##"
+        Text
+    """
     if tokens.peek(["HASH", "HASH", "TEXT"]):
         return HeadNode("HEAD2", tokens.grab(2).value, 3)
     return nullNode()
 
 
 def H3_Parser(tokens):
+    """
+    H3:
+        "###"
+        Text
+    """
     if tokens.peek(["HASH", "HASH", "HASH", "TEXT"]):
         return HeadNode("HEAD3", tokens.grab(3).value, 4)
     return nullNode()
 
 
 def Header_Parser(tokens):
+    """
+    Header:
+        H1 | H2 | H3
+        "\n\n"
+    """
     node = match_first(
         tokens, [H1_Parser, H2_Parser, H3_Parser])
     if type(node) == nullNode:
@@ -82,28 +143,49 @@ def Header_Parser(tokens):
 
 
 def L1_Parser(tokens):
+    """
+    L1:
+        "*"
+    """
     if tokens.peek(["STAR"]):
         return Node("LIST1", "", 1)
     return nullNode()
 
 
 def L2_Parser(tokens):
+    """
+    L2:
+        "+"
+    """
     if tokens.peek(["PLUS"]):
         return Node("LIST2", "", 1)
     return nullNode()
 
 
 def L3_Parser(tokens):
+    """
+    L3:
+        "-"
+    """
     if tokens.peek(["MINUS"]):
         return Node("LIST3", "", 1)
     return nullNode()
 
 
 def Item_Parser(tokens):
+    """
+    Item:
+        L1 | L2 | L3 | Sentence
+    """
     return match_first(tokens, [Sentence_Parser, L1_Parser, L2_Parser, L3_Parser])
 
 
 def List_Parser(tokens):
+    """
+    List:
+        ( L1 | L2 | L3 ) & Item*
+        "\n\n"
+    """
     if type(match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])) == nullNode:
         return nullNode()
     nodes, consumed = match_star(tokens.offset(1), Item_Parser)
@@ -116,19 +198,37 @@ def List_Parser(tokens):
     return ListNode(nodes, consumed)
 
 
-def Code_Start_Parser(tokens):
+def Code_End_Parser(tokens):
+    """
+    Code_End:
+        "```\n"
+    """
     if tokens.peek(["GRAVE", "GRAVE", "GRAVE", "NEWLINE"]):
         return Node("CODE", "", 4)
     return nullNode()
 
 
 def Code_Parser(tokens):
-    if type(Code_Start_Parser(tokens)) != nullNode:
+    """
+    Code:
+        ! Code_Start
+        ( MultiNewline | Text ) *
+    """
+    if type(Code_End_Parser(tokens)) != nullNode:
         return nullNode()
-    return match_first(tokens, [multi_newline, Parse_Text])
+    return match_first(tokens, [Multinewline_Parser, Text_Parser])
 
 
-def Code_Parser_Multiline(tokens):
+def Code_Multi_line_Parser(tokens):
+    """
+    Code_Multi_Line:
+        ( "```"
+          Text
+          "\n" )
+        | "```\n"
+        Code*
+        "```\n"
+    """
     i = 4
     if not tokens.peek(["GRAVE", "GRAVE", "GRAVE", "TEXT", "NEWLINE"]):
         if not tokens.peek(["GRAVE", "GRAVE", "GRAVE", "NEWLINE"]):
@@ -143,10 +243,19 @@ def Code_Parser_Multiline(tokens):
 
 
 def Sentence_Parser(tokens):
-    return match_first(tokens, [Parse_Text, Parse_Emph, Parse_Bold, single_newline])
+    """
+    Sentence:
+        Text | Emph | Bold | Single_NL
+    """
+    return match_first(tokens, [Text_Parser, Emph_Parser, Bold_Parser, Singlenewline_Parser])
 
 
 def Sentences_NL_Parser(tokens):
+    """
+    Sentences_NL:
+        Sentence*
+        "\n\n"
+    """
     nodes, consumed = match_star(tokens, Sentence_Parser)
     if nodes == []:
         return nullNode()
@@ -157,6 +266,11 @@ def Sentences_NL_Parser(tokens):
 
 
 def Sentences_EOF_Parser(tokens):
+    """
+    Sentences_EOF:
+        Sentence*
+        "EOF" | "\nEOF"
+    """
     nodes, consumed = match_star(tokens, Sentence_Parser)
     if nodes == []:
         return nullNode()
@@ -169,12 +283,20 @@ def Sentences_EOF_Parser(tokens):
     return ParagraphNode(nodes, consumed)
 
 
-def Parse_Paragraph(tokens):
-    return match_first(tokens, [Parse_Tags, Code_Parser_Multiline, Header_Parser, List_Parser, Sentences_NL_Parser, Sentences_EOF_Parser])
+def Paragraph_Parser(tokens):
+    """
+    Paragraph:
+        Tags | Code_Multi_Line | Header | List | Sentence_NL | Sentence_EOF
+    """
+    return match_first(tokens, [Multi_Tag_Parser, Code_Multi_line_Parser, Header_Parser, List_Parser, Sentences_NL_Parser, Sentences_EOF_Parser])
 
 
-def Parse_Body(tokens):
-    nodes, consumed = match_star(tokens, Parse_Paragraph)
+def Body_Parser(tokens):
+    """
+    Body:
+        Paragraph*
+    """
+    nodes, consumed = match_star(tokens, Paragraph_Parser)
     if nodes == []:
         return nullNode()
     return BodyNode(nodes, consumed)
