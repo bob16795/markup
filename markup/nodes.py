@@ -14,7 +14,7 @@ class nullNode():
         self.consumed = 1
 
     def __str__(self):
-        return(f"<type: {self.type}, value: {self.value}, Consumed: {self.consumed}>")
+        return(f"<type: NullNode Consumed: {self.consumed}>")
 
 
 class BodyNode():

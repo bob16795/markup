@@ -9,7 +9,7 @@ def yaml_dict(yaml):
           if yaml_line.split(" | ")[0] == "s" and yaml_d['slave'] == "True":
               yaml_d[j[0].split(" | ")[1]] = j[1].strip(" ")
           elif yaml_line.split(" | ")[0] == "m" and yaml_d['slave'] == "False":
-              yaml_d[j[0].split(" | "s)[1]] = j[1].strip(" ")
+              yaml_d[j[0].split(" | ")[1]] = j[1].strip(" ")
           elif not " | " in yaml_line:
               yaml_d[j[0]] = j[1].strip(" ")
       return yaml_d

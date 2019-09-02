@@ -20,7 +20,7 @@ def match_star(tokens, With):
         "MINUS": "-",
         "HASH": "#",
         "TAGO": "<",
-        "TAGC": ">",
+        "TAGC": ">",#TODO: fix dupe tokens
         "NEWLINE": "\n",
     }
 
@@ -49,7 +49,7 @@ def match_star_err(tokens, With):
         consumed += node.consumed
     return matched_nodes, consumed
 
-def match__multi_star_until(tokens, matches, until):
+def match_multi_star_until(tokens, matches, until):
     matched_nodes = []
     consumed = 0
     sym_dict = {

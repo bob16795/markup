@@ -30,83 +30,107 @@ class terminal():
         if lastval:
             outfile += lastval.replace("\n", "")
 
+    @staticmethod
     def add_new_line():
         return "\n"
 
+    @staticmethod
     def add_text(text):
         return text
 
+    @staticmethod
     def emph_text(text):
         return text
 
+    @staticmethod
     def start():
         return ""
 
+    @staticmethod
     def bold_text(text):
         return text
 
+    @staticmethod
     def add_header_1(text):
         text = "\n" + text + "\n" + (len(text) * "=") + "\n"
         return text
 
+    @staticmethod
     def add_header_2(text):
         text = "\n" + text + "\n" + (len(text) * "-") + "\n"
         return text
 
+    @staticmethod
     def add_header_3(text):
         text = "\n" + text + "\n"
         return text
 
+    @staticmethod
     def start_list():
         return "\n-"
 
+    @staticmethod
     def start_code():
         return "\n"
 
+    @staticmethod
     def code_line(text):
         return ">  " + text + "\n"
 
+    @staticmethod
     def end_code():
         return ""
 
+    @staticmethod
     def start_list_1(l):
         return "\n-"
 
+    @staticmethod
     def start_list_2(l):
         return "\n  -"
 
+    @staticmethod
     def start_list_3(l):
         return "\n    -"
 
+    @staticmethod
     def end_list(l):
         return "\n"
 
+    @staticmethod
     def emph_list_text(text):
         return text
 
+    @staticmethod
     def bold_list_text(text):
         return text
 
+    @staticmethod
     def add_list_text(text):
         return text
 
+    @staticmethod
     def end(out):
         out += "\n"
         return out.out.encode()
 
+    @staticmethod
     def tag(text):
         return f"link: [{text}]"
 
 
 @Formater
 class html():
+    @staticmethod
     def outer_init(self, out, info):
         self.out = out
 
+    @staticmethod
     def outer_add(self, out):
         self.out += out
         return self
 
+    @staticmethod
     def fmt_init(self, **options):
         Formatter.__init__(self, **options)
 
@@ -129,6 +153,7 @@ class html():
                 end = '</u>' + end
             self.styles[token] = (start, end)
 
+    @staticmethod
     def fmt_format(self, tokensource, outfile):
         lastval = ''
         lasttype = None
@@ -149,42 +174,55 @@ class html():
             outfile += stylebegin + lastval + styleend
             outfile += '</pre>\n'
 
+    @staticmethod
     def start():
         return "<!DOCTYPE html>\n<html>\n<head>\n<link rel=\"stylesheet\" href=\"main.css\">\n</head>\n<body>\n<div id=\"page\">"
 
+    @staticmethod
     def add_text(text):
         return text
 
+    @staticmethod
     def add_new_line():
         return "<br/>"
 
+    @staticmethod
     def emph_text(text):
         return "<em>" + text + "</em>"
 
+    @staticmethod
     def bold_text(text):
         return "<b>" + text + "</b>"
 
+    @staticmethod
     def add_header_1(text):
         return "<h1>" + text + "</h1>"
 
+    @staticmethod
     def add_header_2(text):
         return "<h2>" + text + "</h2>"
 
+    @staticmethod
     def add_header_3(text):
         return "<h3>" + text + "</h3>"
 
+    @staticmethod
     def start_code():
         return "\n"
 
+    @staticmethod
     def code_line(text):
         return "" + text + "\n"
 
+    @staticmethod
     def end_code():
         return ""
 
+    @staticmethod
     def start_list():
         return "<ul><li>"
 
+    @staticmethod
     def start_list_1(l):
         if l == 1:
             return "</li><li>"
@@ -193,6 +231,7 @@ class html():
         if l == 3:
             return "</li></ul></ul><li>"
 
+    @staticmethod
     def start_list_2(l):
         if l == 1:
             return "</li><ul><li>"
@@ -201,6 +240,7 @@ class html():
         if l == 3:
             return "</li></ul><li>"
 
+    @staticmethod
     def start_list_3(l):
         if l == 1:
             return "</li><ul><ul><li>"
@@ -209,6 +249,7 @@ class html():
         if l == 3:
             return "</li><li>"
 
+    @staticmethod
     def end_list(l):
         if l == 1:
             return "</li></ul>"
@@ -217,19 +258,24 @@ class html():
         if l == 3:
             return "</li></ul></ul></ul>"
 
+    @staticmethod
     def emph_list_text(text):
         return "<em>" + text + "</em>"
 
+    @staticmethod
     def bold_list_text(text):
         return "<b>" + text + "</b>"
 
+    @staticmethod
     def add_list_text(text):
         return text
 
+    @staticmethod
     def end(out):
         out += "</div>\n</body>\n</html>"
         return out.out.encode()
 
+    @staticmethod
     def tag(text):
         if "](" in text:
             text = text.split("](")
@@ -244,12 +290,14 @@ class html():
 
 @Formater
 class docx():
+    @staticmethod
     def outer_init(self, out, info):
         if "template" in info:
             self.doc = Document(info["template"])
         else:
             self.doc = Document()
 
+    @staticmethod
     def outer_add(self, out):
         for i in out:
             ttype = i.split(": ")[0]
@@ -281,6 +329,7 @@ class docx():
                 self.r = self.p.add_run(text)
         return self
 
+    @staticmethod
     def fmt_init(self, **options):
         Formatter.__init__(self, **options)
 
@@ -301,6 +350,7 @@ class docx():
             self.styles[token] = (color, style['bold'],
                                   style['italic'], style['underline'])
 
+    @staticmethod
     def fmt_format(self, tokensource, outfile):
         # lastval is a string we use for caching
         # because it's possible that an lexer yields a number
@@ -348,69 +398,90 @@ class docx():
             r.font.italic = italic
             r.font.underline = underline
 
+    @staticmethod
     def start():
         return []
 
+    @staticmethod
     def add_text(text):
         return [text]
 
+    @staticmethod
     def add_new_line():
         return ["\n"]
 
+    @staticmethod
     def emph_text(text):
         return [f"EMPH: {text}"]
 
+    @staticmethod
     def bold_text(text):
         return [f"BOLD: {text}"]
 
+    @staticmethod
     def add_header_1(text):
         return [f"H1: {text}"]
 
+    @staticmethod
     def add_header_2(text):
         return [f"H2: {text}"]
 
+    @staticmethod
     def add_header_3(text):
         return [f"H3: {text}"]
 
+    @staticmethod
     def start_code():
         return ["\n"]
 
+    @staticmethod
     def code_line(text):
         return [text, "\n"]
 
+    @staticmethod
     def end_code():
         return []
 
+    @staticmethod
     def start_list():
         return []
 
+    @staticmethod
     def start_list_1(l):
         return [f"L1: "]
 
+    @staticmethod
     def start_list_2(l):
         return [f"L2: "]
 
+    @staticmethod
     def start_list_3(l):
         return [f"L3: "]
 
+    @staticmethod
     def end_list(l):
         return []
 
+    @staticmethod
     def emph_list_text(text):
         return [f"EMPH: {text}"]
 
+    @staticmethod
     def bold_list_text(text):
         return [f"BOLD: {text}"]
 
+    @staticmethod
     def add_list_text(text):
         return [f"{text}"]
 
+    @staticmethod
     def end(out):
         out.doc.save("/tmp/tmp.docx")
         with open("/tmp/tmp.docx", "rb") as f:
             text = f.read()
         return text
 
+    @staticmethod
     def tag(text):
         if "](" in text:
             text = text.split("](")
@@ -425,6 +496,7 @@ class docx():
 
 @Formater
 class pdf_groff():
+    @staticmethod
     def outer_init(self, out, info):
         self.pp = False
         self.title_heading_level = 0
@@ -443,6 +515,7 @@ class pdf_groff():
         out = out.replace("()AUT()", self.author)
         self.out = out
 
+    @staticmethod
     def outer_add(self, out):
         out = out.replace("()HL1()", str(self.title_heading_level))
         out = out.replace("()HL2()", str(self.title_heading_level + 1))
@@ -464,6 +537,7 @@ class pdf_groff():
                 self.out += out
         return self
 
+    @staticmethod
     def fmt_init(self, **options):
         Formatter.__init__(self, **options)
         self.styles = {}
@@ -475,6 +549,7 @@ class pdf_groff():
             self.styles[token] = (color, style['bold'],
                                   style['italic'], style['underline'])
 
+    @staticmethod
     def fmt_format(self, tokensource, outfile):
         lastval = ''
         lasttype = None
@@ -499,46 +574,59 @@ class pdf_groff():
         lasttype = ttype
         outfile += f".fcolor\n"
 
+    @staticmethod
     def add_new_line():
         return f"\n"
 
+    @staticmethod
     def add_text(text):
         if text.strip(" ") != "":
             return f"{text}\n"
         return ""
 
+    @staticmethod
     def emph_text(text):
         return f".UL \"{text}\"\n"
 
+    @staticmethod
     def start():
         # \\X'papersize=5.5i,8.5i'\n
         return "\n.OH '''%'\n.EH '''%'\n.nr PO .3i\n.nr LL 7.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i\n.color 1\n.OF '()AUT()'''\n.EF '''()TTL()'\n"
 
+    @staticmethod
     def bold_text(text):
         return f".B {text}\n"
 
+    @staticmethod
     def add_header_1(text):
         return f".OH '%'-{text}-''\n.EH ''-{text}-'%'\n.bp\n.NH ()HL1()\n{text}\n.XS\n.B\n{text}\n.XE\n.PP\n"
 
+    @staticmethod
     def add_header_2(text):
         return f".NH ()HL2()\n{text}\n.XS\n\t{text}\n.XE\n.PP\n"
 
+    @staticmethod
     def add_header_3(text):
         return f".NH ()HL3()\n{text}\n.XS\n\t\t{text}\n.XE\n.PP\n"
 
+    @staticmethod
     def start_list():
         return ".IP \\(bu 2\n"
 
+    @staticmethod
     def start_code():
         return "LI;\n.LP\n"
 
+    @staticmethod
     def code_line(text):
         return text.replace("\\TS", "#\\.RS\n")\
             .replace("\\TE", "#\\.RE\n") + "\n"
 
+    @staticmethod
     def end_code():
         return ""
 
+    @staticmethod
     def start_list_1(l):
         if l == 1:
             return ".IP \\(bu 2\n"
@@ -547,6 +635,7 @@ class pdf_groff():
         if l == 3:
             return ".RE\n.RE\n.IP \\(bu 2\n"
 
+    @staticmethod
     def start_list_2(l):
         if l == 1:
             return ".RS\n.IP \\(bu 2\n"
@@ -555,6 +644,7 @@ class pdf_groff():
         if l == 3:
             return ".RE\n.IP \\(bu 2\n"
 
+    @staticmethod
     def start_list_3(l):
         if l == 1:
             return ".RS\n.RS\n.IP \\(bu 2\n"
@@ -563,6 +653,7 @@ class pdf_groff():
         if l == 3:
             return ".IP \\(bu 2\n"
 
+    @staticmethod
     def end_list(l):
         if l == 1:
             return ""
@@ -571,21 +662,26 @@ class pdf_groff():
         if l == 3:
             return ".RE\n.RE\n"
 
+    @staticmethod
     def emph_list_text(text):
         return f"LI;{text}"
 
+    @staticmethod
     def bold_list_text(text):
         return f"LI;{text}"
 
+    @staticmethod
     def add_list_text(text):
         return f"LI;{text}"
 
+    @staticmethod
     def end(out):
         out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n..\n.TC"
         out.out = out.out.replace("\n\n", "\n")
         o = subprocess.Popen(f"groff -Tpdf -dpaper=a4 -P-pa4 -ms".split(" "), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         return o.communicate(input=out.out.encode())[0]
 
+    @staticmethod
     def tag(text):
         if "](" in text:
             text = text.split("](")
@@ -604,8 +700,9 @@ class pdf_groff():
                 return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
         # return f"<a href={text}> {link} </a><br/>"
         return f"{text}\n"
-
+# TODO: finish 
 class pdf_latex():
+    @staticmethod 
     def outer_init(self, out, info):
         self.pp = False
         self.title_heading_level = 0

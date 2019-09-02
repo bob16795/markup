@@ -49,7 +49,7 @@ def _compile(file_cached, verbose, yaml, j=1, tree=False):
             file_new = ""
     if "use" in info:
         cwd = os.getcwd()
-        for paspottern in info['use'].split(";"):
+        for pattern in info['use'].split(";"):
             if "/" in pattern:
                 os.chdir("/".join(pattern.split("/")[:-1]))
                 pattern = pattern.split("/")[-1]
