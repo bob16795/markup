@@ -15,8 +15,8 @@ class Token_List():
         return len(self.tokens)
 
     def peek_or(self, choices):
-        for i in choices:
-            if self.peek(i):
+        for choice in choices:
+            if self.peek(choice):
                 return True
         return False
 

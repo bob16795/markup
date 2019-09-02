@@ -9,53 +9,53 @@ def add_to_doc(parsed, adderstr, addermodstr, info):
     adder = getattr(module, adderstr)
     out = adder.outer()(adder.start()(), info)
     if type(parsed) is not nullNode:
-        for i in parsed.paragraphs:
-            if type(i) is HeadNode or type(i) is Node or type(i) is nullNode:
-                if i.type == "HEAD1":
-                    out += adder.add_header_1()(i.value.strip(" "))
-                elif i.type == "HEAD2":
-                    out += adder.add_header_2()(i.value.strip(" "))
-                elif i.type == "HEAD3":
-                    out += adder.add_header_3()(i.value.strip(" "))
-                if i.type == "TAG":
-                    out += adder.tag()(i.value)
-            elif type(i) is ListNode:
+        for node in parsed.paragraphs:
+            if type(node) is HeadNode or type(node) is Node or type(node) is nullNode:
+                if node.type == "HEAD1":
+                    out += adder.add_header_1()(node.value.strip(" "))
+                elif node.type == "HEAD2":
+                    out += adder.add_header_2()(node.value.strip(" "))
+                elif node.type == "HEAD3":
+                    out += adder.add_header_3()(node.value.strip(" "))
+                if node.type == "TAG":
+                    out += adder.tag()(node.value)
+            elif type(node) is ListNode:
                 out += adder.start_list()()
-                l = 1
-                for j in i.sentences:
-                    if j.type == "LIST1":
-                        out += adder.start_list_1()(l)
-                        l = 1
-                    elif j.type == "LIST2":
-                        out += adder.start_list_2()(l)
-                        l = 2
-                    elif j.type == "LIST3":
-                        out += adder.start_list_3()(l)
-                        l = 3
-                    elif j.value != "" and j.value != " " and j.type == "TEXT":
-                        out += adder.add_list_text()(f"{j.value} ")
-                    elif j.value != "" and j.value != " " and j.type == "EMPH":
-                        out += adder.emph_list_text()(f"{j.value} ")
-                    elif j.value != "" and j.value != " " and j.type == "BOLD":
-                        out += adder.bold_list_text()(f"{j.value} ")
-                out += adder.end_list()(l)
-            elif type(i) is CodeNode:
+                list_level = 1
+                for sentence in node.sentences:
+                    if sentence.type == "LIST1":
+                        out += adder.start_list_1()(list_level)
+                        list_level = 1
+                    elif sentence.type == "LIST2":
+                        out += adder.start_list_2()(list_level)
+                        list_level = 2
+                    elif sentence.type == "LIST3":
+                        out += adder.start_list_3()(list_level)
+                        list_level = 3
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "TEXT":
+                        out += adder.add_list_text()(f"{sentence.value} ")
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "EMPH":
+                        out += adder.emph_list_text()(f"{sentence.value} ")
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
+                        out += adder.bold_list_text()(f"{sentence.value} ")
+                out += adder.end_list()(list_level)
+            elif type(node) is CodeNode:
                 out += adder.start_code()()
                 code = ""
-                for j in i.sentences:
-                    if j.type == "TEXT":
-                        if j.value != " ":
-                            code += adder.code_line()(j.value)
+                for sentence in node.sentences:
+                    if sentence.type == "TEXT":
+                        if sentence.value != " ":
+                            code += adder.code_line()(sentence.value)
                 fmt = adder.fmt()()
                 highlight(code.strip("\n"), PythonLexer(), fmt, outfile=out)
                 out += adder.end_code()()
             else:
-                for j in i.sentences:
-                    if j.type == "TEXT":
-                        out += adder.add_text()(f"{j.value}")
-                    elif j.value != "" and j.value != " " and j.type == "EMPH":
-                        out += adder.emph_text()(f"{j.value}")
-                    elif j.value != "" and j.value != " " and j.type == "BOLD":
-                        out += adder.bold_text()(f"{j.value}")
+                for sentence in node.sentences:
+                    if sentence.type == "TEXT":
+                        out += adder.add_text()(f"{sentence.value}")
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "EMPH":
+                        out += adder.emph_text()(f"{sentence.value}")
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
+                        out += adder.bold_text()(f"{sentence.value}")
                 out += adder.add_new_line()()
     return adder.end()(out)

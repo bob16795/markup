@@ -11,7 +11,8 @@ from pathlib import Path
 @click.option('-V', '--fullverbose', is_flag=True, default=False)
 @click.option('--appendyaml', '-y', multiple=True)
 @click.option('--output', '-o')
-def compile(files, fileout, verbose, fullverbose, appendyaml, output):
+@click.option('--tree', '-t', is_flag=True)
+def compile(files, fileout, verbose, fullverbose, appendyaml, output, tree):
     """Compiles docments using Markup."""
     if fullverbose:
         verbose = 1000
@@ -23,12 +24,13 @@ def compile(files, fileout, verbose, fullverbose, appendyaml, output):
         appendyaml = "\n"+"\n".join(appendyaml)
         if appendyaml != "\n\n":
             appendyaml = ""
-        text, yaml = _compile(text, verbose, appendyaml)
-        if text != "":
-            if fileout:
-                _output(text, file, yaml)
-            else:
-                print(text)
+        text, yaml = _compile(text, verbose, appendyaml, tree=tree)
+        if not tree:
+            if text != "":
+                if fileout:
+                    _output(text, file, yaml)
+                else:
+                    print(text)
 
 def start():
     compile(obj={})

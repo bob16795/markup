@@ -1,13 +1,14 @@
-# markup - A markup parity
+# markup - A markup parity 
 
 ```text
-███╗   ███╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗
+███╗   ███╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗ 
 ████╗ ████║██╔══██╗██╔══██╗██║ ██╔╝██║   ██║██╔══██╗
 ██╔████╔██║███████║██████╔╝█████╔╝ ██║   ██║██████╔╝
-██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║██╔═══╝
-██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗╚██████╔╝██║
-╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝
+██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║██╔═══╝ 
+██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗╚██████╔╝██║     
+╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     
 ```
+
 
 ## installation
 
@@ -19,6 +20,7 @@ cd markup
 python3 setup.py install
 ```
 
+
 ## usage
 
 Compiles using my parity of markdown markup.
@@ -29,9 +31,11 @@ markup --verbose|-v
 markup --fullverbose|-V
 markup --appendyaml|-y
 markup --output|-o
+markup --tree|-t
 markup --fileout
 markup --stdout
 ```
+
 
 `--help`|`-h`  
 Show help and exit.
@@ -48,6 +52,9 @@ Appends yaml to the document overriding any tag.
 `--output`|`-o`  
 Appends yaml to override the output of a document.
 
+`--tree`|`-t`  
+writes the document tree to output (mainly for debug).
+
 `--fileout`  
 forces the document to output to a file.
 
@@ -62,6 +69,12 @@ see `man markup` for more information
 
 ### 08-06-19
 
+**added tree flag**
+
+this does error but still works for debugging
+### 08-06-19
+
+
 **Decided to use bashbud to generate documentation**
 
 first release using a bashbud generated README.
@@ -69,10 +82,12 @@ first release using a bashbud generated README.
 
 ### 08-18-19
 
+
 **more options**
 
 added more options to the compiler like --appendyaml and
 --output.
+
 
 **got readme up to date**
 
@@ -81,7 +96,11 @@ I finished the readme for now
 ## known issues
 
 - If you have a tokenized character in a word it requires a preceding backslash.
+    - in code (fixed)
+    - in paragraphs
 
 ## license
 
 **markup** is licensed with the **license ^^ license**
+
+

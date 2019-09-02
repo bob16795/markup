@@ -4,13 +4,13 @@ def yaml_dict(yaml):
     if yaml.strip(" \n") != "":
       yaml_cached = yaml.split("\n")
       yaml_d = {"slave" : "False"}
-      for i in yaml_cached:
-          j = i.split(":")
-          if i.split(" | ")[0] == "s" and yaml_d['slave'] == "True":
+      for yaml_line in yaml_cached:
+          j = yaml_line.split(":")
+          if yaml_line.split(" | ")[0] == "s" and yaml_d['slave'] == "True":
               yaml_d[j[0].split(" | ")[1]] = j[1].strip(" ")
-          elif i.split(" | ")[0] == "m" and yaml_d['slave'] == "False":
-              yaml_d[j[0].split(" | ")[1]] = j[1].strip(" ")
-          elif not " | " in i:
+          elif yaml_line.split(" | ")[0] == "m" and yaml_d['slave'] == "False":
+              yaml_d[j[0].split(" | "s)[1]] = j[1].strip(" ")
+          elif not " | " in yaml_line:
               yaml_d[j[0]] = j[1].strip(" ")
       return yaml_d
     else:

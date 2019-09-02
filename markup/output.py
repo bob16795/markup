@@ -478,40 +478,26 @@ class pdf_groff():
     def fmt_format(self, tokensource, outfile):
         lastval = ''
         lasttype = None
+        outfile += "\n.in 0\n.fcolor gray\n.LP\n"
+        indent = 0
         for ttype, value in tokensource:
-            while ttype not in self.styles:
-                ttype = ttype.parent
-            if ttype == lasttype:
-                lastval += value
-            else:
-                if lastval.strip(" "):
-                    lastval = lastval.replace("\\n", "\\\\n")\
-                        .replace(".", "\\.")\
-                        .replace("\n", ".LP")\
-                        .replace("#\\\\.RS", ".RS")\
-                        .replace("#\\\\.RE", ".RE\n")\
-                        .replace("\\", "\\\\")\
-                        .replace("''", "\\'\\'")
-                    color, bold, italic, underline = self.styles[lasttype]
-                    if lastval != ".LP":
-                        outfile += f"LI;.defcolor pyg rgb #{color}\n.gcolor pyg\n{lastval}\n.gcolor\n"
-                    else:
-                        outfile += f"LI;{lastval}\n"
-                lastval = value
-                lasttype = ttype
+            if not(value.strip(" ")):
+                indent = len(value)-len(value.strip(" "))
+            if lastval.strip(" "):
+                color = self.styles[lasttype][0]
+                val = lastval.replace('\n', f'\n.in {float(indent/6)}c\n')
+                outfile += f".defcolor pyg rgb #{color}\n.gcolor pyg\n{val}\n.gcolor\n"
+            # set lastval/lasttype to current values
+            lastval = value
+            lasttype = ttype
         if lastval.strip(" "):
-            lastval = lastval.replace("\\n", "\\\\n")\
-                .replace(".", "\\.")\
-                .replace("\n", ".LP")\
-                .replace("#\\\\.RS", ".RS")\
-                .replace("#\\\\.RE", ".RE\n")\
-                .replace("\\", "\\\\")\
-                .replace("''", "\\'\\'")
-            color, bold, italic, underline = self.styles[lasttype]
-            if lastval[0] != ".":
-                outfile += f"LI;.defcolor pyg rgb #{color}\n.gcolor pyg\n{lastval}\n.gcolor\n"
-            else:
-                outfile += f"LI;{lastval}\n"
+            color = self.styles[lasttype][0]
+            val = lastval.replace('\n', f'\n.in {float(indent/6)}c\n')
+            outfile += f".defcolor pyg rgb #{color}\n.gcolor pyg\n{val}\n.gcolor\n"
+        # set lastval/lasttype to current values
+        lastval = value
+        lasttype = ttype
+        outfile += f".fcolor\n"
 
     def add_new_line():
         return f"\n"
@@ -555,27 +541,27 @@ class pdf_groff():
 
     def start_list_1(l):
         if l == 1:
-            return ".IP \\(bu\n"
+            return ".IP \\(bu 2\n"
         if l == 2:
-            return ".RE\n.IP \\(bu\n"
+            return ".RE\n.IP \\(bu 2\n"
         if l == 3:
-            return ".RE\n.RE\n.IP \\(bu\n"
+            return ".RE\n.RE\n.IP \\(bu 2\n"
 
     def start_list_2(l):
         if l == 1:
-            return ".RS\n.IP \\(bu\n"
+            return ".RS\n.IP \\(bu 2\n"
         if l == 2:
-            return ".IP \\(bu\n"
+            return ".IP \\(bu 2\n"
         if l == 3:
-            return ".RE\n.IP \\(bu\n"
+            return ".RE\n.IP \\(bu 2\n"
 
     def start_list_3(l):
         if l == 1:
-            return ".RS\n.RS\n.IP \\(bu\n"
+            return ".RS\n.RS\n.IP \\(bu 2\n"
         if l == 2:
-            return ".RS\n.IP \\(bu\n"
+            return ".RS\n.IP \\(bu 2\n"
         if l == 3:
-            return ".IP \\(bu\n"
+            return ".IP \\(bu 2\n"
 
     def end_list(l):
         if l == 1:
@@ -611,6 +597,11 @@ class pdf_groff():
             text = text[-1]
         if link == "COL":
             return f"\n.MC {text}i\n"
+        if link == "CPT":
+            if text[-1] == "!":
+                return f"\n.bp\n.NH 0\n{text[:-1]}\n"
+            else:
+                return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
         # return f"<a href={text}> {link} </a><br/>"
         return f"{text}\n"
 

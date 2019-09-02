@@ -23,7 +23,10 @@ class BodyNode():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<Paragprphs: {str(self.paragraphs)}, Consumed: {self.consumed}>")
+        j = ""
+        for i in self.paragraphs:
+            j += i.__str__()
+        return(f"<Paragprphs: {j}, Consumed: {self.consumed}>")
 
 
 class ParagraphNode():
@@ -32,7 +35,10 @@ class ParagraphNode():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<sentences: {str(self.sentences)}, Consumed: {self.consumed}>")
+        j = ""
+        for i in self.sentences:
+            j += i.__str__() + ","
+        return(f"<sentences: {j[:-1]}, Consumed: {self.consumed}>")
 
 
 class ListNode():
@@ -41,7 +47,10 @@ class ListNode():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<sentences: {str(self.sentences)}, Consumed: {self.consumed}>")
+        j = ""
+        for i in self.sentences:
+            j += i.__str__() + ","
+        return(f"<sentences: {j[:-1]}, Consumed: {self.consumed}>")
 
 
 class CodeNode():
@@ -50,7 +59,10 @@ class CodeNode():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<sentences: {str(self.sentences)}, Consumed: {self.consumed}>")
+        j = ""
+        for i in self.sentences:
+            j += i.__str__() + ","
+        return(f"<sentences: {j[:-1]}, Consumed: {self.consumed}>")
 
 
 class HeadNode():

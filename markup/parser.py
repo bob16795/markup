@@ -1,5 +1,5 @@
 from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, ParagraphNode, BodyNode
-from markup.match import match_first, match_star, match_star_err
+from markup.match import match_first, match_star, match_star_err, match__multi_star_until
 
 
 def Text_Parser(tokens):
@@ -214,9 +214,10 @@ def Code_Parser(tokens):
         ! Code_Start
         ( MultiNewline | Text ) *
     """
-    if type(Code_End_Parser(tokens)) != nullNode:
-        return nullNode()
-    return match_first(tokens, [Multinewline_Parser, Text_Parser])
+    return match__multi_star_until(tokens, [Multinewline_Parser, Text_Parser], Code_End_Parser)
+    #if type(Code_End_Parser(tokens)) != nullNode:
+    #    return nullNode()
+    #return match_first(tokens, [Multinewline_Parser, Text_Parser])
 
 
 def Code_Multi_line_Parser(tokens):
@@ -233,11 +234,12 @@ def Code_Multi_line_Parser(tokens):
     if not tokens.peek(["GRAVE", "GRAVE", "GRAVE", "TEXT", "NEWLINE"]):
         if not tokens.peek(["GRAVE", "GRAVE", "GRAVE", "NEWLINE"]):
             return nullNode()
-        else:
-            i += 1
-    nodes, consumed = match_star_err(tokens.offset(i), Code_Parser)
-    if not tokens.peek_at(consumed+i, ["GRAVE", "GRAVE", "GRAVE", 'NEWLINE']):
-        return nullNode()
+    else:
+        i += 1
+    #nodes, consumed = match_star_err(tokens.offset(i), Code_Parser)
+    nodes, consumed = match__multi_star_until(tokens.offset(i), [Multinewline_Parser, Text_Parser], Code_End_Parser)
+    #if not tokens.peek_at(consumed+i, ["GRAVE", "GRAVE", "GRAVE", 'NEWLINE']):
+    #    return nullNode()
     consumed += i + 4
     return CodeNode(nodes, consumed)
 
