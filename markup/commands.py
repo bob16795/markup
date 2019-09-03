@@ -36,6 +36,7 @@ def _compile(file_cached, verbose, yaml, j=1, tree=False):
     parsed = parse.parse_markdown(tokens)
     if tree:
         print(parsed)
+        file_new = str(parsed)
     else:
         if not 'file_type' in info:
             info['file_type'] = "terminal"

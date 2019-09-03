@@ -5,7 +5,7 @@ class Node():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<type: {self.type}, value: {self.value}, Consumed: {self.consumed}>")
+        return(f"<Sentence type: {self.type}, value: \"{self.value}\", Consumed: {self.consumed}>")
 
 
 class nullNode():
@@ -14,7 +14,7 @@ class nullNode():
         self.consumed = 1
 
     def __str__(self):
-        return(f"<type: NullNode Consumed: {self.consumed}>")
+        return(f"<Null Consumed: {self.consumed}>")
 
 
 class BodyNode():
@@ -26,7 +26,7 @@ class BodyNode():
         j = ""
         for i in self.paragraphs:
             j += i.__str__()
-        return(f"<Paragprphs: {j}, Consumed: {self.consumed}>")
+        return(f"<Body Paragprphs: {j}, Consumed: {self.consumed}>")
 
 
 class ParagraphNode():
@@ -38,7 +38,7 @@ class ParagraphNode():
         j = ""
         for i in self.sentences:
             j += i.__str__() + ","
-        return(f"<sentences: {j[:-1]}, Consumed: {self.consumed}>")
+        return(f"<Paragraph sentences: {j[:-1]}, Consumed: {self.consumed}>")
 
 
 class ListNode():
@@ -50,7 +50,7 @@ class ListNode():
         j = ""
         for i in self.sentences:
             j += i.__str__() + ","
-        return(f"<sentences: {j[:-1]}, Consumed: {self.consumed}>")
+        return(f"<List sentences: {j[:-1]}, Consumed: {self.consumed}>")
 
 
 class CodeNode():
@@ -62,7 +62,7 @@ class CodeNode():
         j = ""
         for i in self.sentences:
             j += i.__str__() + ","
-        return(f"<sentences: {j[:-1]}, Consumed: {self.consumed}>")
+        return(f"<Code sentences: {j[:-1]}, Consumed: {self.consumed}>")
 
 
 class HeadNode():
@@ -72,4 +72,4 @@ class HeadNode():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<type: {self.type}, value: {self.value}, Consumed: {self.consumed}>")
+        return(f"<Head type: {self.type}, value: \"{self.value}\", Consumed: {self.consumed}>")

@@ -97,7 +97,8 @@ I finished the readme for now
 
 - If you have a tokenized character in a word it requires a preceding backslash.
     - in code (fixed)
-    - in paragraphs
+    - in headings
+    - in paragraphs (fixed)
 
 ## license
 

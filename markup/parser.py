@@ -130,15 +130,21 @@ def Header_Parser(tokens):
     """
     Header:
         H1 | H2 | H3
-        "\n\n"
+        "\n" | "\n\n"
     """
+    #TODO: use match until
     node = match_first(
         tokens, [H1_Parser, H2_Parser, H3_Parser])
     if type(node) == nullNode:
         return nullNode()
-    if not tokens.peek_at(node.consumed, ['NEWLINE', 'NEWLINE']):
-        return nullNode()
-    node.consumed += 2
+
+    if not tokens.peek_at(node.consumed, ['NEWLINE','NEWLINE']):
+        if not tokens.peek_at(node.consumed, ['NEWLINE']):
+            return nullNode()
+        else:
+            node.consumed += 1
+    else:
+        node.consumed += 2
     return node
 
 
