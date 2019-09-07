@@ -1,14 +1,13 @@
-# markup - A markup parity 
+# markup - A markup parity
 
 ```text
-███╗   ███╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗ 
+███╗   ███╗ █████╗ ██████╗ ██╗  ██╗██╗   ██╗██████╗
 ████╗ ████║██╔══██╗██╔══██╗██║ ██╔╝██║   ██║██╔══██╗
 ██╔████╔██║███████║██████╔╝█████╔╝ ██║   ██║██████╔╝
-██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║██╔═══╝ 
-██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗╚██████╔╝██║     
-╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝     
+██║╚██╔╝██║██╔══██║██╔══██╗██╔═██╗ ██║   ██║██╔═══╝
+██║ ╚═╝ ██║██║  ██║██║  ██║██║  ██╗╚██████╔╝██║
+╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚═╝
 ```
-
 
 ## installation
 
@@ -19,7 +18,6 @@ git clone http://github.com/bob16795/markup
 cd markup
 python3 setup.py install
 ```
-
 
 ## usage
 
@@ -35,7 +33,6 @@ markup --tree|-t
 markup --fileout
 markup --stdout
 ```
-
 
 `--help`|`-h`  
 Show help and exit.
@@ -72,8 +69,8 @@ see `man markup` for more information
 **added tree flag**
 
 this does error but still works for debugging
-### 08-06-19
 
+### 08-06-19
 
 **Decided to use bashbud to generate documentation**
 
@@ -82,12 +79,10 @@ first release using a bashbud generated README.
 
 ### 08-18-19
 
-
 **more options**
 
 added more options to the compiler like --appendyaml and
 --output.
-
 
 **got readme up to date**
 
@@ -95,13 +90,9 @@ I finished the readme for now
 
 ## known issues
 
-- If you have a tokenized character in a word it requires a preceding backslash.
-    - in code (fixed)
-    - in headings
-    - in paragraphs (fixed)
+- no tables
+- no formating word documents
 
 ## license
 
 **markup** is licensed with the **license ^^ license**
-
-

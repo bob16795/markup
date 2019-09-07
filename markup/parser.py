@@ -1,6 +1,9 @@
 from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, ParagraphNode, BodyNode
-from markup.match import match_first, match_star, match_star_err, match_multi_star_until
+from markup.match import match_first, match_star, match_star_err, match_multi_star_until, match_star_merge
 
+# TODO: add inline code
+# TODO: add better lists
+# TODO: add tables
 
 def Text_Parser(tokens):
     """
@@ -10,7 +13,10 @@ def Text_Parser(tokens):
     if tokens.peek(["TEXT"]):
         return Node("TEXT", tokens.grab(0).value, 1)
     return nullNode()
-
+    # node = match_text(tokens)
+    # if type(node) != nullNode:
+    #     return node
+    # return nullNode()
 
 def Singlenewline_Parser(tokens):
     """
@@ -194,7 +200,7 @@ def List_Parser(tokens):
     """
     if type(match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])) == nullNode:
         return nullNode()
-    nodes, consumed = match_star(tokens.offset(1), Item_Parser)
+    nodes, consumed = match_star_merge(tokens.offset(1), Item_Parser)
     consumed += 1
     if nodes == []:
         return nullNode()
@@ -264,7 +270,7 @@ def Sentences_NL_Parser(tokens):
         Sentence*
         "\n\n"
     """
-    nodes, consumed = match_star(tokens, Sentence_Parser)
+    nodes, consumed = match_star_merge(tokens, Sentence_Parser)
     if nodes == []:
         return nullNode()
     if not tokens.peek_at(consumed, ['NEWLINE', 'NEWLINE']):
