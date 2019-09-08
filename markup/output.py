@@ -591,7 +591,7 @@ class pdf_groff():
     @staticmethod
     def start():
         # \\X'papersize=5.5i,8.5i'\n
-        return "\n.OH '''%'\n.EH '''%'\n.nr PO .3i\n.nr LL 7.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i\n.color 1\n.OF '()AUT()'''\n.EF '''()TTL()'\n"
+        return "\n.OH '''%'\n.EH '''%'\n.nr PO .3i\n.nr LL 6.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i\n.color 1\n.OF '()AUT()'''\n.EF '''()TTL()'\n"
 
     @staticmethod
     def bold_text(text):
@@ -611,7 +611,7 @@ class pdf_groff():
 
     @staticmethod
     def start_list():
-        return ".IP \\(bu 2\n"
+        return ""
 
     @staticmethod
     def start_code():
@@ -700,7 +700,7 @@ class pdf_groff():
                 return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
         # return f"<a href={text}> {link} </a><br/>"
         return f"{text}\n"
-# TODO: finish 
+# TODO: finish latex
 class pdf_latex():
     @staticmethod 
     def outer_init(self, out, info):

@@ -1,9 +1,8 @@
 from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, ParagraphNode, BodyNode
 from markup.match import match_first, match_star, match_star_err, match_multi_star_until, match_star_merge
 
-# TODO: add inline code
-# TODO: add better lists
-# TODO: add tables
+# ADD: inline code
+# ADD: tables
 
 def Text_Parser(tokens):
     """
@@ -138,7 +137,6 @@ def Header_Parser(tokens):
         H1 | H2 | H3
         "\n" | "\n\n"
     """
-    #TODO: use match until
     node = match_first(
         tokens, [H1_Parser, H2_Parser, H3_Parser])
     if type(node) == nullNode:
@@ -153,24 +151,31 @@ def Header_Parser(tokens):
         node.consumed += 2
     return node
 
+def Bullet_Parser(tokens):
+    """
+    L1:
+        "*"
+    """
+    if tokens.peek_or([["STAR"], ["PLUS"], ["MINUS"]]):
+        return Node("TEXT", "", 1)
+    return nullNode()
 
 def L1_Parser(tokens):
     """
     L1:
         "*"
     """
-    if tokens.peek(["STAR"]):
+    if type(match_first(tokens, [Bullet_Parser])) != nullNode:
         return Node("LIST1", "", 1)
     return nullNode()
-
 
 def L2_Parser(tokens):
     """
     L2:
         "+"
     """
-    if tokens.peek(["PLUS"]):
-        return Node("LIST2", "", 1)
+    if tokens.peek(["TAB"]) and type(match_first(tokens.offset(1), [Bullet_Parser])) != nullNode:
+        return Node("LIST2", "", 2)
     return nullNode()
 
 
@@ -179,8 +184,8 @@ def L3_Parser(tokens):
     L3:
         "-"
     """
-    if tokens.peek(["MINUS"]):
-        return Node("LIST3", "", 1)
+    if tokens.peek(["TAB", "TAB"]) and type(match_first(tokens.offset(2), [Bullet_Parser])) != nullNode:
+        return Node("LIST3", "", 3)
     return nullNode()
 
 
@@ -200,13 +205,20 @@ def List_Parser(tokens):
     """
     if type(match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])) == nullNode:
         return nullNode()
-    nodes, consumed = match_star_merge(tokens.offset(1), Item_Parser)
-    consumed += 1
+    node = match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])
+    nodes, consumed = match_star_merge(tokens.offset(node.consumed), Item_Parser)
+    consumed += node.consumed
     if nodes == []:
         return nullNode()
-    if not tokens.peek_at(consumed, ['NEWLINE', 'NEWLINE']):
-        return nullNode()
-    consumed += 2
+    if tokens.peek_at(consumed, ['EOF']):
+        consumed += 1
+    elif tokens.peek_at(consumed, ['NEWLINE', 'EOF']):
+        consumed += 2
+    else:
+        if not tokens.peek_at(consumed, ['NEWLINE', 'NEWLINE']):
+            return nullNode()
+        consumed += 2
+    nodes.insert(0, node)
     return ListNode(nodes, consumed)
 
 

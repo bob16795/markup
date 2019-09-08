@@ -21,7 +21,8 @@ def match_star(tokens, With):
         "MINUS": "-",
         "HASH": "#",
         "TAGO": "<",
-        "TAGC": ">",#TODO: fix dupe tokens
+        "TAGC": ">",#FIX: dupe tokens
+        "TAB": "\t",
         "NEWLINE": "\n",
     }
 
@@ -48,7 +49,8 @@ def match_star_merge(tokens, With):
         "MINUS": "-",
         "HASH": "#",
         "TAGO": "<",
-        "TAGC": ">",#TODO: fix dupe tokens
+        "TAGC": ">",#FIX: dupe tokens
+        "TAB": "\t",
         "NEWLINE": "\n",
     }
 

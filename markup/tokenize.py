@@ -31,6 +31,7 @@ def tokenize(file_cached, yaml_app):
         ">": ["TAGC", "SYM"],
         "[": ["TAGO", "SYM"],
         ")": ["TAGC", "SYM"],
+        "\t": ["TAB", ""],
         "\n": ["NEWLINE", ""],
     }
     md_tokens = []
