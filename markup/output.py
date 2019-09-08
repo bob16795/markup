@@ -591,7 +591,8 @@ class pdf_groff():
     @staticmethod
     def start():
         # \\X'papersize=5.5i,8.5i'\n
-        return "\n.OH '''%'\n.EH '''%'\n.nr PO .3i\n.nr LL 6.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i\n.color 1\n.OF '()AUT()'''\n.EF '''()TTL()'\n"
+        # \n.nr PO .3i\n.nr LL 6.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i
+        return "\n.OH '''%'\n.EH '''%'\n.color 1\n.OF '()AUT()'''\n.EF '''()TTL()'\n"
 
     @staticmethod
     def bold_text(text):
@@ -676,7 +677,7 @@ class pdf_groff():
 
     @staticmethod
     def end(out):
-        out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n..\n.TC"
+        out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC"
         out.out = out.out.replace("\n\n", "\n")
         o = subprocess.Popen(f"groff -Tpdf -dpaper=a4 -P-pa4 -ms".split(" "), stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         return o.communicate(input=out.out.encode())[0]
@@ -697,7 +698,7 @@ class pdf_groff():
             if text[-1] == "!":
                 return f"\n.bp\n.NH 0\n{text[:-1]}\n"
             else:
-                return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 155p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
+                return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
         # return f"<a href={text}> {link} </a><br/>"
         return f"{text}\n"
 # TODO: finish latex
