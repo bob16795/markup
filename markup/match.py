@@ -30,7 +30,10 @@ def match_star(tokens, With):
         node = parser(tokens.offset(consumed))
         if type(node) == nullNode:
             if tokens.grab(consumed).value == "SYM":
-                node = Node("TEXT", sym_dict[tokens.grab(consumed).type], 1)
+                try:
+                   node = Node(matched_nodes[-1].type, sym_dict[tokens.grab(consumed).type], 1)
+                except:
+                   node = Node("TEXT", sym_dict[tokens.grab(consumed).type], 1)  
             else:
                 break
         matched_nodes.append(node)
@@ -58,7 +61,10 @@ def match_star_merge(tokens, With):
         node = parser(tokens.offset(consumed))
         if type(node) == nullNode:
             if tokens.grab(consumed).value == "SYM":
-                node = Node("TEXT", sym_dict[tokens.grab(consumed).type], 1)
+                try:
+                   node = Node(matched_nodes[-1].type, sym_dict[tokens.grab(consumed).type], 1)
+                except:
+                   node = Node("TEXT", sym_dict[tokens.grab(consumed).type], 1)  
             else:
                 break
         if matched_nodes != []:

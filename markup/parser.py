@@ -2,7 +2,9 @@ from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, Paragraph
 from markup.match import match_first, match_star, match_star_err, match_multi_star_until, match_star_merge
 
 # ADD: inline code
+# ADD: indent code
 # ADD: tables
+# ADD: equations
 
 def Text_Parser(tokens):
     """
@@ -153,8 +155,8 @@ def Header_Parser(tokens):
 
 def Bullet_Parser(tokens):
     """
-    L1:
-        "*"
+    Bullet:
+        "*" | "+" | "-"
     """
     if tokens.peek_or([["STAR"], ["PLUS"], ["MINUS"]]):
         return Node("TEXT", "", 1)
@@ -163,7 +165,7 @@ def Bullet_Parser(tokens):
 def L1_Parser(tokens):
     """
     L1:
-        "*"
+        Bullet
     """
     if type(match_first(tokens, [Bullet_Parser])) != nullNode:
         return Node("LIST1", "", 1)
@@ -172,7 +174,8 @@ def L1_Parser(tokens):
 def L2_Parser(tokens):
     """
     L2:
-        "+"
+        "\t"
+        Bullet
     """
     if tokens.peek(["TAB"]) and type(match_first(tokens.offset(1), [Bullet_Parser])) != nullNode:
         return Node("LIST2", "", 2)
@@ -182,7 +185,8 @@ def L2_Parser(tokens):
 def L3_Parser(tokens):
     """
     L3:
-        "-"
+        "\t\t"
+        Bullet
     """
     if tokens.peek(["TAB", "TAB"]) and type(match_first(tokens.offset(2), [Bullet_Parser])) != nullNode:
         return Node("LIST3", "", 3)

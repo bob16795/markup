@@ -26,6 +26,7 @@ def _read(file, inside=False):
                 file_cached = f"{file_cached}{line}"
     while "\n\n\n" in file_cached:
         file_cached = file_cached.replace("\n\n\n", "\n\n")
+    file_cached = file_cached.replace("---\n\n", "---\n")
     return file_cached
  
 

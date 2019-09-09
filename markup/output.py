@@ -493,9 +493,17 @@ class docx():
             text = text[-1]
         return [f"<a href={text}> {link} </a><br/>"]
 
-
 @Formater
 class pdf_groff():
+    """
+    args:
+        author: the author of the document
+        title: the title of the document
+        title_page: if defined will add a title page to the document
+        title_head: the level of the first heading
+
+        TODO: margins
+    """
     @staticmethod
     def outer_init(self, out, info):
         self.pp = False
@@ -693,14 +701,15 @@ class pdf_groff():
             link = text[0]
             text = text[-1]
         if link == "COL":
+            # TODO: calculate colums automatically
             return f"\n.MC {text}i\n"
         if link == "CPT":
             if text[-1] == "!":
                 return f"\n.bp\n.NH 0\n{text[:-1]}\n"
             else:
                 return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
-        # return f"<a href={text}> {link} </a><br/>"
         return f"{text}\n"
+
 # TODO: finish latex
 class pdf_latex():
     @staticmethod 
