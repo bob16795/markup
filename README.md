@@ -70,23 +70,25 @@ to include the text from another document verbatim use Inc: then define the docu
 
 #### prefixes
 
-s | : if compiling a used document
-m | : if compiling a master document
+- s | : if compiling a used document
+- m | : if compiling a master document
 
 #### all
 
-file_type: the formatter to use for the document
-output_nodule: the module containing the formatter
-output: the file to output to relative to the source code
-ignore: if defined the document is ignored
-use: include a document (can be multiple split by ;)
+- file_type: the formatter to use for the document
+- output_nodule: the module containing the formatter
+- output: the file to output to relative to the source code
+- ignore: if defined the document is ignored
+- use: include a document (can be multiple split by ;)
 
 #### pdf_groff
 
-author: the author of the document
-title: the title of the document
-title_page: if defined will add a title page to the document
-title_head: the level of the first heading
+- author: the author of the document
+- author: the author of the document
+- author: the author of the document
+- title: the title of the document
+- title_page: if defined will add a title page to the document
+- title_head: the level of the first heading
 
 ## updates
 

@@ -104,6 +104,7 @@ def match_multi_star_until(tokens, matches, until):
         "HASH": "#",
         "TAGO": "[",
         "TAGC": ")",
+        "TAB": "\t",
         "NEWLINE": "\n",
     }
     force_break = False

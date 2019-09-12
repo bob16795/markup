@@ -3,6 +3,9 @@ from docx import Document
 from markup.decorators import Formater
 from pygments.formatter import Formatter
 import subprocess
+import tempfile
+import os
+import re
 
 @Formater
 class terminal():
@@ -710,7 +713,10 @@ class pdf_groff():
                 return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
         return f"{text}\n"
 
-# TODO: finish latex
+# TODO: finish code
+# TODO: fix title page
+# TODO: chapter numbers
+@Formater
 class pdf_latex():
     @staticmethod 
     def outer_init(self, out, info):
@@ -718,6 +724,12 @@ class pdf_latex():
         self.title_heading_level = 0
         self.author = ""
         self.title  = ""
+        """
+        \def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+        \def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+        \def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+        """
+        out += "\def\l@subsubsubsection{\@dottedtocline{()HL1()}{7em}{4em}}\n\def\l@paragraph{\@dottedtocline{()HL2()}{10em}{5em}}\n\def\l@subparagraph{\@dottedtocline{()HL3()}{14em}{6em}}\n\\begin{document}"
         if "author" in  info:
             self.author = info["author"]
         if "title" in  info:
@@ -742,11 +754,205 @@ class pdf_latex():
                 #         Date
                 #     \end{center}
                 # \end{titlepage}
-                out += "\\begin{titlepage}\n\\begin{center}\\vspace*{1cm}\n\\Huge\n\\textbf{()TTL()}\n\\vspace{2.0cm}\n\textbf{()AUT()}\n\\end{center}\n\\end{titlepage}"
+                out += "\n\\begin{titlepage}\n\\begin{center}\n\\vspace*{1cm}\n\\Huge\n\\textbf{()TTL()}\n\\vspace{2.0cm}\n\\textbf{()AUT()}\n\\end{center}\n\\end{titlepage}"
         if "title_head" in info:
             self.title_heading_level = int(info["title_head"])
-
+        out = out.replace("()HL1()", str(self.title_heading_level + 0))
+        out = out.replace("()HL2()", str(self.title_heading_level + 1))
+        out = out.replace("()HL3()", str(self.title_heading_level + 2))
         out = out.replace("()TTL()", self.title)
         out = out.replace("()AUT()", self.author)
+        out += "\\begin{multicols}{1}"
         self.out = out
 
+    @staticmethod
+    def outer_add(self, out):
+        if self.out[-1] != "\n":
+            self.out += "\n"
+        if not out == "\n":
+            self.out += out
+        return self
+        
+    @staticmethod
+    def fmt_init(self, **options):
+        Formatter.__init__(self, **options)
+        self.styles = {}
+        for token, style in self.style:
+            if style['color'] == None:
+                color = "000000"
+            else:
+                color = style['color']
+            self.styles[token] = (color, style['bold'],
+                                style['italic'], style['underline'])
+
+    @staticmethod
+    def fmt_format(self, tokensource, outfile):
+        lastval = ''
+        lasttype = None
+        indent = 0
+        for ttype, value in tokensource:
+            if not(value.strip(" ")):
+                indent = len(value)-len(value.strip(" "))
+            if lastval.strip(" "):
+                color = self.styles[lasttype][0]
+                val = lastval #.replace('\n', f'\n.in {float(indent/6)}c\n')
+                outfile += f"{val}"
+            # set lastval/lasttype to current values
+            lastval = value
+            lasttype = ttype
+        if lastval.strip(" "):
+            color = self.styles[lasttype][0]
+            val = lastval #.replace('\n', f'\n.in {float(indent/6)}c\n')
+            outfile += f"{val}"
+        # set lastval/lasttype to current values
+        lastval = value
+        lasttype = ttype
+        outfile += f".fcolor\n"
+
+    @staticmethod
+    def add_new_line():
+        return f"\n"
+
+    @staticmethod
+    def add_text(text):
+        if text.strip(" ") != "":
+            return f"{text}\n"
+        return ""
+
+    @staticmethod
+    def emph_text(text):
+        return f".UL \"{text}\"\n"
+
+    @staticmethod
+    def start():
+        # \\X'papersize=5.5i,8.5i'\n
+        # \n.nr PO .3i\n.nr LL 6.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i
+        return "\\documentclass{book}\n\\usepackage{multicol}\n"
+
+    @staticmethod
+    def bold_text(text):
+        return f".B {text}\n"
+
+    @staticmethod
+    def add_header_1(text):
+        text = "{"+text+"}"
+        return f"\\section{text}"
+
+    @staticmethod
+    def add_header_2(text):
+        text = "{"+text+"}"
+        return f"\\subsection{text}"
+
+    @staticmethod
+    def add_header_3(text):
+        text = "{"+text+"}"
+        return f"\\subsubsection{text}"
+
+    @staticmethod
+    def start_list():
+        return "\\begin{itemize}"
+
+    @staticmethod
+    def start_code():
+        return ""
+
+    @staticmethod
+    def code_line(text):
+        return text+"\n"
+
+    @staticmethod
+    def end_code():
+        return ""
+
+    @staticmethod
+    def start_list_1(l):
+        if l == 1:
+            return ""
+        if l == 2:
+            return "\\end{itemize}"
+        if l == 3:
+            return "\\end{itemize}\n\\end{itemize}"
+
+    @staticmethod
+    def start_list_2(l):
+        if l == 1:
+            return "\\begin{itemize}"
+        if l == 2:
+            return ""
+        if l == 3:
+            return "\\end{itemize}"
+
+    @staticmethod
+    def start_list_3(l):
+        if l == 1:
+            return "\\begin{itemize}\n\\begin{itemize}"
+        if l == 2:
+            return "\\begin{itemize}"
+        if l == 3:
+            return ""
+
+    @staticmethod
+    def end_list(l):
+        if l == 1:
+            return "\\end{itemize}\n"
+        if l == 2:
+            return "\\end{itemize}\n\\end{itemize}\n"
+        if l == 3:
+            return "\\end{itemize]\n\\end{itemize}\n\\end{itemize}\n"
+
+    @staticmethod
+    def emph_list_text(text):
+        return f"\\item {text}"
+
+    @staticmethod
+    def bold_list_text(text):
+        return f"\\item {text}"
+
+    @staticmethod
+    def add_list_text(text):
+        return f"\\item {text}"
+
+    #TODO: fix dependency on user
+    @staticmethod
+    def end(out):
+        out += "\\end{multicols}\\end{document}"
+        out.out = out.out.replace("\n\n", "\n").replace("&", "\\&").replace("#", "\\#").replace("\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|")
+        tempin = tempfile.NamedTemporaryFile(dir="C:\\Users\\Preston.precourt\\Downloads", delete=False)
+        tempin.write(out.out.encode())
+        tempin_name = "C:\\Users\\Preston.precourt\\Downloads\\" + \
+            tempfile.gettempprefix() + tempin.name.split("\\tmp")[-1]
+        tempin.close()
+        path = "\\".join(tempin_name.split("\\")[:-1])
+        try:
+            o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {path} {tempin_name}".split(" "),
+                             stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            out = o.communicate()
+            tempout = open(f"{tempin_name}.pdf",'r+b')
+            pdf = tempout.read()
+            tempout.close()
+        except:
+            print("error")
+            pdf = ""
+        for file in sorted(os.listdir("C:\\Users\\Preston.precourt\\Downloads\\")):
+            if re.search("^tmp.", file):
+                os.remove("C:\\Users\\Preston.precourt\\Downloads\\" + file)
+        return pdf
+
+    @staticmethod
+    def tag(text):
+        if "](" in text:
+            text = text.split("](")
+            link = text[0]
+            text = text[-1]
+        else:
+            text = text.split(": ")
+            link = text[0]
+            text = text[-1]
+        if link == "COL":
+            # TODO: calculate colums automatically
+            return "\\end{multicols}\\begin{multicols}{" + text + "}"
+        if link == "CPT":
+            text = "{"+text+"}"
+            text = "[\n\\chapter" + text + "\n]\n"
+            return text
+        return f"{text}\n"

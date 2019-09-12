@@ -32,6 +32,7 @@ def compile(files, fileout, verbose, fullverbose, appendyaml, output, tree):
                 else:
                     print(text)
 
+
 def start():
     compile(obj={})
 

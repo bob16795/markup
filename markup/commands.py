@@ -4,6 +4,7 @@ from markup.doc import add_to_doc
 import os
 import re
 
+
 def _read(file, inside=False):
     with open(file, encoding='utf-8') as filew:
         file_cached = ""
@@ -28,7 +29,7 @@ def _read(file, inside=False):
         file_cached = file_cached.replace("\n\n\n", "\n\n")
     file_cached = file_cached.replace("---\n\n", "---\n")
     return file_cached
- 
+
 
 def _compile(file_cached, verbose, yaml, j=1, tree=False):
     if verbose >= 3:
@@ -46,7 +47,8 @@ def _compile(file_cached, verbose, yaml, j=1, tree=False):
         if not "ignore" in info:
             if verbose >= 3:
                 print(f"{'  '*j}- creating text")
-            file_new = add_to_doc(parsed, info['file_type'], info['output_module'], info)
+            file_new = add_to_doc(
+                parsed, info['file_type'], info['output_module'], info)
         else:
             file_new = ""
     if "use" in info:
@@ -67,9 +69,11 @@ def _compile(file_cached, verbose, yaml, j=1, tree=False):
             os.chdir(cwd)
     return file_new, info
 
+
 def _output(file_cached, file, yaml):
     to = file.replace(file.split(".")[-1], yaml["file_type"])
+#    print(os.getcwd())
     if "output" in yaml:
         to = yaml["output"]
-    with open(to , "wb") as f:
+    with open(to, "wb") as f:
         f.write(file_cached)

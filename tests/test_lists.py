@@ -1,6 +1,7 @@
 import markup
 import os
 
+
 def test_list_different():
     """
     * a
@@ -9,7 +10,7 @@ def test_list_different():
       + d
     * e
         - f
-    
+
     '<Body Paragprphs:
       <List sentences: 
         <Sentence type: TEXT, value: " a \t", Consumed: 3>,
@@ -29,22 +30,23 @@ def test_list_different():
     compiling = "* a\n\t+ b\n\t\t- c\n\t+ d\n*e\n\t\t- f\n"
     output, yaml = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
-      markup.nodes.ListNode([
-        markup.nodes.Node("LIST1", "", 1),
-        markup.nodes.Node("TEXT", " a ", 2),
-        markup.nodes.Node("LIST2", "", 2),
-        markup.nodes.Node("TEXT", " b ", 2),
-        markup.nodes.Node("LIST3", "", 3),
-        markup.nodes.Node("TEXT", " c ", 2),
-        markup.nodes.Node("LIST2", "", 2),
-        markup.nodes.Node("TEXT", " d ", 2),
-        markup.nodes.Node("LIST1", "", 1),
-        markup.nodes.Node("TEXT", "e ", 2),
-        markup.nodes.Node("LIST3", "", 3),
-        markup.nodes.Node("TEXT", " f", 1),
-      ], 25)
+        markup.nodes.ListNode([
+            markup.nodes.Node("LIST1", "", 1),
+            markup.nodes.Node("TEXT", " a ", 2),
+            markup.nodes.Node("LIST2", "", 2),
+            markup.nodes.Node("TEXT", " b ", 2),
+            markup.nodes.Node("LIST3", "", 3),
+            markup.nodes.Node("TEXT", " c ", 2),
+            markup.nodes.Node("LIST2", "", 2),
+            markup.nodes.Node("TEXT", " d ", 2),
+            markup.nodes.Node("LIST1", "", 1),
+            markup.nodes.Node("TEXT", "e ", 2),
+            markup.nodes.Node("LIST3", "", 3),
+            markup.nodes.Node("TEXT", " f", 1),
+        ], 25)
     ], 25))
     assert output == nodes
+
 
 def test_list_minus():
     """
@@ -54,7 +56,7 @@ def test_list_minus():
       - d
     - e
         - f
-    
+
     '<Body Paragprphs:
       <List sentences: 
         <Sentence type: TEXT, value: " a \t", Consumed: 3>,
@@ -74,19 +76,19 @@ def test_list_minus():
     compiling = "- a\n\t- b\n\t\t- c\n\t- d\n-e\n\t\t- f\n"
     output, yaml = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
-      markup.nodes.ListNode([
-        markup.nodes.Node("LIST1", "", 1),
-        markup.nodes.Node("TEXT", " a ", 2),
-        markup.nodes.Node("LIST2", "", 2),
-        markup.nodes.Node("TEXT", " b ", 2),
-        markup.nodes.Node("LIST3", "", 3),
-        markup.nodes.Node("TEXT", " c ", 2),
-        markup.nodes.Node("LIST2", "", 2),
-        markup.nodes.Node("TEXT", " d ", 2),
-        markup.nodes.Node("LIST1", "", 1),
-        markup.nodes.Node("TEXT", "e ", 2),
-        markup.nodes.Node("LIST3", "", 3),
-        markup.nodes.Node("TEXT", " f", 1),
-      ], 25)
+        markup.nodes.ListNode([
+            markup.nodes.Node("LIST1", "", 1),
+            markup.nodes.Node("TEXT", " a ", 2),
+            markup.nodes.Node("LIST2", "", 2),
+            markup.nodes.Node("TEXT", " b ", 2),
+            markup.nodes.Node("LIST3", "", 3),
+            markup.nodes.Node("TEXT", " c ", 2),
+            markup.nodes.Node("LIST2", "", 2),
+            markup.nodes.Node("TEXT", " d ", 2),
+            markup.nodes.Node("LIST1", "", 1),
+            markup.nodes.Node("TEXT", "e ", 2),
+            markup.nodes.Node("LIST3", "", 3),
+            markup.nodes.Node("TEXT", " f", 1),
+        ], 25)
     ], 25))
     assert output == nodes
