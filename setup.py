@@ -20,7 +20,7 @@ setup(
     ],
     entry_points={
         'console_scripts': ['markup = markup.cli:start',
-        'mu = markup.cli:start']
+                            'mu = markup.cli:start']
     },
     classifiers=[
         "Development Status :: 3 - Alpha",

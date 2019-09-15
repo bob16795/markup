@@ -2,6 +2,48 @@ import markup
 import os
 
 
+def test_code_no_escape():
+    compiling = "```python\nimport lol\nlol.is_dir\n\\\\-+*\n```"
+    output, yaml = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.CodeNode([
+            markup.nodes.Node("TEXT", "import lol", 1),
+            markup.nodes.Node("TEXT", "lol.is_dir", 3),
+            markup.nodes.Node("TEXT", "\\-+*", 4),
+            markup.nodes.Node("TEXT", "", 0),
+        ], 21),
+    ], 21))
+    assert output == nodes
+
+
+def test_headings_nl2():
+    compiling = "# lol\n\nlol"
+    output, yaml = markup.commands._compile(compiling, False, "", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.HeadNode("HEAD1", " lol", 4),
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "lol", 1),
+            markup.nodes.Node("TEXT", " ", 1)
+        ], 3)
+    ], 7))
+    assert output == nodes
+
+
+def test_headings_nl1():
+    compiling = "# lol\nlol"
+    output, yaml = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.HeadNode("HEAD1", " lol", 3),
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "lol", 1),
+            markup.nodes.Node("TEXT", " ", 1)
+        ], 3)
+    ], 6))
+    assert output == nodes
+
+
 def test_list_different():
     """
     * a
@@ -91,4 +133,31 @@ def test_list_minus():
             markup.nodes.Node("TEXT", " f", 1),
         ], 25)
     ], 25))
+    assert output == nodes
+
+
+def test_sentence_no_escape():
+    compiling = "import lol\nlol.is_dir\n\\\\-+*lol\n"
+    output, yaml = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 11),
+        ], 13)
+    ], 13))
+    assert output == nodes
+
+
+def test_text_paragraphs_no_escape():
+    compiling = "import lol\nlol.is_dir\n\\\\-+*lol\n\nimport lol\nlol.is_dir\n\\\\-+*lol\n"
+    output, yaml = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 11),
+        ], 13),
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 11),
+        ], 13),
+    ], 26))
     assert output == nodes

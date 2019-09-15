@@ -20,8 +20,8 @@ def match_star(tokens, With):
         "PLUS": "+",
         "MINUS": "-",
         "HASH": "#",
-        "TAGO": "<",
-        "TAGC": ">",#FIX: dupe tokens
+        "TAGO": "[",
+        "TAGC": ")",#FIX: dupe tokens
         "TAB": "\t",
         "NEWLINE": "\n",
     }
@@ -51,8 +51,8 @@ def match_star_merge(tokens, With):
         "PLUS": "+",
         "MINUS": "-",
         "HASH": "#",
-        "TAGO": "<",
-        "TAGC": ">",#FIX: dupe tokens
+        "TAGO": "[",
+        "TAGC": ")",#FIX: dupe tokens
         "TAB": "\t",
         "NEWLINE": "\n",
     }

@@ -19,7 +19,11 @@ def compile(files, fileout, verbose, fullverbose, appendyaml, output, tree):
     for file in files:
         if verbose >= 1:
             print(f"+ processing {file}")
-        text = _read(file)
+        try:
+            text = _read(file)
+        except Exception as error:
+            print(f"+ file not found {file}")
+            raise FileNotFoundError(file)
         os.chdir(Path(file).parent)
         appendyaml = "\n"+"\n".join(appendyaml)
         if appendyaml != "\n\n":
