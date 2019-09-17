@@ -7,7 +7,14 @@ class Token():
     def __str__(self):
         return(f"<type: {self.type}, value: {self.value}>")
 
+
 class Token_List():
+    def __str__(self):
+        tokens = ""
+        for token in self.tokens:
+            tokens += token.__str__()
+        return tokens
+
     def __init__(self, tokens):
         self.tokens = tokens
 

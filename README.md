@@ -66,7 +66,7 @@ see `man markup` for more information
 
 to include the text from another document verbatim use Inc: then define the document to include
 
-### yaml
+### doc properties
 
 #### prefixes
 
@@ -84,7 +84,12 @@ to include the text from another document verbatim use Inc: then define the docu
 #### pdf_groff
 
 - author: the author of the document
-- author: the author of the document
+- title: the title of the document
+- title_page: if defined will add a title page to the document
+- title_head: the level of the first heading
+
+#### pdf_latex
+
 - author: the author of the document
 - title: the title of the document
 - title_page: if defined will add a title page to the document

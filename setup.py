@@ -26,11 +26,5 @@ setup(
         "Development Status :: 3 - Alpha",
         "Topic :: Utilities",
         "License :: OSI Approved :: MIT License",
-    ],
-    package_data={
-        'markup': [
-            'data/*'
-        ],
-    },
-    include_package_data=True,
+    ]
 )
