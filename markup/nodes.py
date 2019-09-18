@@ -54,15 +54,16 @@ class ListNode():
 
 
 class CodeNode():
-    def __init__(self, sentences, consumed):
+    def __init__(self, sentences, consumed, value):
         self.sentences = sentences
         self.consumed = consumed
+        self.value = value
 
     def __str__(self):
         j = ""
         for i in self.sentences:
             j += i.__str__() + ","
-        return(f"<Code sentences: {j[:-1]}, Consumed: {self.consumed}>")
+        return(f"<Code Type: {self.value}, sentences: {j[:-1]}, Consumed: {self.consumed}>")
 
 
 class HeadNode():

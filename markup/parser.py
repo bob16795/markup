@@ -14,10 +14,6 @@ def Text_Parser(tokens):
     if tokens.peek(["TEXT"]):
         return Node("TEXT", tokens.grab(0).value, 1)
     return nullNode()
-    # node = match_text(tokens)
-    # if type(node) != nullNode:
-    #     return node
-    # return nullNode()
 
 def Singlenewline_Parser(tokens):
     """
@@ -243,9 +239,6 @@ def Code_Parser(tokens):
         ( MultiNewline | Text ) *
     """
     return match_multi_star_until(tokens, [Multinewline_Parser, Text_Parser], Code_End_Parser)
-    #if type(Code_End_Parser(tokens)) != nullNode:
-    #    return nullNode()
-    #return match_first(tokens, [Multinewline_Parser, Text_Parser])
 
 
 def Code_Multi_line_Parser(tokens):
@@ -264,12 +257,10 @@ def Code_Multi_line_Parser(tokens):
             return nullNode()
     else:
         i += 1
-    #nodes, consumed = match_star_err(tokens.offset(i), Code_Parser)
+    value = tokens.grab(3).value
     nodes, consumed = match_multi_star_until(tokens.offset(i), [Multinewline_Parser, Text_Parser], Code_End_Parser)
-    #if not tokens.peek_at(consumed+i, ["GRAVE", "GRAVE", "GRAVE", 'NEWLINE']):
-    #    return nullNode()
     consumed += i + 4
-    return CodeNode(nodes, consumed)
+    return CodeNode(nodes, consumed, value)
 
 
 def Sentence_Parser(tokens):

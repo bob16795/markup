@@ -9,7 +9,7 @@ def read(fname):
 setup(
     name="markup",
     version="0.1.0",
-    keywords="example documentation tutorial",
+    keywords="markdown compiler pytho script",
     packages=['markup'],
     long_description=read('markup.1'),
     install_requires=[

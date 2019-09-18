@@ -6,14 +6,17 @@ from pathlib import Path
 
 @click.command()
 @click.argument('files', nargs=-1, required=True)
-@click.option('--fileout/--stdout', help='The person to greet.', default=True)
-@click.option('-v', '--verbose', count=True)
-@click.option('-V', '--fullverbose', is_flag=True, default=False)
-@click.option('--appendyaml', '-y', multiple=True)
-@click.option('--output', '-o')
-@click.option('--tree', '-t', is_flag=True)
-def compile(files, fileout, verbose, fullverbose, appendyaml, output, tree):
+@click.option('--fileout/--stdout', help='Where to put the document.', default=True)
+@click.option('--verbose', '-v', help='Incerases the annoyingness of the compiler.', count=True, default=2)
+@click.option('--quiet', '-q', help='sets verbosity to zero.', default=False, is_flag=True)
+@click.option('--fullverbose', '-V', help='sets verbose to 1000.', is_flag=True, default=False)
+@click.option('--appendprop', '-p', help='append property to document.', multiple=True, is_flag=True)
+@click.option('--output', '-o', help='forces output to a file.')
+@click.option('--tree', '-t', help='prints a parser tree for the document.', is_flag=True)
+def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tree):
     """Compiles docments using Markup."""
+    if quiet:
+        verbose = 0
     if fullverbose:
         verbose = 1000
     for file in files:
@@ -25,14 +28,14 @@ def compile(files, fileout, verbose, fullverbose, appendyaml, output, tree):
             print(f"+ file not found {file}")
             raise FileNotFoundError(file)
         os.chdir(Path(file).parent)
-        appendyaml = "\n"+"\n".join(appendyaml)
-        if appendyaml != "\n\n":
-            appendyaml = ""
-        text, yaml = _compile(text, verbose, appendyaml, tree=tree)
+        appendprop = "\n"+"\n".join(appendprop)
+        if appendprop != "\n\n":
+            appendprop = ""
+        text, prop = _compile(text, verbose, appendprop, tree=tree)
         if not tree:
             if text != "":
                 if fileout:
-                    _output(text, file, yaml)
+                    _output(text, file, prop)
                 else:
                     print(text)
 

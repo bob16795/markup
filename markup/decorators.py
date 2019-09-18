@@ -1,4 +1,8 @@
 class blank():
+    """
+    a blank slate class for the formatter and outer
+    """
+
     def __init__(self, out):
         pass
 
@@ -10,6 +14,10 @@ class blank():
 
 
 class Formater():
+    """
+    Formats a document
+    """
+
     def __init__(self, f):
         self.f = f
     # pygments formater class

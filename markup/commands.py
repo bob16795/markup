@@ -6,17 +6,24 @@ import re
 
 
 def _read(file, inside=False):
+    """
+    reads a document and imports Inc: * files
+
+    file: the file to start with
+    inside: should always be false unless being called by anothrer document
+    """
     with open(file, encoding='utf-8') as filew:
         file_cached = ""
         for line in filew:
-            if line[:5] == "Inc: ":
+            if line.split(":")[0] == "Inc":
                 cwd = os.getcwd()
-                for pattern in line[5:-1].split(";"):
+                for pattern in line[4:-1].split(";"):
+                    pattern = pattern.strip(" ")
                     if "/" in pattern:
                         os.chdir("/".join(pattern.split("/")[:-1]))
                         pattern = pattern.split("/")[-1]
                     for f in sorted(os.listdir()):
-                        if re.search(pattern.strip(" "), f):
+                        if re.search(pattern, f):
                             if inside:
                                 file_cached = f"{file_cached}{_read(f, True)}\n"
                             else:
@@ -31,29 +38,38 @@ def _read(file, inside=False):
     return file_cached
 
 
-def _compile(file_cached, verbose, yaml, j=1, tree=False):
+def _compile(file_cached, verbose, prop, j=1, tree=False):
+    """
+    comples a srting using markup
+
+    file_cached: the string to be compiled
+    verbose:     verbosity of the parser
+    prop:        the properties of the document
+    j:           the level of the document
+    tree:        will output the parser tree of the document
+    """
     if verbose >= 3:
         print(f"{'  '*j}- tokenizing")
-    tokens, info = tokenize.tokenize(file_cached, yaml)
+    tokens, prop = tokenize.tokenize(file_cached, prop)
     parsed = parse.parse_markdown(tokens)
     if tree:
         print(parsed)
         file_new = str(parsed)
     else:
-        if not 'file_type' in info:
-            info['file_type'] = "terminal"
-        if not 'output_module' in info:
-            info['output_module'] = "markup.output"
-        if not "ignore" in info:
+        if not 'file_type' in prop:
+            prop['file_type'] = "terminal"
+        if not 'output_module' in prop:
+            prop['output_module'] = "markup.output"
+        if not "ignore" in prop:
             if verbose >= 3:
                 print(f"{'  '*j}- creating text")
             file_new = add_to_doc(
-                parsed, info['file_type'], info['output_module'], info)
+                parsed, prop['file_type'], prop['output_module'], prop)
         else:
             file_new = ""
-    if "use" in info:
+    if "use" in prop:
         cwd = os.getcwd()
-        for pattern in info['use'].split(";"):
+        for pattern in prop['use'].split(";"):
             if "/" in pattern:
                 os.chdir("/".join(pattern.split("/")[:-1]))
                 pattern = pattern.split("/")[-1]
@@ -62,18 +78,24 @@ def _compile(file_cached, verbose, yaml, j=1, tree=False):
                     if verbose >= 2:
                         print(f"{'  '*j}+ processing {file}")
                     text = _read(file)
-                    text, yaml = _compile(text, verbose, "", j+1, tree)
+                    text, prop_slave = _compile(text, verbose, "", j+1, tree)
                     if not tree:
                         if text != "":
-                            _output(text, file, yaml)
+                            _output(text, file, prop_slave)
             os.chdir(cwd)
-    return file_new, info
+    return file_new, prop
 
 
-def _output(file_cached, file, yaml):
-    to = file.replace(file.split(".")[-1], yaml["file_type"])
-#    print(os.getcwd())
-    if "output" in yaml:
-        to = yaml["output"]
-    with open(to, "wb") as f:
-        f.write(file_cached)
+def _output(bytes_out, file, prop):
+    """
+    writes a bytes object to a document
+
+    bytes_out: the bytes to write
+    file:      the file to write them to
+    prop:      properties of the document
+    """
+    to = file.replace(file.split(".")[-1], prop["file_type"])
+    if "output" in prop:
+        to = prop["output"]
+    with open(to, "wb+") as f:
+        f.write(bytes_out)

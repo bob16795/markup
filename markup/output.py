@@ -10,7 +10,7 @@ import re
 
 @Formater
 class terminal():
-    def outer_init(self, out, info):
+    def outer_init(self, out, prop):
         self.out = out
 
     def outer_add(self, out):
@@ -126,7 +126,7 @@ class terminal():
 @Formater
 class html():
     @staticmethod
-    def outer_init(self, out, info):
+    def outer_init(self, out, prop):
         self.out = out
 
     @staticmethod
@@ -295,9 +295,9 @@ class html():
 @Formater
 class docx():
     @staticmethod
-    def outer_init(self, out, info):
-        if "template" in info:
-            self.doc = Document(info["template"])
+    def outer_init(self, out, prop):
+        if "template" in prop:
+            self.doc = Document(prop["template"])
         else:
             self.doc = Document()
 
@@ -510,19 +510,19 @@ class pdf_groff():
         TODO: margins
     """
     @staticmethod
-    def outer_init(self, out, info):
+    def outer_init(self, out, prop):
         self.pp = False
         self.title_heading_level = 0
         self.author = ""
         self.title = ""
-        if "author" in info:
-            self.author = info["author"]
-        if "title" in info:
-            self.title = info["title"]
-            if "title_page" in info:
+        if "author" in prop:
+            self.author = prop["author"]
+        if "title" in prop:
+            self.title = prop["title"]
+            if "title_page" in prop:
                 out += "\n()TTL()\n.bp\n"
-        if "title_head" in info:
-            self.title_heading_level = int(info["title_head"])
+        if "title_head" in prop:
+            self.title_heading_level = int(prop["title_head"])
 
         out = out.replace("()TTL()", self.title)
         out = out.replace("()AUT()", self.author)
@@ -721,7 +721,7 @@ class pdf_groff():
 @Formater
 class pdf_latex():
     @staticmethod
-    def outer_init(self, out, info):
+    def outer_init(self, out, prop):
         self.pp = False
         self.title_heading_level = 0
         self.author = ""
@@ -732,11 +732,11 @@ class pdf_latex():
         \def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
         """
         out += "\def\l@subsubsubsection{\@dottedtocline{()HL1()}{7em}{4em}}\n\def\l@paragraph{\@dottedtocline{()HL2()}{10em}{5em}}\n\def\l@subparagraph{\@dottedtocline{()HL3()}{14em}{6em}}\n\\begin{document}"
-        if "author" in info:
-            self.author = info["author"]
-        if "title" in info:
-            self.title = info["title"]
-            if "title_page" in info:
+        if "author" in prop:
+            self.author = prop["author"]
+        if "title" in prop:
+            self.title = prop["title"]
+            if "title_page" in prop:
                 """
                 \\begin{titlepage}
                     \\begingroup
@@ -751,12 +751,12 @@ class pdf_latex():
                 \\end{titlepage}
                 """
                 out += "\n\\begin{titlepage}\n\\begingroup\n\\vspace*{0.12\\textheight}\n\\hspace*{0.3\\textwidth}\n\\hspace*{0.3\\textwidth}\n{\\Huge ()TTL()}\\par\n\\vspace*{0.36\\textheight}\n{\\large ()AUT()}\n\\vfill\n\\endgroup\n\\end{titlepage}\n"
-        if "title_head" in info:
-            self.title_heading_level = int(info["title_head"])
-        if "author" in info:
-            self.author = info["author"]
-        if "paper_size" in info:
-            self.paper_size = info["paper_size"]
+        if "title_head" in prop:
+            self.title_heading_level = int(prop["title_head"])
+        if "author" in prop:
+            self.author = prop["author"]
+        if "paper_size" in prop:
+            self.paper_size = prop["paper_size"]
         out = out.replace("()HL1()", str(self.title_heading_level + 0))
         out = out.replace("()HL2()", str(self.title_heading_level + 1))
         out = out.replace("()HL3()", str(self.title_heading_level + 2))

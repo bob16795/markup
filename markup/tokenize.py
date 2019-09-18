@@ -1,24 +1,36 @@
 from markup.token_class import Token, Token_List
 
 
-def yaml_dict(yaml):
-    if yaml.strip(" \n") != "":
-        yaml_cached = yaml.split("\n")
-        yaml_d = {"slave": "False"}
-        for yaml_line in yaml_cached:
-            j = yaml_line.split(":")
-            if yaml_line.split("|")[0].strip(" ") == "s" and yaml_d['slave'] == "True":
-                yaml_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
-            elif yaml_line.split("|")[0].strip(" ") == "m" and yaml_d['slave'] == "False":
-                yaml_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
-            elif not " | " in yaml_line:
-                yaml_d[j[0].strip(" ")] = j[1].strip(" ")
-        return yaml_d
+def prop_to_dict(prop):
+    """
+    converts a prop string to a dict object
+
+    prop: the prop string
+    """
+
+    if prop.strip(" \n") != "":
+        prop_cached = prop.split("\n")
+        prop_d = {"slave": "False"}
+        for prop_line in prop_cached:
+            j = prop_line.split(":")
+            if prop_line.split("|")[0].strip(" ") == "s" and prop_d['slave'] == "True":
+                prop_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
+            elif prop_line.split("|")[0].strip(" ") == "m" and prop_d['slave'] == "False":
+                prop_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
+            elif not "|" in prop_line:
+                prop_d[j[0].strip(" ")] = j[1].strip(" ")
+        return prop_d
     else:
         return {}
 
 
-def tokenize(file_cached, yaml_app):
+def tokenize(file_cached, prop_app):
+    """
+    tokenizes a string
+
+    file_cached: the string to be tokenized
+    prop_app:    the properties to append
+    """
     file_cached = file_cached.split("\n")
     mu = True
     token_dict = {
@@ -36,7 +48,7 @@ def tokenize(file_cached, yaml_app):
         "\n": ["NEWLINE", ""],
     }
     md_tokens = []
-    yaml = ""
+    prop = ""
     ignore = 0
     for x, i in enumerate(file_cached):
         text = ""
@@ -66,6 +78,6 @@ def tokenize(file_cached, yaml_app):
                     md_tokens.append(Token("TEXT", text, f"end of line {x+1}"))
                 md_tokens.append(Token("NEWLINE", "", f"end of line {x+1}"))
             else:
-                yaml += f"{l}\n"
+                prop += f"{l}\n"
     md_tokens.append(Token("EOF", "", f"End"))
-    return Token_List(md_tokens), yaml_dict(yaml[:-1] + yaml_app)
+    return Token_List(md_tokens), prop_to_dict(prop[:-1] + prop_app)

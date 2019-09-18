@@ -5,17 +5,19 @@ import tempfile
 import re
 
 
-def test_yaml_parser_format():
-    yaml = "lol: nope\nfoo:      bar\nths:is_random\n nope : var"
-    yaml_dict = markup.tokenize.yaml_dict(yaml)
+def test_prop_parser_format():
+    prop = "lol: nope\nfoo:      bar\nths:is_random\n nope : var\nm | slave2:true\nm|master:master"
+    prop_dict = markup.tokenize.prop_dict(prop)
     expected = {
         "lol": "nope",
         "foo": "bar",
         "ths": "is_random",
         "nope": "var",
-        "slave": "False"
+        "slave": "False",
+        "slave2": "true",
+        "master": "master"
     }
-    assert yaml_dict == expected
+    assert prop_dict == expected
 
 
 def test_tokenize_symbols():

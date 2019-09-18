@@ -27,7 +27,7 @@ Compiles using my parity of markdown markup.
 markup --help|-h
 markup --verbose|-v
 markup --fullverbose|-V
-markup --appendyaml|-y
+markup --appendprop|-y
 markup --output|-o
 markup --tree|-t
 markup --fileout
@@ -37,17 +37,20 @@ markup --stdout
 `--help`|`-h`  
 Show help and exit.
 
-`--verbose`|`-v`  
-Increases the verbosity, can be used more than once.
+`--verbose`|`-v`
+Increases the verbosity, can be used more than once, overrides quiet.
 
 `--fullverbose`|`-V`  
 Sets verbosity to 1000.
 
-`--appendyaml`|`-y`  
-Appends yaml to the document overriding any tag.
+`--quiet`|`-q`
+Set verbosity to zero.
+
+`--appendprop`|`-p`  
+Appends property to the document overriding any property.
 
 `--output`|`-o`  
-Appends yaml to override the output of a document.
+Appends prop to override the output of a document.
 
 `--tree`|`-t`  
 writes the document tree to output (mainly for debug).
@@ -107,7 +110,7 @@ first release using a [bashbud](http://github.com/budlabs/bashbud) generated REA
 
 ### more options
 
-added more options to the compiler like --appendyaml and
+added more options to the compiler like --appendprop and
 --output.
 
 ### got readme up to date

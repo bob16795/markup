@@ -1,13 +1,21 @@
+from pygments.lexers import get_lexer_by_name
 from markup.nodes import nullNode, Node, HeadNode, ListNode, CodeNode
 from pygments import highlight
-from pygments.lexers import PythonLexer
 import importlib
 
 
-def add_to_doc(parsed, adderstr, addermodstr, info):
+def add_to_doc(parsed, adderstr, addermodstr, prop):
+    """
+    Converts parser tree to byes object of text using a formatter class
+
+    parsed:      the parser tree
+    adderstr:    the name of the adder class
+    addermodstr: the name of the modulecontaing the adder class
+    prop:        the properties of the document in a dictonary
+    """
     module = importlib.import_module(addermodstr)
     adder = getattr(module, adderstr)
-    out = adder.outer()(adder.start()(), info)
+    out = adder.outer()(adder.start()(), prop)
     if type(parsed) is not nullNode:
         for node in parsed.paragraphs:
             if type(node) is HeadNode or type(node) is Node or type(node) is nullNode:
@@ -47,7 +55,9 @@ def add_to_doc(parsed, adderstr, addermodstr, info):
                         if sentence.value != " ":
                             code += adder.code_line()(sentence.value)
                 fmt = adder.fmt()()
-                highlight(code.strip("\n"), PythonLexer(), fmt, outfile=out)
+                lexer = get_lexer_by_name(node.value)
+                code = code.strip("\n")
+                highlight(code, lexer, fmt, outfile=out)
                 out += adder.end_code()()
             else:
                 for sentence in node.sentences:
