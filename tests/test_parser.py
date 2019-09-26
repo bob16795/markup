@@ -30,6 +30,32 @@ def test_headings_nl2():
     assert output == nodes
 
 
+def test_headings_number():
+    compiling = "# lol1\n\nlol"
+    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.HeadNode("HEAD1", " lol1", 5),
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "lol", 1),
+            markup.nodes.Node("TEXT", " ", 1)
+        ], 3)
+    ], 8))
+    assert output == nodes
+
+
+def test_headings_symbol():
+    compiling = "# lol-\n\nlol"
+    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.HeadNode("HEAD1", " lol-", 5),
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "lol", 1),
+            markup.nodes.Node("TEXT", " ", 1)
+        ], 3)
+    ], 8))
+    assert output == nodes
+
+
 def test_headings_nl1():
     compiling = "# lol\nlol"
     output, prop = markup.commands._compile(

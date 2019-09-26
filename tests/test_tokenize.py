@@ -7,7 +7,7 @@ import re
 
 def test_prop_parser_format():
     prop = "lol: nope\nfoo:      bar\nths:is_random\n nope : var\nm | slave2:true\nm|master:master"
-    prop_dict = markup.tokenize.prop_dict(prop)
+    prop_dict = markup.tokenize.prop_to_dict(prop)
     expected = {
         "lol": "nope",
         "foo": "bar",

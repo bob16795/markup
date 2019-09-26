@@ -6,14 +6,16 @@ from markup.match import match_first, match_star, match_star_err, match_multi_st
 # ADD: tables
 # ADD: equations
 
+
 def Text_Parser(tokens):
     """
     Text:
         Text
     """
-    if tokens.peek(["TEXT"]):
+    if tokens.peek(["TEXT"]) or tokens.peek(["NUM"]):
         return Node("TEXT", tokens.grab(0).value, 1)
     return nullNode()
+
 
 def Singlenewline_Parser(tokens):
     """
@@ -52,6 +54,8 @@ def Bold_Parser(tokens):
     """
     if tokens.peek_or([["STAR", "STAR", "TEXT", "STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE", "TEXT", "UNDERSCORE", "UNDERSCORE"]]):
         return Node("BOLD", tokens.grab(2).value, 5)
+    if tokens.peek_or([["STAR", "STAR", "NUM", "STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE", "NUM", "UNDERSCORE", "UNDERSCORE"]]):
+        return Node("BOLD", tokens.grab(2).value, 5)
     return nullNode()
 
 
@@ -67,6 +71,8 @@ def Emph_Parser(tokens):
     """
     if tokens.peek_or([["STAR", "TEXT", "STAR"], ["UNDERSCORE", "TEXT", "UNDERSCORE"]]):
         return Node("EMPH", tokens.grab(1).value, 3)
+    if tokens.peek_or([["STAR", "NUM", "STAR"], ["UNDERSCORE", "NUM", "UNDERSCORE"]]):
+        return Node("EMPH", tokens.grab(1).value, 3)
     return nullNode()
 
 
@@ -78,6 +84,8 @@ def Tag_Parser(tokens):
         ">"
     """
     if tokens.peek(["TAGO", "TEXT", "TAGC"]):
+        return Node("TAG", tokens.grab(1).value, 3)
+    if tokens.peek(["TAGO", "NUM", "TAGC"]):
         return Node("TAG", tokens.grab(1).value, 3)
     return nullNode()
 
@@ -100,10 +108,14 @@ def H1_Parser(tokens):
     """
     H3:
         "#"
-        Text
+        Text | num *
     """
-    if tokens.peek(["HASH", "TEXT"]):
-        return HeadNode("HEAD1", tokens.grab(1).value, 2)
+    if tokens.peek(["HASH"]):
+        nodes, consumed = match_star_merge(tokens.offset(1), Text_Parser)
+        text = ""
+        for node in nodes:
+            text += node.value
+        return HeadNode("HEAD1", text, consumed + 1)
     return nullNode()
 
 
@@ -113,8 +125,12 @@ def H2_Parser(tokens):
         "##"
         Text
     """
-    if tokens.peek(["HASH", "HASH", "TEXT"]):
-        return HeadNode("HEAD2", tokens.grab(2).value, 3)
+    if tokens.peek(["HASH", "HASH"]):
+        nodes, consumed = match_star_merge(tokens.offset(2), Text_Parser)
+        text = ""
+        for node in nodes:
+            text += node.value
+        return HeadNode("HEAD2", text, consumed + 2)
     return nullNode()
 
 
@@ -124,8 +140,12 @@ def H3_Parser(tokens):
         "###"
         Text
     """
-    if tokens.peek(["HASH", "HASH", "HASH", "TEXT"]):
-        return HeadNode("HEAD3", tokens.grab(3).value, 4)
+    if tokens.peek(["HASH", "HASH", "HASH"]):
+        nodes, consumed = match_star(tokens.offset(3), Text_Parser)
+        text = ""
+        for node in nodes:
+            text += node.value
+        return HeadNode("HEAD3", text, consumed + 3)
     return nullNode()
 
 
@@ -136,11 +156,11 @@ def Header_Parser(tokens):
         "\n" | "\n\n"
     """
     node = match_first(
-        tokens, [H1_Parser, H2_Parser, H3_Parser])
+        tokens, [H3_Parser, H2_Parser, H1_Parser])
     if type(node) == nullNode:
         return nullNode()
 
-    if not tokens.peek_at(node.consumed, ['NEWLINE','NEWLINE']):
+    if not tokens.peek_at(node.consumed, ['NEWLINE', 'NEWLINE']):
         if not tokens.peek_at(node.consumed, ['NEWLINE']):
             return nullNode()
         else:
@@ -148,6 +168,7 @@ def Header_Parser(tokens):
     else:
         node.consumed += 2
     return node
+
 
 def Bullet_Parser(tokens):
     """
@@ -158,6 +179,7 @@ def Bullet_Parser(tokens):
         return Node("TEXT", "", 1)
     return nullNode()
 
+
 def L1_Parser(tokens):
     """
     L1:
@@ -166,6 +188,7 @@ def L1_Parser(tokens):
     if type(match_first(tokens, [Bullet_Parser])) != nullNode:
         return Node("LIST1", "", 1)
     return nullNode()
+
 
 def L2_Parser(tokens):
     """
@@ -206,7 +229,8 @@ def List_Parser(tokens):
     if type(match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])) == nullNode:
         return nullNode()
     node = match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])
-    nodes, consumed = match_star_merge(tokens.offset(node.consumed), Item_Parser)
+    nodes, consumed = match_star_merge(
+        tokens.offset(node.consumed), Item_Parser)
     consumed += node.consumed
     if nodes == []:
         return nullNode()
@@ -258,7 +282,8 @@ def Code_Multi_line_Parser(tokens):
     else:
         i += 1
     value = tokens.grab(3).value
-    nodes, consumed = match_multi_star_until(tokens.offset(i), [Multinewline_Parser, Text_Parser], Code_End_Parser)
+    nodes, consumed = match_multi_star_until(tokens.offset(
+        i), [Multinewline_Parser, Text_Parser], Code_End_Parser)
     consumed += i + 4
     return CodeNode(nodes, consumed, value)
 

@@ -1,8 +1,9 @@
 class Token():
-    def __init__(self, type, value, at):
+    def __init__(self, type, value, at, context):
         self.type = type
         self.value = value
         self.at = at
+        self.context = context
 
     def __str__(self):
         return(f"<type: {self.type}, value: {self.value}>")
