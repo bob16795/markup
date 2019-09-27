@@ -80,13 +80,16 @@ def Tag_Parser(tokens):
     """
     Tag:
         "<"
-        Text
+        Text *
         ">"
     """
-    if tokens.peek(["TAGO", "TEXT", "TAGC"]):
-        return Node("TAG", tokens.grab(1).value, 3)
-    if tokens.peek(["TAGO", "NUM", "TAGC"]):
-        return Node("TAG", tokens.grab(1).value, 3)
+    if tokens.peek(["TAGO"]):
+        nodes, consumed = match_star_merge(tokens.offset(1), Text_Parser)
+        text = ""
+        for node in nodes:
+            text += node.value
+        if tokens.offset(consumed).peek(["TAGC"]):
+            return Node("TAG", text[:-1], consumed+1)
     return nullNode()
 
 
@@ -179,8 +182,18 @@ def Bullet_Parser(tokens):
         return Node("TEXT", "", 1)
     return nullNode()
 
+def Number_Parser(tokens):
+    """
+    Number:
+        Num
+        -
+    """
+    if tokens.peek(["NUM", "MINUS"]):
+        return Node("TEXT", "", 1)
+    return nullNode()
 
-def L1_Parser(tokens):
+
+def UL1_Parser(tokens):
     """
     L1:
         Bullet
@@ -190,7 +203,7 @@ def L1_Parser(tokens):
     return nullNode()
 
 
-def L2_Parser(tokens):
+def UL2_Parser(tokens):
     """
     L2:
         "\t"
@@ -201,7 +214,7 @@ def L2_Parser(tokens):
     return nullNode()
 
 
-def L3_Parser(tokens):
+def UL3_Parser(tokens):
     """
     L3:
         "\t\t"
@@ -212,12 +225,43 @@ def L3_Parser(tokens):
     return nullNode()
 
 
+def OL1_Parser(tokens):
+    """
+    L1:
+        Bullet
+    """
+    if type(match_first(tokens, [Number_Parser])) != nullNode:
+        return Node("OLIST1", "", 2)
+    return nullNode()
+
+
+def OL2_Parser(tokens):
+    """
+    L2:
+        "\t"
+        Bullet
+    """
+    if tokens.peek(["TAB"]) and type(match_first(tokens.offset(1), [Number_Parser])) != nullNode:
+        return Node("OLIST2", "", 3)
+    return nullNode()
+
+
+def OL3_Parser(tokens):
+    """
+    L3:
+        "\t\t"
+        number
+    """
+    if tokens.peek(["TAB", "TAB"]) and type(match_first(tokens.offset(2), [Number_Parser])) != nullNode:
+        return Node("OLIST3", "", 4)
+    return nullNode()
+
 def Item_Parser(tokens):
     """
     Item:
         L1 | L2 | L3 | Sentence
     """
-    return match_first(tokens, [Sentence_Parser, L1_Parser, L2_Parser, L3_Parser])
+    return match_first(tokens, [Sentence_Parser, OL3_Parser, OL2_Parser, OL1_Parser, UL3_Parser, UL2_Parser, UL1_Parser])
 
 
 def List_Parser(tokens):
@@ -226,9 +270,10 @@ def List_Parser(tokens):
         ( L1 | L2 | L3 ) & Item*
         "\n\n"
     """
-    if type(match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])) == nullNode:
+    if type(match_first(tokens, [UL3_Parser, UL2_Parser, UL1_Parser, OL1_Parser, OL2_Parser, OL3_Parser])) == nullNode:
         return nullNode()
-    node = match_first(tokens, [L1_Parser, L2_Parser, L3_Parser])
+    node = match_first(tokens, [UL3_Parser, UL2_Parser,
+                                UL1_Parser, OL1_Parser, OL2_Parser, OL3_Parser])
     nodes, consumed = match_star_merge(
         tokens.offset(node.consumed), Item_Parser)
     consumed += node.consumed

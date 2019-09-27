@@ -141,7 +141,7 @@ def test_list_minus():
       Consumed: 23>,
     Consumed: 23>'
     """
-    compiling = "- a\n\t- b\n\t\t- c\n\t- d\n-e\n\t\t- f\n"
+    compiling = "- a\n\t- b\n\t\t- c\n\t- d\n- e\n\t\t- f\n"
     output, prop = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ListNode([
@@ -154,7 +154,7 @@ def test_list_minus():
             markup.nodes.Node("LIST2", "", 2),
             markup.nodes.Node("TEXT", " d ", 2),
             markup.nodes.Node("LIST1", "", 1),
-            markup.nodes.Node("TEXT", "e ", 2),
+            markup.nodes.Node("TEXT", " e ", 2),
             markup.nodes.Node("LIST3", "", 3),
             markup.nodes.Node("TEXT", " f", 1),
         ], 25)
@@ -186,4 +186,34 @@ def test_text_paragraphs_no_escape():
             markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 11),
         ], 13),
     ], 26))
+    assert output == nodes
+
+
+def test_tag_numbers():
+    compiling = "<12233>\n"
+    output, prop = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.Node("TAG", "12233", 5),
+    ], 5))
+    assert output == nodes
+
+
+def test_tag_text():
+    compiling = "<tag>\n"
+    output, prop = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.Node("TAG", "tag", 5),
+    ], 5))
+    assert output == nodes
+
+
+def test_tag_text_numbers():
+    compiling = "<tag222withnum>\n"
+    output, prop = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.Node("TAG", "tag222withnum", 7),
+    ], 7))
     assert output == nodes

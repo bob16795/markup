@@ -829,7 +829,6 @@ class pdf_latex():
                 "\n{" + f"\\color{code} {val}" + "}"
             lastval = value
             lasttype = ttype
-        # set lastval/lasttype to current values
         if lastval.strip(" "):
             color_r = int(self.styles[lasttype][0], 16) & int("FF0000", 16)
             color_g = int(self.styles[lasttype][0], 16) & int("FF00", 16)
@@ -933,7 +932,7 @@ class pdf_latex():
         if l == 2:
             return "\\end{itemize}\n\\end{itemize}\n"
         if l == 3:
-            return "\\end{itemize]\n\\end{itemize}\n\\end{itemize}\n"
+            return "\\end{itemize}\n\\end{itemize}\n\\end{itemize}\n"
 
     @staticmethod
     def emph_list_text(text):
@@ -947,7 +946,7 @@ class pdf_latex():
     def add_list_text(text):
         return f"\\item {text}\n"
 
-    # TODO: fix dependency on user being mes
+    # TODO: fix dependency on user being me
     @staticmethod
     def end(out):
         out += "\\end{multicols}\n\\end{document}"
@@ -988,7 +987,264 @@ class pdf_latex():
             link = text[0].strip(" ")
             text = text[-1].strip(" ")
         if link == "COL":
-            # TODO: calculate colums automatically
+            return "\\end{multicols}\\begin{multicols}{" + text + "}"
+        if link == "CPT":
+            text = "{"+text+"}"
+            text = "[\n\\chapter" + text + "\n]\n"
+            return text
+        return f"{text}\n"
+
+# TODO: finish code
+# TODO: chapter numbers
+@Formater
+class latex():
+    @staticmethod
+    def outer_init(self, out, prop):
+        self.pp = False
+        self.title_heading_level = 0
+        self.author = ""
+        self.title = ""
+        """
+        \def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
+        \def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
+        \def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
+        """
+        out += "\def\l@subsubsubsection{\@dottedtocline{()HL1()}{7em}{4em}}\n\def\l@paragraph{\@dottedtocline{()HL2()}{10em}{5em}}\n\def\l@subparagraph{\@dottedtocline{()HL3()}{14em}{6em}}\n\\begin{document}"
+        if "author" in prop:
+            self.author = prop["author"]
+        if "title" in prop:
+            self.title = prop["title"]
+            if "title_page" in prop:
+                """
+                \\begin{titlepage}
+                    \\begingroup
+                    \\vspace*{0.12\\textheight}
+                    \\hspace*{0.3\\textwidth}
+                    \\hspace*{0.3\\textwidth}
+                    {\\Huge ()TTL()}\\par
+                    \\vspace*{0.36\\textheight}
+                    {\\large ()AUT()}
+                    \\vfill
+                    \\endgroup
+                \\end{titlepage}
+                """
+                out += "\n\\begin{titlepage}\n\\begingroup\n\\vspace*{0.12\\textheight}\n\\hspace*{0.3\\textwidth}\n\\hspace*{0.3\\textwidth}\n{\\Huge ()TTL()}\\par\n\\vspace*{0.36\\textheight}\n{\\large ()AUT()}\n\\vfill\n\\endgroup\n\\end{titlepage}\n"
+        if "table_of_contents" in prop:
+            out += "\n\\tableofcontents\n\\newpage\n"
+        if "title_head" in prop:
+            self.title_heading_level = int(prop["title_head"])
+        if "author" in prop:
+            self.author = prop["author"]
+        if "paper_size" in prop:
+            self.paper_size = prop["paper_size"]
+        out = out.replace("()HL1()", str(self.title_heading_level + 0))
+        out = out.replace("()HL2()", str(self.title_heading_level + 1))
+        out = out.replace("()HL3()", str(self.title_heading_level + 2))
+        out = out.replace("()TTL()", self.title)
+        if self.author:
+            out = out.replace("()AUT()", "by: " + self.author)
+        else:
+            out = out.replace("()AUT()", "")
+        if self.paper_size:
+            out = out.replace("()PPR()", self.paper_size)
+        else:
+            out = out.replace("()PPR()", "a4paper")
+        out += "\\begin{multicols}{1}"
+        self.out = out
+
+    @staticmethod
+    def outer_add(self, out):
+        if self.author:
+            out = out.replace("()AUT()", "by: " + self.author)
+        else:
+            out = out.replace("()AUT()", "")
+        if self.paper_size:
+            out = out.replace("()PPR()", self.paper_size)
+        else:
+            out = out.replace("()PPR()", "a4paper")
+        if self.title:
+            out = out.replace("()TTL()", self.title)
+        else:
+            out = out.replace("()TTL()", "")
+        if self.out[-1] != "\n":
+            self.out += "\n"
+        if not out == "\n":
+            self.out += out
+        return self
+
+    @staticmethod
+    def fmt_init(self, **options):
+        Formatter.__init__(self, **options)
+        self.styles = {}
+        for token, style in self.style:
+            if style['color'] == None:
+                color = "000000"
+            else:
+                color = style['color']
+            self.styles[token] = (color, style['bold'],
+                                  style['italic'], style['underline'])
+
+    @staticmethod
+    def fmt_format(self, tokensource, outfile):
+        lastval = ''
+        lasttype = None
+        indent = 0
+        outfile += "\\begin{flushleft}\n{\\texttt{\n"
+        for ttype, value in tokensource:
+            if not(value.strip(" ")):
+                indent = len(value)-len(value.strip(" "))
+            if lastval.strip(" "):
+                color_r = int(self.styles[lasttype][0], 16) & int("FF0000", 16)
+                color_g = int(self.styles[lasttype][0], 16) & int("00FF00", 16)
+                color_b = int(self.styles[lasttype][0], 16) & int("0000FF", 16)
+                color_r = str(float(color_r + 1)/float(256))
+                color_g = str(float(color_g + 1)/float(256))
+                color_b = str(float(color_b + 1)/float(256))
+                color = "{" + f"{color_r}, {color_g}, {color_b}" + "}"
+                ind = "{" + str(indent*8) + "pt}"
+                val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n",f"\\\\\n\\setlength\\parindent{ind}\n") #.replace('[', '\\[').replace(']', '\\]')
+                code = "{code}"
+                rgb = "{rgb}"
+                outfile += f"\\definecolor{code}{rgb}{color}" + \
+                "\n{" + f"\\color{code} {val}" + "}"
+            lastval = value
+            lasttype = ttype
+        if lastval.strip(" "):
+            color_r = int(self.styles[lasttype][0], 16) & int("FF0000", 16)
+            color_g = int(self.styles[lasttype][0], 16) & int("FF00", 16)
+            color_b = int(self.styles[lasttype][0], 16) & int("FF", 16)
+            color_r = str(float(color_r + 1)/float(256))
+            color_g = str(float(color_g + 1)/float(256))
+            color_b = str(float(color_b + 1)/float(256))
+            color = "{" + f"{color_r}, {color_g}, {color_b}" + "}"
+            val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n","\\\\\n") #.replace('[', '\\[').replace(']', '\\]')
+            code = "{code}"
+            rgb = "{rgb}"
+            outfile += f"\\definecolor{code}{rgb}{color}" + \
+                "\n{" + f"\\color{code} {val}" + "}"
+        outfile += "}}\n\\end{flushleft}\n"
+    @staticmethod
+    def add_new_line():
+        return f"\n"
+
+    @staticmethod
+    def add_text(text):
+        if text.strip(" ") != "":
+            return f"{text}\n"
+        return ""
+
+    @staticmethod
+    def emph_text(text):
+        text = "{"+text+"}"
+        return f"\\emph{text}\n"
+
+    @staticmethod
+    def start():
+        return "\\documentclass{book}\n\\usepackage{multicol}\n\\usepackage[()PPR()]{geometry}\n\\usepackage{xcolor}\n"
+
+    @staticmethod
+    def bold_text(text):
+        text = "{"+text+"}"
+        return f"\\textbf{text}\n"
+
+    @staticmethod
+    def add_header_1(text):
+        text = "{"+text+"}"
+        return f"\\section{text}\n"
+
+    @staticmethod
+    def add_header_2(text):
+        text = "{"+text+"}"
+        return f"\\subsection{text}\n"
+
+    @staticmethod
+    def add_header_3(text):
+        text = "{"+text+"}"
+        return f"\\subsubsection{text}\n"
+
+    @staticmethod
+    def start_list():
+        return "\\begin{itemize}"
+
+    @staticmethod
+    def start_code():
+        return ""
+
+    @staticmethod
+    def code_line(text):
+        return text+"\n"
+
+    @staticmethod
+    def end_code():
+        return ""
+
+    @staticmethod
+    def start_list_1(l):
+        if l == 1:
+            return ""
+        if l == 2:
+            return "\\end{itemize}\n"
+        if l == 3:
+            return "\\end{itemize}\n\\end{itemize}\n"
+
+    @staticmethod
+    def start_list_2(l):
+        if l == 1:
+            return "\\begin{itemize}\n"
+        if l == 2:
+            return ""
+        if l == 3:
+            return "\\end{itemize}\n"
+
+    @staticmethod
+    def start_list_3(l):
+        if l == 1:
+            return "\\begin{itemize}\n\\begin{itemize}\n"
+        if l == 2:
+            return "\\begin{itemize}\n"
+        if l == 3:
+            return ""
+
+    @staticmethod
+    def end_list(l):
+        if l == 1:
+            return "\\end{itemize}\n"
+        if l == 2:
+            return "\\end{itemize}\n\\end{itemize}\n"
+        if l == 3:
+            return "\\end{itemize}\n\\end{itemize}\n\\end{itemize}\n"
+
+    @staticmethod
+    def emph_list_text(text):
+        return f"\\item {text}\n"
+
+    @staticmethod
+    def bold_list_text(text):
+        return f"\\item {text}\n"
+
+    @staticmethod
+    def add_list_text(text):
+        return f"\\item {text}\n"
+
+    # TODO: fix dependency on user being me
+    @staticmethod
+    def end(out):
+        out += "\\end{multicols}\n\\end{document}"
+        out.out = out.out.replace("&", "\\&").replace("#", "\\#").replace(
+            "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|")
+        return out.out.encode("utf-8")
+
+    @staticmethod
+    def tag(text):
+        if "](" in text:
+            text = text.split("](")
+            link = text[0].strip(" ")
+            text = text[-1].strip(" ")
+        else:
+            text = text.split(":")
+            link = text[0].strip(" ")
+            text = text[-1].strip(" ")
+        if link == "COL":
             return "\\end{multicols}\\begin{multicols}{" + text + "}"
         if link == "CPT":
             text = "{"+text+"}"
