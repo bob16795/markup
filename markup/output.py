@@ -716,7 +716,6 @@ class pdf_groff():
                 return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
         return f"{text}\n"
 
-# TODO: finish code
 # TODO: chapter numbers
 @Formater
 class pdf_latex():
@@ -949,18 +948,25 @@ class pdf_latex():
     # TODO: fix dependency on user being me
     @staticmethod
     def end(out):
+        tmpdir = "/tmp/"
+        if os.name == "nt":
+            tmpdir = "C:\\Users\\Preston.precourt\\Downloads"
         out += "\\end{multicols}\n\\end{document}"
         out.out = out.out.replace("&", "\\&").replace("#", "\\#").replace(
             "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|")
         tempin = tempfile.NamedTemporaryFile(
-            dir="C:\\Users\\Preston.precourt\\Downloads", delete=False)
+            dir=f"{tmpdir}", delete=False)
         tempin.write(out.out.encode())
-        tempin_name = "C:\\Users\\Preston.precourt\\Downloads\\" + \
-            tempfile.gettempprefix() + tempin.name.split("\\tmp")[-1]
+        tempin_name = tmpdir + \
+            tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
         tempin.close()
-        path = "\\".join(tempin_name.split("\\")[:-1])
+        path = tmpdir
         try:
-            o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {path} {tempin_name}".split(" "),
+            if os.name == "nt":
+                o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {path} {tempin_name}".split(" "),
+                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+            else:
+                o = subprocess.Popen(f"pdflatex -output-directory {path} {tempin_name}".split(" "),
                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE)
             out = o.communicate()
             tempout = open(f"{tempin_name}.pdf", 'r+b')
@@ -971,9 +977,9 @@ class pdf_latex():
             if out:
                 print(out)
             pdf = ""
-        for file in sorted(os.listdir("C:\\Users\\Preston.precourt\\Downloads\\")):
+        for file in sorted(os.listdir(tmpdir)):
             if re.search("^tmp.", file):
-                os.remove("C:\\Users\\Preston.precourt\\Downloads\\" + file)
+                os.remove(tmpdir + file)
         return pdf
 
     @staticmethod

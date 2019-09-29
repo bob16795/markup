@@ -301,13 +301,22 @@ def Code_End_Parser(tokens):
     return nullNode()
 
 
+def Tab_Parser(tokens):
+    """
+    Tab:
+        "\t"
+    """
+    if tokens.peek(["TAB"]):
+        return Node("TEXT", "\t", 1)
+    return nullNode()
+
 def Code_Parser(tokens):
     """
     Code:
         ! Code_Start
         ( MultiNewline | Text ) *
     """
-    return match_multi_star_until(tokens, [Multinewline_Parser, Text_Parser], Code_End_Parser)
+    return match_multi_star_until(tokens, [Multinewline_Parser, Text_Parser, Tab_Parser], Code_End_Parser)
 
 
 def Code_Multi_line_Parser(tokens):

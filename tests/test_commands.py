@@ -24,3 +24,4 @@ def test_read_file_include():
         if re.search("^tmp.", file):
             os.remove("C:\\Users\\Preston.precourt\\Downloads\\" + file)
     assert read == '# lol\n\n---\nslave: True\n---\nthis is tmp_inc file\n---\nslave: False\n--- end'
+

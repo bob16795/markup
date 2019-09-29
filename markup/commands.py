@@ -36,13 +36,25 @@ def _read(file, inside=False):
         file_cached = file_cached.replace("\n\n\n", "\n\n")
     file_cached = file_cached.replace("---\n\n", "---\n")
     # TODO find a better way
-    file_cached = file_cached.replace("\n    *", "\n\t\t*")
-    file_cached = file_cached.replace("\n    +", "\n\t\t+")
-    file_cached = file_cached.replace("\n    -", "\n\t\t-")
-    file_cached = file_cached.replace("\n  *", "\n\t*")
-    file_cached = file_cached.replace("\n  +", "\n\t+")
-    file_cached = file_cached.replace("\n  -", "\n\t-")
-    return file_cached
+    file_cached = file_cached.split("\n")
+    curtabs_num = 0
+    cur_tabs = 0
+    tab_sizes = []
+    for i, line in enumerate(file_cached):
+        line_tabs = len(line) - len(line.strip(" "))
+        if line_tabs > cur_tabs:
+            tab_sizes.append(line_tabs)
+            curtabs_num += 1
+        if line_tabs < cur_tabs:
+            curtabs_num = 0
+            for i, size in enumerate(tab_sizes):
+                if size == line_tabs:
+                    curtabs_num = i
+            tab_sizes = tab_sizes[:curtabs_num]
+        if curtabs_num != 0:
+            file_cached[i] = ("\t"*curtabs_num) + line.strip(" ")
+        cur_tabs = line_tabs
+    return "\n".join(file_cached)
 
 
 def _compile(file_cached, verbose, prop, j=1, tree=False):
