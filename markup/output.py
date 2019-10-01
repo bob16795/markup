@@ -950,12 +950,11 @@ class pdf_latex():
     def end(out):
         tmpdir = "/tmp/"
         if os.name == "nt":
-            tmpdir = "C:\\Users\\Preston.precourt\\Downloads"
+            tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
         out += "\\end{multicols}\n\\end{document}"
         out.out = out.out.replace("&", "\\&").replace("#", "\\#").replace(
             "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|")
-        tempin = tempfile.NamedTemporaryFile(
-            dir=f"{tmpdir}", delete=False)
+        tempin = tempfile.NamedTemporaryFile(dir=f"{tmpdir}", delete=False)
         tempin.write(out.out.encode())
         tempin_name = tmpdir + \
             tempfile.gettempprefix() + tempin.name.split("tmp")[-1]

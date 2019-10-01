@@ -32,6 +32,8 @@ def _read(file, inside=False):
                 file_cached = file_cached[:-1]
             else:
                 file_cached = f"{file_cached}{line}"
+
+def _cleanup(file_cached):
     while "\n\n\n" in file_cached:
         file_cached = file_cached.replace("\n\n\n", "\n\n")
     file_cached = file_cached.replace("---\n\n", "---\n")
@@ -49,7 +51,7 @@ def _read(file, inside=False):
             curtabs_num = 0
             for i, size in enumerate(tab_sizes):
                 if size == line_tabs:
-                    curtabs_num = i
+                    curtabs_num = i+1
             tab_sizes = tab_sizes[:curtabs_num]
         if curtabs_num != 0:
             file_cached[i] = ("\t"*curtabs_num) + line.strip(" ")
@@ -67,6 +69,7 @@ def _compile(file_cached, verbose, prop, j=1, tree=False):
     j:           the level of the document
     tree:        will output the parser tree of the document
     """
+    file_cached = _cleanup(file_cached)
     if verbose >= 3:
         print(f"{'  '*j}- tokenizing")
     tokens, prop = tokenize.tokenize(file_cached, prop)
