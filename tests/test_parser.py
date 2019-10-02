@@ -69,6 +69,7 @@ def test_headings_nl1():
     ], 6))
     assert output == nodes
 
+
 def test_list_different_spaces():
     """
     * a

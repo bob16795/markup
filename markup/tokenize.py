@@ -13,12 +13,13 @@ def prop_to_dict(prop):
         prop_d = {"slave": "False"}
         for prop_line in prop_cached:
             j = prop_line.split(":")
-            if prop_line.split("|")[0].strip(" ") == "s" and prop_d['slave'] == "True":
-                prop_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
-            elif prop_line.split("|")[0].strip(" ") == "m" and prop_d['slave'] == "False":
-                prop_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
-            elif not "|" in prop_line:
-                prop_d[j[0].strip(" ")] = j[1].strip(" ")
+            if len(j) == 2:
+                if prop_line.split("|")[0].strip(" ") == "s" and prop_d['slave'] == "True":
+                    prop_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
+                elif prop_line.split("|")[0].strip(" ") == "m" and prop_d['slave'] == "False":
+                    prop_d[j[0].split("|")[1].strip(" ")] = j[1].strip(" ")
+                elif not "|" in prop_line:
+                    prop_d[j[0].strip(" ")] = j[1].strip(" ")
         return prop_d
     else:
         return {}

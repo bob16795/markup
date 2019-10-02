@@ -952,7 +952,7 @@ class pdf_latex():
         if os.name == "nt":
             tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
         out += "\\end{multicols}\n\\end{document}"
-        out.out = out.out.replace("&", "\\&").replace("#", "\\#").replace(
+        out.out = out.out.replace("&", "\\&").replace("%", "\\%").replace("#", "\\#").replace(
             "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|")
         tempin = tempfile.NamedTemporaryFile(dir=f"{tmpdir}", delete=False)
         tempin.write(out.out.encode())
