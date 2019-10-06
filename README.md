@@ -78,6 +78,7 @@ to include the text from another document verbatim use Inc: then define the docu
 
 #### all
 
+- tab_to_spaces: the amount of spaces in a tab defaults to 2
 - file_type: the formatter to use for the document
 - output_nodule: the module containing the formatter
 - output: the file to output to relative to the source code

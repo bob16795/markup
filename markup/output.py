@@ -935,11 +935,13 @@ class pdf_latex():
 
     @staticmethod
     def emph_list_text(text):
-        return f"\\item {text}\n"
+        text = "{"+text+"}"
+        return f"\\item \\textbf{text}\n"
 
     @staticmethod
     def bold_list_text(text):
-        return f"\\item {text}\n"
+        text = "{"+text+"}"
+        return f"\\item \\textit{text}\n"
 
     @staticmethod
     def add_list_text(text):

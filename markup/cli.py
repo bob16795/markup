@@ -31,11 +31,13 @@ def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tre
         appendprop = "\n"+"\n".join(appendprop)
         if appendprop != "\n\n":
             appendprop = ""
-        text, prop = _compile(text, verbose, appendprop, tree=tree)
+        text, prop = _compile(text, verbose, appendprop, file, tree=tree)
         if not tree:
             if text != "":
                 if fileout:
                     _output(text, file, prop)
+                    if verbose >= 3:
+                        print(f"  - writing {file}")
                 else:
                     print(text)
 

@@ -35,7 +35,7 @@ def _read(file, inside=False):
     return file_cached
 
 
-def _cleanup(file_cached):
+def _cleanup(file_cached, tabs=2):
     """
     unstupifies document for tokenization
 
@@ -45,12 +45,11 @@ def _cleanup(file_cached):
         file_cached = file_cached.replace("\n\n\n", "\n\n")
     file_cached = file_cached.replace("---\n\n", "---\n")
     for l in range(3, 0, -1):
-        file_cached = file_cached.replace("\n" + "  "*l, "\n" + "\t"*l)
-    # TODO find a way that works
+        file_cached = file_cached.replace("\n" + " "*l*tabs, "\n" + "\t"*l)
     return file_cached
 
 
-def _compile(file_cached, verbose, prop, j=1, tree=False):
+def _compile(file_cached, verbose, prop, file_name="test", j=1, tree=False):
     """
     comples a srting using markup
 
@@ -60,7 +59,12 @@ def _compile(file_cached, verbose, prop, j=1, tree=False):
     j:           the level of the document
     tree:        will output the parser tree of the document
     """
-    file_cached = _cleanup(file_cached)
+    if verbose >= 3:
+        print(f"{'  '*j}- cleaning {file_name}")
+    if "tab_to_spaces" in file_cached:
+        file_cached = _cleanup(file_cached, file_cached["tab_to_spaces"])
+    else:
+        file_cached = _cleanup(file_cached)
     if verbose >= 3:
         print(f"{'  '*j}- tokenizing")
     tokens, prop = tokenize.tokenize(file_cached, prop)
@@ -91,10 +95,13 @@ def _compile(file_cached, verbose, prop, j=1, tree=False):
                     if verbose >= 2:
                         print(f"{'  '*j}+ processing {file}")
                     text = _read(file)
-                    text, prop_slave = _compile(text, verbose, "", j+1, tree)
+                    text, prop_slave = _compile(
+                        text, verbose, "", file, j+1, tree)
                     if not tree:
                         if text != "":
                             _output(text, file, prop_slave)
+                            if verbose >= 3:
+                                print(f"{'  '*(j+1)}- writing {file}")
             os.chdir(cwd)
     return file_new, prop
 
