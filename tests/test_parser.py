@@ -220,6 +220,21 @@ def test_sentence_no_escape():
     assert output == nodes
 
 
+def test_paragraph_split():
+    compiling = "first paragraph.\nsecond line\n\nsecond paragraph.\nsecond line\n"
+    output, prop = markup.commands._compile(
+        compiling, False, "\n\n", tree=True)
+    nodes = str(markup.nodes.BodyNode([
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "first paragraph. second line", 3),
+        ], 5),
+        markup.nodes.ParagraphNode([
+            markup.nodes.Node("TEXT", "second paragraph. second line", 3),
+        ], 5)
+    ], 10))
+    assert output == nodes
+
+
 def test_text_paragraphs_no_escape():
     compiling = "import lol\nlol.is_dir\n\\\\-+*lol\n\nimport lol\nlol.is_dir\n\\\\-+*lol\n"
     output, prop = markup.commands._compile(

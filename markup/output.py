@@ -844,7 +844,7 @@ class pdf_latex():
         outfile += "}}\n\\end{flushleft}\n"
     @staticmethod
     def add_new_line():
-        return f"\n"
+        return "{\\\\}\n"
 
     @staticmethod
     def add_text(text):
@@ -1132,7 +1132,7 @@ class latex():
         outfile += "}}\n\\end{flushleft}\n"
     @staticmethod
     def add_new_line():
-        return f"\n"
+        return "\{\\newline\}\n"
 
     @staticmethod
     def add_text(text):
