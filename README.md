@@ -92,12 +92,13 @@ to include the text from another document verbatim use Inc: then define the docu
 - title_page: if defined will add a title page to the document
 - title_head: the level of the first heading
 
-#### pdf_latex
+#### pdf_latex & latex
 
 - author: the author of the document
 - title: the title of the document
 - title_page: if defined will add a title page to the document
 - title_head: the level of the first heading
+- no_cols: no column code
 
 ## updates
 
@@ -111,8 +112,8 @@ first release using a [bashbud](http://github.com/budlabs/bashbud) generated REA
 
 ### more options
 
-added more options to the compiler like --appendprop and
---output.
+added more options to the compiler like `--appendprop` and
+`--output`.
 
 ### got readme up to date
 
@@ -125,4 +126,4 @@ I finished the readme for now
 
 ## license
 
-**markup** is licensed with the **license ^^ license**
+**markup** is licensed with the **end**
