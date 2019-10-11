@@ -67,14 +67,23 @@ see `man markup` for more information
 
 ### tricks
 
-to include the text from another document verbatim use Inc: then define the document to include
+to include the text from another document verbatim use `Inc: file`
 
 ### doc properties
 
-#### prefixes
+#### format
 
-- s | : if compiling a used document
-- m | : if compiling a master document
+`[[!]req [= "req_value"]|] property: value`
+
+- req: the requirement to be req_value
+- req_value: the expected value of req
+- !: reverses the req to be false 
+- property: the property to set
+- value: the value of the property
+
+#### special vars
+
+- slave: if the file reader is in a `Inc:` statement
 
 #### all
 
