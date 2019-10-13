@@ -725,14 +725,16 @@ class pdf_latex():
         self.title_heading_level = 0
         self.author = ""
         self.title = ""
-        """
-        \def\l@subsubsubsection{\@dottedtocline{4}{7em}{4em}}
-        \def\l@paragraph{\@dottedtocline{5}{10em}{5em}}
-        \def\l@subparagraph{\@dottedtocline{6}{14em}{6em}}
-        """
         if "index" in prop:
-            out += "\n\\makeindex\n"
-        out += "\def\l@subsubsubsection{\@dottedtocline{()HL1()}{7em}{4em}}\n\def\l@paragraph{\@dottedtocline{()HL2()}{10em}{5em}}\n\def\l@subparagraph{\@dottedtocline{()HL3()}{14em}{6em}}\n\\begin{document}"
+            out += "\n\\makeindex[options=-s ()IDXPTH()lol.ist]\n"
+        """
+        \etocsetlevel{chapter}{0}
+        \etocsetlevel{section}{1}
+        \etocsetlevel{subsection}{2}
+        \begin{document}
+        """
+        out += "\\etocsetlevel{chapter}{()HL1()}\n\etocsetlevel{section}{()HL2()}\n\etocsetlevel{subsection}{()HL3())}\n\\begin{document}\n"
+        #out += "\\begin{document}"
         if "author" in prop:
             self.author = prop["author"]
         if "title" in prop:
@@ -760,7 +762,14 @@ class pdf_latex():
             self.paper_size = prop["paper_size"]
         self.index = False
         if "index" in prop:
-            self.index = True 
+            self.index = True
+        self.chapter_toc = False
+        if "chapter_toc" in prop:
+            self.chapter_toc = True
+        self.toc = False
+        if "toc" in prop:
+            self.toc = True
+            out+="\n\\begin{multicols}{2}\n\\tableofcontents\n\\etocsettocstyle{\\subsection*{This Chapter contains:}}\n\\clearpage\n\\end{multicols}\n"
         out = out.replace("()HL1()", str(self.title_heading_level + 0))
         out = out.replace("()HL2()", str(self.title_heading_level + 1))
         out = out.replace("()HL3()", str(self.title_heading_level + 2))
@@ -779,6 +788,9 @@ class pdf_latex():
 
     @staticmethod
     def outer_add(self, out):
+        if self.chapter_toc:
+            out = out.replace("()LTOC()", "\n\\localtableofcontents\n")
+        out = out.replace("()LTOC()", "")
         if self.author:
             out = out.replace("()AUT()", "by: " + self.author)
         else:
@@ -866,7 +878,7 @@ class pdf_latex():
 
     @staticmethod
     def start():
-        return "\\documentclass{book}\n\\usepackage{multicol}\n\\usepackage[()PPR()]{geometry}\n\\usepackage{xcolor}\n\\usepackage{makeidx}\n"
+        return "\\documentclass{book}\n\\usepackage{multicol}\n\\usepackage{etoc}\n\\usepackage[()PPR()]{geometry}\n\\usepackage{xcolor}\n\\usepackage{imakeidx}\n"
 
     @staticmethod
     def bold_text(text):
@@ -876,17 +888,17 @@ class pdf_latex():
     @staticmethod
     def add_header_1(text):
         text = "{"+text+"}"
-        return f"\\section{text}\n"
+        return f"\n\\section{text}\n"
 
     @staticmethod
     def add_header_2(text):
         text = "{"+text+"}"
-        return f"\\subsection{text}\n"
+        return f"\n\\subsection{text}\n"
 
     @staticmethod
     def add_header_3(text):
         text = "{"+text+"}"
-        return f"\\subsubsection{text}\n"
+        return f"\n\\subsubsection{text}\n"
 
     @staticmethod
     def start_list():
@@ -960,44 +972,54 @@ class pdf_latex():
         tmpdir = "/tmp/"
         if os.name == "nt":
             tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
+        out += "\n\\end{multicols}"
         if out.index:
-            out += "\\printindex\n"
-        out += "\\end{multicols}\n\\end{document}"
+            out += "\n\\printindex\n"
+        out += "\n\\end{document}\n"
         out.out = out.out.replace("&", "\\&").replace("%", "\\%").replace("#", "\\#").replace(
-            "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|")
+            "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|").replace("\n\\\\\n", "")
         tempin = tempfile.NamedTemporaryFile(dir=f"{tmpdir}", delete=False)
-        tempin.write(out.out.encode())
-        tempin_name = tmpdir + \
-            tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
-        tempin.close()
+        tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
         path = tmpdir
+        out.out = out.out.replace("()IDXPTH()", path)
+        tempin.write(out.out.encode())
+        tempin.close()
+        cwd = os.getcwd()
         try:
             if os.name == "nt":
                 if out.index:
-                    o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {path} {tempin_name}".split(" "),
-                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE)
-                    out = o.communicate()
                     with open(f"{path}lol.ist", 'w+') as index_style:
                         index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"heading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"")
-                    o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\makeindex.exe -s lol.ist {tempin_name}.idx".split(" "),
-                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                os.chdir(tmpdir)
+                if out.toc:
+                    o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe {tempin_name}".split(" "),
+                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out = o.communicate()
-                    os.remove(f"{path}lol.ist")
-                o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {path} {tempin_name}".split(" "),
-                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe {tempin_name}".split(" "),
+                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out = o.communicate()
             else:
-                o = subprocess.Popen(f"pdflatex -output-directory {path} {tempin_name}".split(" "),
-                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE)
+                if out.index:
+                    with open(f"{path}lol.ist", 'w+') as index_style:
+                        index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"heading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"")
+                cwd = os.getcwd()
+                os.chdir(tmpdir)
+                if out.toc:
+                    o = subprocess.Popen(f"pdflatex {tempin_name}".split(" "),
+                                            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    out = o.communicate()
+                o = subprocess.Popen(f"pdflatex {tempin_name}".split(" "),
+                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out = o.communicate()
             tempout = open(f"{tempin_name}.pdf", 'r+b')
             pdf = tempout.read()
             tempout.close()
-        except:
+        except FileNotFoundError:
             print("error")
-            if out:
-                print(out)
+            if type(out) is tuple:
+                print(out[0].decode("utf-8"))
             pdf = ""
+        os.chdir(cwd)
         for file in sorted(os.listdir(tmpdir)):
             if re.search("^tmp.", file):
                 os.remove(tmpdir + file)
@@ -1005,23 +1027,24 @@ class pdf_latex():
 
     @staticmethod
     def tag(text):
-        if "](" in text:
-            text = text.split("](")
-            link = text[0].strip(" ")
-            text = text[-1].strip(" ")
-        else:
+        if ":" in text:
             text = text.split(":")
             link = text[0].strip(" ")
             text = text[-1].strip(" ")
+        else:
+            return ""
         if link == "COL":
-            return "\\end{multicols}\\begin{multicols}{" + text + "}"
+            return "\\end{multicols}\n\\begin{multicols}{" + text + "}"
         if link == "CPT":
             text = "{"+text+"}"
-            text = "\\chapter" + text + "\n"
+            text = "\n\\end{multicols}\n\\chapter" + text + "\n()LTOC()\n\\begin{multicols}{2}"
             return text
         if link == "IDX":
-            item = "{" + text.strip(" ") + "}"
-            text = f"\index{item}"
+            entry = text
+            text = ""
+            for item in entry.split(";"):
+                item = "{" + item.strip(" ") + "}"
+                text += f"\n\index{item}\n"
         return f"{text}\n"
 
 # TODO: finish code

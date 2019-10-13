@@ -24,21 +24,16 @@ python3 setup.py install
 Compiles using my parity of markdown markup.
 
 ```text
-markup --help|-h
-markup --verbose|-v
-markup --fullverbose|-V
-markup --appendprop|-y
-markup --output|-o
-markup --tree|-t
-markup --fileout
-markup --stdout
+markup [options] file
 ```
+
+### options
 
 `--help`|`-h`  
 Show help and exit.
 
 `--verbose`|`-v`
-Increases the verbosity, can be used more than once, overrides quiet.
+Increases the verbosity, can be used more than once, overrides quiet. default `-vv`
 
 `--fullverbose`|`-V`  
 Sets verbosity to 1000.
@@ -50,7 +45,7 @@ Set verbosity to zero.
 Appends property to the document overriding any property.
 
 `--output`|`-o`  
-Appends prop to override the output of a document.
+Appends prop to override the output of a document. same as `-p output:`
 
 `--tree`|`-t`  
 writes the document tree to output (mainly for debug).
@@ -61,29 +56,27 @@ forces the document to output to a file.
 `--stdout`  
 forces the document to output to stdout.
 
----
-
-see `man markup` for more information
-
 ### tricks
 
 to include the text from another document verbatim use `Inc: file`
 
-### doc properties
-
-#### format
+### doc properties format
 
 `[[!]req [= "req_value"]|] property: value`
 
+- !: reverses the req to be false 
 - req: the requirement to be req_value
 - req_value: the expected value of req
-- !: reverses the req to be false 
 - property: the property to set
 - value: the value of the property
 
-#### special vars
+### doc property tags
 
-- slave: if the file reader is in a `Inc:` statement
+`()tag()`
+
+- tag: the doc prop to include
+
+### doc properties by document type
 
 #### all
 
@@ -93,6 +86,10 @@ to include the text from another document verbatim use `Inc: file`
 - output: the file to output to relative to the source code
 - ignore: if defined the document is ignored
 - use: include a document (can be multiple split by ;)
+
+#### special
+
+- slave: true if the file reader is in a `Inc:` statement
 
 #### pdf_groff
 
@@ -107,7 +104,24 @@ to include the text from another document verbatim use `Inc: file`
 - title: the title of the document
 - title_page: if defined will add a title page to the document
 - title_head: the level of the first heading
-- no_cols: no column code
+- no_cols: no columns in document
+- index: adds an index to the document
+- toc: adds a table of contents to the document
+- chapter_toc: add a table of contents to each chapter
+
+## <> tags
+
+### format
+
+`<type: text>`
+
+### types by document type
+
+#### pdf_latex & latex
+
+- COL: sets column number in document
+- CPT: starts a chapter
+- IDX: adds an index entry in current position
 
 ## updates
 
@@ -119,14 +133,18 @@ this does error but still works for debugging
 
 first release using a [bashbud](http://github.com/budlabs/bashbud) generated README.
 
-### more options
+### More options
 
 added more options to the compiler like `--appendprop` and
 `--output`.
 
-### got readme up to date
+### Got readme up to date
 
 I finished the readme for now
+
+### A lot has happened
+
+I am nearing a point where i want to add a templating system which will take a while
 
 ## known issues
 

@@ -6,8 +6,8 @@ import re
 
 
 def test_prop_parser_format():
-    prop = "lol: nope\nfoo:      bar\nths:is_random\n nope : var\nm | slave2:true\nm|master:master"
-    prop_dict = markup.tokenize.prop_to_dict(prop)
+    prop = "lol: nope\nfoo:      bar\nths:is_random\n nope : var\n!slave | slave2:true\n!slave|master:master"
+    prop_dict = markup.doc_props.prop_to_dict(prop)
     expected = {
         "lol": "nope",
         "foo": "bar",
@@ -21,9 +21,9 @@ def test_prop_parser_format():
 
 
 def test_tokenize_symbols():
-    text = "_`*+-#<>[)\t\n"
+    text = "_`*+-#<>\t\n"
     tokens = markup.tokenize.tokenize(text, "")[0]
-    assert tokens.__str__() == '<type: UNDERSCORE, value: SYM><type: GRAVE, value: SYM><type: STAR, value: SYM><type: PLUS, value: SYM><type: MINUS, value: SYM><type: HASH, value: SYM><type: TAGO, value: SYM><type: TAGC, value: SYM><type: TAGO, value: SYM><type: TAGC, value: SYM><type: TAB, value: ><type: NEWLINE, value: ><type: NEWLINE, value: ><type: EOF, value: >'
+    assert tokens.__str__() == '<type: UNDERSCORE, value: SYM><type: GRAVE, value: SYM><type: STAR, value: SYM><type: PLUS, value: SYM><type: MINUS, value: SYM><type: HASH, value: SYM><type: TAGO, value: SYM><type: TAGC, value: SYM><type: TAB, value: ><type: NEWLINE, value: ><type: NEWLINE, value: ><type: EOF, value: >'
 
 
 def test_tokenize_numbers():
