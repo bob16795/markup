@@ -25,11 +25,15 @@ def prop_to_dict(prop):
                     req_bool = False
                 if req in prop_d:
                     if req_bool == ( req_value == prop_d[req]):
+                        for key in prop_d:
+                            value = value.replace("()"+key+"()", prop_d[key])
                         prop_d[property] = value
             else:
                 cmd = prop_line
                 property = cmd.split(":")[0].strip(" ")
                 value = cmd.split(":")[1].strip(" ")
+                for key in prop_d:
+                    value = value.replace("()"+key+"()", prop_d[key])
                 prop_d[property] = value
         return prop_d
     else:

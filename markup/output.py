@@ -977,7 +977,7 @@ class pdf_latex():
             out += "\n\\printindex\n"
         out += "\n\\end{document}\n"
         out.out = out.out.replace("&", "\\&").replace("%", "\\%").replace("#", "\\#").replace(
-            "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|").replace("\n\\\\\n", "")
+            "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|").replace("\n\\\\\n", "\n\n")
         tempin = tempfile.NamedTemporaryFile(dir=f"{tmpdir}", delete=False)
         tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
         path = tmpdir

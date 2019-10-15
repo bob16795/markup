@@ -30,6 +30,18 @@ def _read(file, inside=False):
                                 file_cached = f"{file_cached}\n---\nslave: True\n---\n{_read(f, True)}\n---\nslave: False\n---\n"
                     os.chdir(cwd)
                 file_cached = file_cached[:-1]
+            elif line.split(":")[0] == "Tmp":
+                cwd = os.getcwd()
+                for pattern in line[4:-1].split(";"):
+                    pattern = pattern.strip(" ")
+                    if "/" in pattern:
+                        os.chdir("/".join(pattern.split("/")[:-1]))
+                        pattern = pattern.split("/")[-1]
+                    for f in sorted(os.listdir()):
+                        if re.search(pattern, f):
+                            file_cached = f"{file_cached}{_read(f, True)}\n"
+                    os.chdir(cwd)
+                file_cached = file_cached[:-1]
             else:
                 file_cached = f"{file_cached}{line}"
     return file_cached
