@@ -3,7 +3,7 @@ import markup.tokenize as tokenize
 from markup.doc import add_to_doc
 import os
 import re
-
+from pathlib import Path
 
 def _read(file, inside=False):
     """
@@ -85,22 +85,22 @@ def _compile(file_cached, verbose, prop, file_name="test", j=1, tree=False):
         print(parsed)
         file_new = str(parsed)
     else:
-        if not 'file_type' in prop:
-            prop['file_type'] = "terminal"
-        if not 'output_module' in prop:
-            prop['output_module'] = "markup.output"
-        if not "ignore" in prop:
+        if not prop.get("ignore"):
             if verbose >= 3:
                 print(f"{'  '*j}- creating text")
             file_new = add_to_doc(
-                parsed, prop['file_type'], prop['output_module'], prop)
+                parsed,
+                prop.get('file_type',     "terminal"),
+                prop.get('output_module', "markup.output"),
+                prop)
         else:
             file_new = ""
-    if "use" in prop:
+    if prop.get("use"):
         cwd = os.getcwd()
-        for pattern in prop['use'].split(";"):
+        use = prop.get("use")
+        for pattern in use.split(";"):
             if "/" in pattern:
-                os.chdir("/".join(pattern.split("/")[:-1]))
+                os.chdir("/".join(pattern.strip(" ").split("/")[:-1]))
                 pattern = pattern.split("/")[-1]
             for file in sorted(os.listdir()):
                 if re.search(pattern.strip(" "), file):
@@ -126,8 +126,6 @@ def _output(bytes_out, file, prop):
     file:      the file to write them to
     prop:      properties of the document
     """
-    to = file.replace(file.split(".")[-1], prop["file_type"])
-    if "output" in prop:
-        to = prop["output"]
+    to = prop.get("output", file.replace(file.split(".")[-1], prop.get("file_type", "terminal")))
     with open(to, "wb+") as f:
         f.write(bytes_out)

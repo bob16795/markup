@@ -296,10 +296,7 @@ class html():
 class docx():
     @staticmethod
     def outer_init(self, out, prop):
-        if "template" in prop:
-            self.doc = Document(prop["template"])
-        else:
-            self.doc = Document()
+        self.doc = Document(prop.get("template"))
 
     @staticmethod
     def outer_add(self, out):
@@ -512,17 +509,11 @@ class pdf_groff():
     @staticmethod
     def outer_init(self, out, prop):
         self.pp = False
-        self.title_heading_level = 0
-        self.author = ""
-        self.title = ""
-        if "author" in prop:
-            self.author = prop["author"]
-        if "title" in prop:
-            self.title = prop["title"]
-            if "title_page" in prop:
-                out += "\n()TTL()\n.bp\n"
-        if "title_head" in prop:
-            self.title_heading_level = int(prop["title_head"])
+        self.author = prop.get("author", "")
+        self.title = prop.get("title", "")
+        if prop.get("title_page") and prop.get("title"):
+            out += "\n()TTL()\n.bp\n"
+        self.title_heading_level = int(prop.get("title_head", "0"))
 
         out = out.replace("()TTL()", self.title)
         out = out.replace("()AUT()", self.author)
@@ -723,9 +714,7 @@ class pdf_latex():
     def outer_init(self, out, prop):
         self.pp = False
         self.title_heading_level = 0
-        self.author = ""
-        self.title = ""
-        if "index" in prop:
+        if prop.get("index"):
             out += "\n\\makeindex[options=-s ()IDXPTH()lol.ist]\n"
         """
         \etocsetlevel{chapter}{0}
@@ -735,39 +724,33 @@ class pdf_latex():
         """
         out += "\\etocsetlevel{chapter}{()HL1()}\n\etocsetlevel{section}{()HL2()}\n\etocsetlevel{subsection}{()HL3())}\n\\begin{document}\n"
         #out += "\\begin{document}"
-        if "author" in prop:
-            self.author = prop["author"]
-        if "title" in prop:
-            self.title = prop["title"]
-            if "title_page" in prop:
-                """
-                \\begin{titlepage}
-                    \\begingroup
-                    \\vspace*{0.12\\textheight}
-                    \\hspace*{0.3\\textwidth}
-                    \\hspace*{0.3\\textwidth}
-                    {\\Huge ()TTL()}\\par
-                    \\vspace*{0.36\\textheight}
-                    {\\large ()AUT()}
-                    \\vfill
-                    \\endgroup
-                \\end{titlepage}
-                """
-                out += "\n\\begin{titlepage}\n\\begingroup\n\\vspace*{0.12\\textheight}\n\\hspace*{0.3\\textwidth}\n\\hspace*{0.3\\textwidth}\n{\\Huge ()TTL()}\\par\n\\vspace*{0.36\\textheight}\n{\\large ()AUT()}\n\\vfill\n\\endgroup\n\\end{titlepage}\n"
-        if "title_head" in prop:
-            self.title_heading_level = int(prop["title_head"])
-        if "author" in prop:
-            self.author = prop["author"]
-        if "paper_size" in prop:
-            self.paper_size = prop["paper_size"]
+        self.author = prop.get("author")
+        self.title = prop.get("title")
+        if prop.get("title") and prop.get("title_page"):
+            """
+            \\begin{titlepage}
+                \\begingroup
+                \\vspace*{0.12\\textheight}
+                \\hspace*{0.3\\textwidth}
+                \\hspace*{0.3\\textwidth}
+                {\\Huge ()TTL()}\\par
+                \\vspace*{0.36\\textheight}
+                {\\large ()AUT()}
+                \\vfill
+                \\endgroup
+            \\end{titlepage}
+            """
+            out += "\n\\begin{titlepage}\n\\begingroup\n\\vspace*{0.12\\textheight}\n\\hspace*{0.3\\textwidth}\n\\hspace*{0.3\\textwidth}\n{\\Huge ()TTL()}\\par\n\\vspace*{0.36\\textheight}\n{\\large ()AUT()}\n\\vfill\n\\endgroup\n\\end{titlepage}\n"
+        self.title_heading_level = int(prop.get("title_head", "0"))
+        self.paper_size = prop.get("paper_size", "a4paper")
         self.index = False
-        if "index" in prop:
+        if prop.get("index"):
             self.index = True
         self.chapter_toc = False
-        if "chapter_toc" in prop:
+        if prop.get("chapter_toc"):
             self.chapter_toc = True
         self.toc = False
-        if "toc" in prop:
+        if prop.get("toc"):
             self.toc = True
             out+="\n\\begin{multicols}{2}\n\\tableofcontents\n\\etocsettocstyle{\\subsection*{This Chapter contains:}}\n\\clearpage\n\\end{multicols}\n"
         out = out.replace("()HL1()", str(self.title_heading_level + 0))
@@ -778,11 +761,8 @@ class pdf_latex():
             out = out.replace("()AUT()", "by: " + self.author)
         else:
             out = out.replace("()AUT()", "")
-        if self.paper_size:
-            out = out.replace("()PPR()", self.paper_size)
-        else:
-            out = out.replace("()PPR()", "a4paper")
-        if "no_col" not in prop:
+        out = out.replace("()PPR()", self.paper_size)
+        if not prop.get("no_col"):
             out += "\\begin{multicols}{1}"
         self.out = out
 

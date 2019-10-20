@@ -1,40 +1,79 @@
-def prop_to_dict(prop):
-    """
-    converts a prop string to a dict object
+class doc_properties():
+    def __init__(self, props = ""):
+        """
+        setup for doc props
 
-    prop: the prop string
-    """
+        props: starting propeties
+        """
+        props = f"slave: False\n{props}".strip("\n")
+        self.prop_d = {}
+        for i in props.split("\n"):
+            self.set(i)
 
-    if prop.strip(" \n") != "":
-        while "\n\n" in prop:
-            prop = prop.replace("\n\n", "\n")
-        prop_cached = prop.split("\n")
-        prop_d = {"slave": "False"}
-        for prop_line in prop_cached:
-            if "|" in prop_line:
-                req = prop_line.split("|")[0].strip("! ")
-                cmd = prop_line.split("|")[1]
-                property = cmd.split(":")[0].strip(" ")
-                value = cmd.split(":")[1].strip(" ")
-                req_value = "True"
-                if "=" in req:
-                    req_value = req.split("=")[1].strip(" ")
-                    req = req.split("=")[0].strip(" ")
-                req_bool = True
-                if "!" in prop_line:
-                    req_bool = False
-                if req in prop_d:
-                    if req_bool == ( req_value == prop_d[req]):
-                        for key in prop_d:
-                            value = value.replace("()"+key+"()", prop_d[key])
-                        prop_d[property] = value
-            else:
-                cmd = prop_line
-                property = cmd.split(":")[0].strip(" ")
-                value = cmd.split(":")[1].strip(" ")
-                for key in prop_d:
-                    value = value.replace("()"+key+"()", prop_d[key])
-                prop_d[property] = value
-        return prop_d
-    else:
-        return {}
+    def get(self, prop, default = ""):
+        """
+        gets a doc prop
+
+        prop: the prop to get
+        default: the value to return if prop is undefined
+        """
+        if prop in self.prop_d:
+            return self.prop_d[prop]
+        return default
+
+    def set(self, command):
+        """
+        sets a property from a string
+
+        string: the command to parse
+        """
+        property, value, req, req_bool, req_value = self.parse(command)
+        self.add(property, value, req, req_bool, req_value)
+
+    def parse(self, command):
+        """
+        splits a command for set
+
+        command: the command to split
+        """
+        if "|" in command:
+            req = command.split("|")[0].strip("! ")
+            cmd = command.split("|")[1]
+            property = cmd.split(":")[0].strip(" ")
+            value = cmd.split(":")[1].strip(" ")
+            req_value = "True"
+            if "=" in req:
+                req_value = req.split("=")[1].strip(" ")
+                req = req.split("=")[0].strip(" ")
+            req_bool = True
+            if "!" in command:
+                req_bool = False
+        else:
+            req = ""
+            req_bool = False
+            req_value = ""
+            cmd = command
+            property = cmd.split(":")[0].strip(" ")
+            value = cmd.split(":")[1].strip(" ")
+        return property, value, req, req_bool, req_value
+
+    def add(self, prop, value, req = "", req_bool = False, req_value = "True"):
+        """
+        adds a prop if it should
+
+        prop: the prop to set
+        value: the value to set the prop to
+        req: the required prop name
+        req_bool: if true the value of req should be equal to req_value
+        req_value: the required value of req
+        """
+        if req != "":
+            if req_bool == ( req_value == self.prop_d[req]):
+                self.prop_d[prop] = value
+        else:
+            self.prop_d[prop] = value
+    
+    def tag_rep(self, string):
+        for key in self.prop_d:
+            string = string.replace("()"+key+"()", self.prop_d[key])
+        return string

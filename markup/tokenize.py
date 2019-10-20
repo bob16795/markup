@@ -1,5 +1,5 @@
 from markup.token_class import Token, Token_List
-from markup.doc_props import prop_to_dict
+from markup.doc_props import doc_properties
 
 def tokenize(file_cached, prop_app):
     """
@@ -8,6 +8,8 @@ def tokenize(file_cached, prop_app):
     file_cached: the string to be tokenized
     prop_app:    the properties to append
     """
+
+    props = doc_properties()
     file_cached = file_cached.split("\n")
     mu = True
     token_dict = {
@@ -29,6 +31,7 @@ def tokenize(file_cached, prop_app):
     ignore = 0
     for x, i in enumerate(file_cached):
         text = ""
+        i = props.tag_rep(i)
         if i == "---":
             mu = not(mu)
         else:
@@ -77,7 +80,7 @@ def tokenize(file_cached, prop_app):
                 md_tokens.append(
                     Token("NEWLINE", "", f"end of line {x+1}", i))
             else:
-                prop += f"{i}\n"
+                props.set(i)
     md_tokens.append(
         Token("EOF", "", f"end of last line", "EOF"))
-    return Token_List(md_tokens), prop_to_dict(prop[:-1] + prop_app)
+    return Token_List(md_tokens), props

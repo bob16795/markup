@@ -26,7 +26,7 @@ def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tre
             text = _read(file)
         except Exception as error:
             print(f"+ file not found {file}")
-            raise FileNotFoundError(file)
+            quit()
         os.chdir(Path(file).parent)
         appendprop = "\n"+"\n".join(appendprop)
         if appendprop != "\n\n":
