@@ -1,6 +1,6 @@
 ---
 !slave | ignore: True
-!slave | use: ^<+subject+>_(?!master).*mu$
+!slave | use: <+Date+>/^<+subject+>_(?!master).*mu$
 ---
 # <+subject+>
 

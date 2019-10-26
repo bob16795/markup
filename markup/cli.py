@@ -24,7 +24,7 @@ def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tre
             print(f"+ processing {file}")
         try:
             text = _read(file)
-        except Exception as error:
+        except FileNotFoundError as error:
             print(f"+ file not found {file}")
             quit()
         os.chdir(Path(file).parent)

@@ -4,6 +4,41 @@ from markup.doc import add_to_doc
 import os
 import re
 from pathlib import Path
+import threading
+import logging
+class compiler():
+  def __init__(self, conc = 4):
+    self.threads = list()
+    self.index = 0
+    self.b = threading.Barrier(conc)
+
+  def add_to_queue(self, args):
+    logging.info("Main    : create and start thread %d.", self.index)
+    x = threading.Thread(target=self.compile, args=args)
+    self.threads.append(x)
+
+  @staticmethod
+  def compile(verbose, prop, file, j=1, tree=False):
+    path = "./"
+    if "/" in file:
+        path = "/".join(file.strip(" ").split("/")[:-1])
+    if verbose >= 2:
+        print(f"{'  '*j}+ processing {file}")
+    text = _read(file)
+    text, prop_slave = _compile(
+        text, verbose, "", file, j+1, tree)
+    if not tree:
+        if text != "":
+            _output(text, file, prop_slave)
+            if verbose >= 3:
+                print(f"{'  '*(j+1)}- writing {file}")
+  
+  def finish(self):
+    for index, thread in enumerate(self.threads):
+      thread.start()
+    for thread in self.threads:
+      thread.join()
+    self.threads = list()
 
 def _read(file, inside=False):
     """
@@ -16,19 +51,21 @@ def _read(file, inside=False):
         file_cached = ""
         for line in filew:
             if line.split(":")[0] == "Inc":
-                cwd = os.getcwd()
                 for pattern in line[4:-1].split(";"):
                     pattern = pattern.strip(" ")
+                    path = "./"
+                    if "/" in file:
+                        path = "/".join(file.strip(" ").split("/")[:-1])
                     if "/" in pattern:
-                        os.chdir("/".join(pattern.split("/")[:-1]))
+                        path += "/".join(pattern.strip(" ").split("/")[:-1])
                         pattern = pattern.split("/")[-1]
-                    for f in sorted(os.listdir()):
+                    for f in sorted(os.listdir(path)):
                         if re.search(pattern, f):
+                            fpath = path + "/" +f
                             if inside:
-                                file_cached = f"{file_cached}{_read(f, True)}\n"
+                                file_cached = f"{file_cached}{_read(fpath, True)}\n"
                             else:
-                                file_cached = f"{file_cached}\n---\nslave: True\n---\n{_read(f, True)}\n---\nslave: False\n---\n"
-                    os.chdir(cwd)
+                                file_cached = f"{file_cached}\n---\nslave: True\n---\n{_read(fpath, True)}\n---\nslave: False\n---\n"
                 file_cached = file_cached[:-1]
             elif line.split(":")[0] == "Tmp":
                 cwd = os.getcwd()
@@ -98,25 +135,19 @@ def _compile(file_cached, verbose, prop, file_name="test", j=1, tree=False):
     if prop.get("use"):
         cwd = os.getcwd()
         use = prop.get("use")
+        multitasker = compiler()
         for pattern in use.split(";"):
+            path = "./"
             if "/" in pattern:
-                os.chdir("/".join(pattern.strip(" ").split("/")[:-1]))
+                path = "/".join(pattern.strip(" ").split("/")[:-1])
                 pattern = pattern.split("/")[-1]
-            for file in sorted(os.listdir()):
+            for file in sorted(os.listdir(path)):
                 if re.search(pattern.strip(" "), file):
-                    if verbose >= 2:
-                        print(f"{'  '*j}+ processing {file}")
-                    text = _read(file)
-                    text, prop_slave = _compile(
-                        text, verbose, "", file, j+1, tree)
-                    if not tree:
-                        if text != "":
-                            _output(text, file, prop_slave)
-                            if verbose >= 3:
-                                print(f"{'  '*(j+1)}- writing {file}")
-            os.chdir(cwd)
+                    if verbose >= 3:
+                        print(f"{'  '*j}- adding {file}")
+                    multitasker.add_to_queue((verbose, prop, path + "/" + file, j, tree))
+        multitasker.finish()
     return file_new, prop
-
 
 def _output(bytes_out, file, prop):
     """

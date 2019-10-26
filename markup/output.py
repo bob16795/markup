@@ -970,28 +970,25 @@ class pdf_latex():
                 if out.index:
                     with open(f"{path}lol.ist", 'w+') as index_style:
                         index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"heading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"")
-                os.chdir(tmpdir)
                 if out.toc:
-                    o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe {tempin_name}".split(" "),
+                    o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out = o.communicate()
-                o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe {tempin_name}".split(" "),
+                o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                  stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out = o.communicate()
             else:
                 if out.index:
                     with open(f"{path}lol.ist", 'w+') as index_style:
                         index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"heading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"")
-                cwd = os.getcwd()
-                os.chdir(tmpdir)
                 if out.toc:
-                    o = subprocess.Popen(f"pdflatex {tempin_name}".split(" "),
+                    o = subprocess.Popen(f"pdflatex -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                     out = o.communicate()
-                o = subprocess.Popen(f"pdflatex {tempin_name}".split(" "),
+                o = subprocess.Popen(f"pdflatex -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 out = o.communicate()
-            tempout = open(f"{tempin_name}.pdf", 'r+b')
+            tempout = open(f"{tmpdir}/{tempin_name}.pdf", 'r+b')
             pdf = tempout.read()
             tempout.close()
         except FileNotFoundError:
@@ -999,9 +996,8 @@ class pdf_latex():
             if type(out) is tuple:
                 print(out[0].decode("utf-8"))
             pdf = ""
-        os.chdir(cwd)
         for file in sorted(os.listdir(tmpdir)):
-            if re.search("^tmp.", file):
+            if re.search(f"{tempin_name}.*", file):
                 os.remove(tmpdir + file)
         return pdf
 
