@@ -961,7 +961,7 @@ class pdf_latex():
         tempin = tempfile.NamedTemporaryFile(dir=f"{tmpdir}", delete=False)
         tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
         path = tmpdir
-        out.out = out.out.replace("()IDXPTH()", path)
+        out.out = out.out.replace("()IDXPTH()", path.replace("\\", "/"))
         tempin.write(out.out.encode())
         tempin.close()
         cwd = os.getcwd()
