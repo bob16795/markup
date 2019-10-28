@@ -1,6 +1,7 @@
 import markup
 import os
 
+
 def test_doc_props_init():
     prop = "lol: nope\nfoo:      bar\nths:is_random\n nope : var\n!slave | slave2:true\n!slave|master:master"
     prop_dict = markup.doc_props.doc_properties(prop)

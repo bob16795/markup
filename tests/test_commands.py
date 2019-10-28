@@ -21,7 +21,7 @@ def test_read_file_include():
         tmp_inc.write("this is tmp_inc file".encode("utf-8"))
         tmp_master.close()
         tmp_inc.close()
-        read = markup.commands._read(tmp_master_name)
+        read = markup.commands._read(tmp_master_name, 0)
         for file in sorted(os.listdir("C:\\Users\\Preston.precourt\\Downloads\\")):
             if re.search("^tmp.", file):
                 os.remove("C:\\Users\\Preston.precourt\\Downloads\\" + file)
@@ -40,7 +40,7 @@ def test_read_file_include():
         tmp_inc.write("this is tmp_inc file".encode("utf-8"))
         tmp_master.close()
         tmp_inc.close()
-        read = markup.commands._read(tmp_master_name)
+        read = markup.commands._read(tmp_master_name, 0)
         for file in sorted(os.listdir("/tmp/")):
             if re.search("^tmp.", file):
                 os.remove("/tmp/" + file)

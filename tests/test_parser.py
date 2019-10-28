@@ -4,7 +4,7 @@ import os
 
 def test_code_no_escape():
     compiling = "```python\nimport lol\nlol.is_dir\n\\\\-+*\n```"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.CodeNode([
@@ -19,7 +19,7 @@ def test_code_no_escape():
 
 def test_headings_nl2():
     compiling = "# lol\n\nlol"
-    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    output, _ = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.HeadNode("HEAD1", " lol", 4),
         markup.nodes.ParagraphNode([
@@ -32,7 +32,7 @@ def test_headings_nl2():
 
 def test_headings_number():
     compiling = "# lol1\n\nlol"
-    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    output, _ = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.HeadNode("HEAD1", " lol1", 5),
         markup.nodes.ParagraphNode([
@@ -45,7 +45,7 @@ def test_headings_number():
 
 def test_headings_symbol():
     compiling = "# lol-\n\nlol"
-    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    output, _ = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.HeadNode("HEAD1", " lol-", 5),
         markup.nodes.ParagraphNode([
@@ -58,7 +58,7 @@ def test_headings_symbol():
 
 def test_headings_nl1():
     compiling = "# lol\nlol"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.HeadNode("HEAD1", " lol", 3),
@@ -96,7 +96,7 @@ def test_list_different_spaces():
     Consumed: 23>'
     """
     compiling = "- a\n  - b\n    - c\n  - d\n- e\n    - f\n"
-    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    output, _ = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ListNode([
             markup.nodes.Node("LIST1", "", 1),
@@ -142,7 +142,7 @@ def test_list_different_tabs():
     Consumed: 23>'
     """
     compiling = "* a\n\t+ b\n\t\t- c\n\t+ d\n*e\n\t\t- f\n"
-    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    output, _ = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ListNode([
             markup.nodes.Node("LIST1", "", 1),
@@ -188,7 +188,7 @@ def test_list_minus():
     Consumed: 23>'
     """
     compiling = "- a\n\t- b\n\t\t- c\n\t- d\n- e\n\t\t- f\n"
-    output, prop = markup.commands._compile(compiling, False, "", tree=True)
+    output, _ = markup.commands._compile(compiling, False, "", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ListNode([
             markup.nodes.Node("LIST1", "", 1),
@@ -210,7 +210,7 @@ def test_list_minus():
 
 def test_sentence_no_escape():
     compiling = "import lol\nlol.is_dir\n\\\\-+*lol\n"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ParagraphNode([
@@ -222,7 +222,7 @@ def test_sentence_no_escape():
 
 def test_paragraph_split():
     compiling = "first paragraph.\nsecond line\n\nsecond paragraph.\nsecond line\n"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ParagraphNode([
@@ -237,7 +237,7 @@ def test_paragraph_split():
 
 def test_text_paragraphs_no_escape():
     compiling = "import lol\nlol.is_dir\n\\\\-+*lol\n\nimport lol\nlol.is_dir\n\\\\-+*lol\n"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ParagraphNode([
@@ -252,7 +252,7 @@ def test_text_paragraphs_no_escape():
 
 def test_tag_numbers():
     compiling = "<12233>\n"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.Node("TAG", "12233", 5),
@@ -262,7 +262,7 @@ def test_tag_numbers():
 
 def test_tag_text():
     compiling = "<tag>\n"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.Node("TAG", "tag", 5),
@@ -272,7 +272,7 @@ def test_tag_text():
 
 def test_tag_text_numbers():
     compiling = "<tag222withnum>\n"
-    output, prop = markup.commands._compile(
+    output, _ = markup.commands._compile(
         compiling, False, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.Node("TAG", "tag222withnum", 7),
