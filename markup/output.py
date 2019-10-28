@@ -717,12 +717,12 @@ class pdf_latex():
         if prop.get("index"):
             out += "\n\\makeindex[options=-s ()IDXPTH()lol.ist]\n"
         """
-        \etocsetlevel{chapter}{0}
-        \etocsetlevel{section}{1}
-        \etocsetlevel{subsection}{2}
-        \begin{document}
+        \\etocsetlevel{chapter}{0}
+        \\etocsetlevel{section}{1}
+        \\etocsetlevel{subsection}{2}
+        \\begin{document}
         """
-        out += "\\etocsetlevel{chapter}{()HL1()}\n\etocsetlevel{section}{()HL2()}\n\etocsetlevel{subsection}{()HL3())}\n\\begin{document}\n"
+        out += "\\etocsetlevel{chapter}{()HL1()}\n\\etocsetlevel{section}{()HL2()}\n\\etocsetlevel{subsection}{()HL3())}\n\\begin{document}\n"
         #out += "\\begin{document}"
         self.author = prop.get("author")
         self.title = prop.get("title")
@@ -964,7 +964,6 @@ class pdf_latex():
         out.out = out.out.replace("()IDXPTH()", path.replace("\\", "/"))
         tempin.write(out.out.encode())
         tempin.close()
-        cwd = os.getcwd()
         try:
             if os.name == "nt":
                 if out.index:
@@ -1020,7 +1019,7 @@ class pdf_latex():
             text = ""
             for item in entry.split(";"):
                 item = "{" + item.strip(" ") + "}"
-                text += f"\n\index{item}\n"
+                text += f"\n\\index{item}\n"
         return f"{text}\n"
 
 # TODO: finish code

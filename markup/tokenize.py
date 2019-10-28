@@ -1,13 +1,17 @@
 from markup.token_class import Token, Token_List
 from markup.doc_props import doc_properties
+import click
 
-def tokenize(file_cached, prop_app):
+def tokenize(file_cached, prop_app, file_name, verbose):
     """
     tokenizes a string
 
     file_cached: the string to be tokenized
     prop_app:    the properties to append
     """
+
+    if verbose >= 2:
+        click.echo(f"tokenizing {file_name}")
 
     props = doc_properties()
     file_cached = file_cached.split("\n")
@@ -27,7 +31,6 @@ def tokenize(file_cached, prop_app):
     numbers = "1234567890"
     text_is_number = False
     md_tokens = []
-    prop = ""
     ignore = 0
     for x, i in enumerate(file_cached):
         text = ""

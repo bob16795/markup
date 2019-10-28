@@ -85,7 +85,7 @@ to include the text from another document verbatim use `Inc: file`
 - output_nodule: the module containing the formatter
 - output: the file to output to relative to the source code
 - ignore: if defined the document is ignored
-- use: include a document (can be multiple split by ;)
+- use: include a document (can be multiple split by ;) can include path but is relative to the base document
 
 #### special
 
@@ -119,7 +119,7 @@ to include the text from another document verbatim use `Inc: file`
 
 #### pdf_latex & latex
 
-- COL: sets column number in document
+- COL: sets column number in documentIn the column on the left hand side are 10 of the most essential terms for this unit’s content.  In the second column, write the definition on your own words. 
 - CPT: starts a chapter
 - IDX: adds an index entry in current position
 

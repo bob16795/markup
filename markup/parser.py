@@ -1,5 +1,20 @@
 from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, ParagraphNode, BodyNode
 from markup.match import match_first, match_star, match_star_err, match_multi_star_until, match_star_merge
+import click
+
+def parse_markdown(tokens):
+    """
+    feeds a token list in to a document
+
+    tokens: the tokens to feed
+    """
+    body = Body_Parser(tokens)
+    if body.consumed != -1 + tokens.length():
+        if not tokens.grab(body.consumed-1).context == "EOF":
+            click.secho(
+                f"error at {tokens.grab(body.consumed-1).at}\n{tokens.grab(body.consumed-1).context}", fg="red",
+                err=True)
+    return body
 
 # ADD: inline code
 # ADD: indent code
