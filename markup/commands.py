@@ -110,7 +110,7 @@ def _compile(file_cached, verbose, prop, file_name="test", tree=False):
                 if re.search(pattern.strip(" "), file):
                     if verbose >= 2:
                         click.echo(f"adding {file} to queue")
-                    multitasker.add_to_queue((verbose, prop, path + "/" + file, tree))
+                    multitasker.add_to_queue((verbose, path + "/" + file, tree))
         if verbose >= 2:
             click.echo(f"processing queue")
         multitasker.finish(verbose)

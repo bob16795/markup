@@ -503,8 +503,6 @@ class pdf_groff():
         title: the title of the document
         title_page: if defined will add a title page to the document
         title_head: the level of the first heading
-
-        TODO: margins
     """
     @staticmethod
     def outer_init(self, out, prop):
@@ -946,7 +944,7 @@ class pdf_latex():
     def add_list_text(text):
         return f"\\item {text}\n"
 
-    # TODO: fix dependency on user being me
+    # TODO: set path to pdflatex
     @staticmethod
     def end(out):
         tmpdir = "/tmp/"
@@ -1023,9 +1021,7 @@ class pdf_latex():
         return f"{text}\n"
 
 # TODO: finish code
-# TODO: chapter numbers
 # class latex(pdf_latex):
-#     # TODO: fix dependency on user being me
 #     @staticmethod
 #     def end(out):
 #         out += "\\end{multicols}\n\\end{document}"
