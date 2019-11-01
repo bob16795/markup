@@ -214,7 +214,7 @@ def UL1_Parser(tokens):
         Bullet
     """
     if type(match_first(tokens, [Bullet_Parser])) != nullNode:
-        return Node("LIST1", "", 1)
+        return Node("ULIST1", "", 1)
     return nullNode()
 
 
@@ -225,7 +225,7 @@ def UL2_Parser(tokens):
         Bullet
     """
     if tokens.peek(["TAB"]) and type(match_first(tokens.offset(1), [Bullet_Parser])) != nullNode:
-        return Node("LIST2", "", 2)
+        return Node("ULIST2", "", 2)
     return nullNode()
 
 
@@ -236,7 +236,7 @@ def UL3_Parser(tokens):
         Bullet
     """
     if tokens.peek(["TAB", "TAB"]) and type(match_first(tokens.offset(2), [Bullet_Parser])) != nullNode:
-        return Node("LIST3", "", 3)
+        return Node("ULIST3", "", 3)
     return nullNode()
 
 

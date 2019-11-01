@@ -27,26 +27,47 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
                     out += adder.add_header_3()(node.value.strip(" "))
                 if node.type == "TAG":
                     out += adder.tag()(node.value)
-            elif type(node) is ListNode:
-                out += adder.start_list()()
-                list_level = 1
+            elif type(node) is ListNode and "U" in node.sentences[0].type:
+                out += adder.start_ulist()()
+                ulist_level = 1
                 for sentence in node.sentences:
-                    if sentence.type == "LIST1":
-                        out += adder.start_list_1()(list_level)
-                        list_level = 1
-                    elif sentence.type == "LIST2":
-                        out += adder.start_list_2()(list_level)
-                        list_level = 2
-                    elif sentence.type == "LIST3":
-                        out += adder.start_list_3()(list_level)
-                        list_level = 3
+                    if sentence.type == "ULIST1":
+                        out += adder.start_ulist_1()(ulist_level)
+                        ulist_level = 1
+                    elif sentence.type == "ULIST2":
+                        out += adder.start_ulist_2()(ulist_level)
+                        ulist_level = 2
+                    elif sentence.type == "ULIST3":
+                        out += adder.start_ulist_3()(ulist_level)
+                        ulist_level = 3
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "TEXT":
-                        out += adder.add_list_text()(f"{sentence.value} ")
+                        out += adder.add_ulist_text()(f"{sentence.value} ")
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "EMPH":
-                        out += adder.emph_list_text()(f"{sentence.value} ")
+                        out += adder.emph_ulist_text()(f"{sentence.value} ")
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
-                        out += adder.bold_list_text()(f"{sentence.value} ")
-                out += adder.end_list()(list_level)
+                        out += adder.bold_ulist_text()(f"{sentence.value} ")
+                out += adder.end_ulist()(ulist_level)
+            elif type(node) is ListNode and "O" in  node.sentences[0].type:
+                out += adder.start_olist()()
+                olist_level = 1
+                for sentence in node.sentences:
+                    if sentence.type == "OLIST1":
+                        out += adder.start_olist_1()(olist_level)
+                        olist_level = 1
+                    elif sentence.type == "OLIST2":
+                        out += adder.start_olist_2()(olist_level)
+                        olist_level = 2
+                    elif sentence.type == "OLIST3":
+                        out += adder.start_olist_3()(olist_level)
+                        olist_level = 3
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "TEXT":
+                        out += adder.add_olist_text()(f"{sentence.value} ")
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "EMPH":
+                        out += adder.emph_olist_text()(f"{sentence.value} ")
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
+                        out += adder.bold_olist_text()(f"{sentence.value} ")
+                out += adder.end_olist()(olist_level)
+                
             elif type(node) is CodeNode:
                 out += adder.start_code()()
                 code = ""

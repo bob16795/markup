@@ -70,7 +70,7 @@ class terminal():
         return text
 
     @staticmethod
-    def start_list():
+    def start_ulist():
         return "\n-"
 
     @staticmethod
@@ -86,31 +86,31 @@ class terminal():
         return ""
 
     @staticmethod
-    def start_list_1(l):
+    def start_ulist_1(l):
         return "\n-"
 
     @staticmethod
-    def start_list_2(l):
+    def start_ulist_2(l):
         return "\n  -"
 
     @staticmethod
-    def start_list_3(l):
+    def start_ulist_3(l):
         return "\n    -"
 
     @staticmethod
-    def end_list(l):
+    def end_ulist(l):
         return "\n"
 
     @staticmethod
-    def emph_list_text(text):
+    def emph_ulist_text(text):
         return text
 
     @staticmethod
-    def bold_list_text(text):
+    def bold_ulist_text(text):
         return text
 
     @staticmethod
-    def add_list_text(text):
+    def add_ulist_text(text):
         return text
 
     @staticmethod
@@ -223,11 +223,11 @@ class html():
         return ""
 
     @staticmethod
-    def start_list():
+    def start_ulist():
         return "<ul><li>"
 
     @staticmethod
-    def start_list_1(l):
+    def start_ulist_1(l):
         if l == 1:
             return "</li><li>"
         if l == 2:
@@ -236,7 +236,7 @@ class html():
             return "</li></ul></ul><li>"
 
     @staticmethod
-    def start_list_2(l):
+    def start_ulist_2(l):
         if l == 1:
             return "</li><ul><li>"
         if l == 2:
@@ -245,7 +245,7 @@ class html():
             return "</li></ul><li>"
 
     @staticmethod
-    def start_list_3(l):
+    def start_ulist_3(l):
         if l == 1:
             return "</li><ul><ul><li>"
         if l == 2:
@@ -254,7 +254,7 @@ class html():
             return "</li><li>"
 
     @staticmethod
-    def end_list(l):
+    def end_ulist(l):
         if l == 1:
             return "</li></ul>"
         if l == 2:
@@ -263,15 +263,15 @@ class html():
             return "</li></ul></ul></ul>"
 
     @staticmethod
-    def emph_list_text(text):
+    def emph_ulist_text(text):
         return "<em>" + text + "</em>"
 
     @staticmethod
-    def bold_list_text(text):
+    def bold_ulist_text(text):
         return "<b>" + text + "</b>"
 
     @staticmethod
-    def add_list_text(text):
+    def add_ulist_text(text):
         return text
 
     @staticmethod
@@ -444,35 +444,35 @@ class docx():
         return []
 
     @staticmethod
-    def start_list():
+    def start_ulist():
         return []
 
     @staticmethod
-    def start_list_1(l):
+    def start_ulist_1(l):
         return [f"L1: "]
 
     @staticmethod
-    def start_list_2(l):
+    def start_ulist_2(l):
         return [f"L2: "]
 
     @staticmethod
-    def start_list_3(l):
+    def start_ulist_3(l):
         return [f"L3: "]
 
     @staticmethod
-    def end_list(l):
+    def end_ulist(l):
         return []
 
     @staticmethod
-    def emph_list_text(text):
+    def emph_ulist_text(text):
         return [f"EMPH: {text}"]
 
     @staticmethod
-    def bold_list_text(text):
+    def bold_ulist_text(text):
         return [f"BOLD: {text}"]
 
     @staticmethod
-    def add_list_text(text):
+    def add_ulist_text(text):
         return [f"{text}"]
 
     @staticmethod
@@ -613,7 +613,7 @@ class pdf_groff():
         return f".NH ()HL3()\n{text}\n.XS\n\t\t{text}\n.XE\n.PP\n"
 
     @staticmethod
-    def start_list():
+    def start_ulist():
         return ""
 
     @staticmethod
@@ -630,7 +630,7 @@ class pdf_groff():
         return ""
 
     @staticmethod
-    def start_list_1(l):
+    def start_ulist_1(l):
         if l == 1:
             return ".IP \\(bu 2\n"
         if l == 2:
@@ -639,7 +639,7 @@ class pdf_groff():
             return ".RE\n.RE\n.IP \\(bu 2\n"
 
     @staticmethod
-    def start_list_2(l):
+    def start_ulist_2(l):
         if l == 1:
             return ".RS\n.IP \\(bu 2\n"
         if l == 2:
@@ -648,7 +648,7 @@ class pdf_groff():
             return ".RE\n.IP \\(bu 2\n"
 
     @staticmethod
-    def start_list_3(l):
+    def start_ulist_3(l):
         if l == 1:
             return ".RS\n.RS\n.IP \\(bu 2\n"
         if l == 2:
@@ -657,7 +657,7 @@ class pdf_groff():
             return ".IP \\(bu 2\n"
 
     @staticmethod
-    def end_list(l):
+    def end_ulist(l):
         if l == 1:
             return ""
         if l == 2:
@@ -666,15 +666,15 @@ class pdf_groff():
             return ".RE\n.RE\n"
 
     @staticmethod
-    def emph_list_text(text):
+    def emph_ulist_text(text):
         return f"LI;{text}"
 
     @staticmethod
-    def bold_list_text(text):
+    def bold_ulist_text(text):
         return f"LI;{text}"
 
     @staticmethod
-    def add_list_text(text):
+    def add_ulist_text(text):
         return f"LI;{text}"
 
     @staticmethod
@@ -720,25 +720,33 @@ class pdf_latex():
         \\etocsetlevel{subsection}{2}
         \\begin{document}
         """
-        out += "\\etocsetlevel{chapter}{()HL1()}\n\\etocsetlevel{section}{()HL2()}\n\\etocsetlevel{subsection}{()HL3())}\n\\begin{document}\n"
-        #out += "\\begin{document}"
+        out += "\\etocsetlevel{chapter}{()HL1()}\n\\etocsetlevel{section}{()HL2()}\n\\etocsetlevel{subsection}{()HL3())}"
+        """
+        \\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}
+        \\pagestyle{fancy}
+        \\fancyhf{}
+        \\renewcommand{\footrulewidth}{.5pt}
+        \\rfoot{()TTL()}
+        \\lfoot{()AUT()}
+        \\lhead{\\chaptername \\thechaper}
+        \\begin{document}
+        """
+        out += "\n\\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}\n\\pagestyle{fancy}\n\\fancyhf{}\n\\renewcommand{\\footrulewidth}{1pt}\n\\rfoot{()TTL()}\n\\lfoot{()AUT()}\n\\lhead{\\thechapter}\n\\rhead{\\thepage}\n\\begin{document}\n"
         self.author = prop.get("author")
         self.title = prop.get("title")
         if prop.get("title") and prop.get("title_page"):
             """
             \\begin{titlepage}
-                \\begingroup
-                \\vspace*{0.12\\textheight}
-                \\hspace*{0.3\\textwidth}
-                \\hspace*{0.3\\textwidth}
-                {\\Huge ()TTL()}\\par
-                \\vspace*{0.36\\textheight}
-                {\\large ()AUT()}
+                \\begin{center}
+                \\vspace*{1cm}
+                \\textbf{()TTL())}
+                \\vspace{0.5cm}
+                \\textbf{()AUT()}
                 \\vfill
-                \\endgroup
+                \\end{center}
             \\end{titlepage}
             """
-            out += "\n\\begin{titlepage}\n\\begingroup\n\\vspace*{0.12\\textheight}\n\\hspace*{0.3\\textwidth}\n\\hspace*{0.3\\textwidth}\n{\\Huge ()TTL()}\\par\n\\vspace*{0.36\\textheight}\n{\\large ()AUT()}\n\\vfill\n\\endgroup\n\\end{titlepage}\n"
+            out += "\n\\begin{titlepage}\n\\begin{center}\n\\vspace*{1cm}\n\\textbf{()TTL()}\n\n\\vspace{0.5cm}\n\n\\textbf{By: ()AUT()}\n\\vfill\n\\end{center}\n\\end{titlepage}\n"
         self.title_heading_level = int(prop.get("title_head", "0"))
         self.paper_size = prop.get("paper_size", "a4paper")
         self.index = False
@@ -750,13 +758,13 @@ class pdf_latex():
         self.toc = False
         if prop.get("toc"):
             self.toc = True
-            out+="\n\\begin{multicols}{2}\n\\tableofcontents\n\\etocsettocstyle{\\subsection*{This Chapter contains:}}\n\\clearpage\n\\end{multicols}\n"
+            out+="\\begin{multicols}{2}\n\\tableofcontents\n\\etocsettocstyle{\\subsection*{This Chapter contains:}}\n\\clearpage\n\\end{multicols}\n"
         out = out.replace("()HL1()", str(self.title_heading_level + 0))
         out = out.replace("()HL2()", str(self.title_heading_level + 1))
         out = out.replace("()HL3()", str(self.title_heading_level + 2))
         out = out.replace("()TTL()", self.title)
         if self.author:
-            out = out.replace("()AUT()", "by: " + self.author)
+            out = out.replace("()AUT()",self.author)
         else:
             out = out.replace("()AUT()", "")
         out = out.replace("()PPR()", self.paper_size)
@@ -856,7 +864,7 @@ class pdf_latex():
 
     @staticmethod
     def start():
-        return "\\documentclass{book}\n\\usepackage{multicol}\n\\usepackage{etoc}\n\\usepackage[()PPR()]{geometry}\n\\usepackage{xcolor}\n\\usepackage{imakeidx}\n"
+        return "\\documentclass{book}\n\\usepackage{fancyhdr}\n\\usepackage{etoolbox}\n\\usepackage{multicol}\n\\usepackage{etoc}\n\\usepackage[()PPR()]{geometry}\n\\usepackage{xcolor}\n\\usepackage{imakeidx}\n"
 
     @staticmethod
     def bold_text(text):
@@ -879,7 +887,7 @@ class pdf_latex():
         return f"\n\\subsubsection{text}\n"
 
     @staticmethod
-    def start_list():
+    def start_ulist():
         return "\\begin{itemize}"
 
     @staticmethod
@@ -895,7 +903,7 @@ class pdf_latex():
         return ""
 
     @staticmethod
-    def start_list_1(l):
+    def start_ulist_1(l):
         if l == 1:
             return ""
         if l == 2:
@@ -904,7 +912,7 @@ class pdf_latex():
             return "\\end{itemize}\n\\end{itemize}\n"
 
     @staticmethod
-    def start_list_2(l):
+    def start_ulist_2(l):
         if l == 1:
             return "\\begin{itemize}\n"
         if l == 2:
@@ -913,7 +921,7 @@ class pdf_latex():
             return "\\end{itemize}\n"
 
     @staticmethod
-    def start_list_3(l):
+    def start_ulist_3(l):
         if l == 1:
             return "\\begin{itemize}\n\\begin{itemize}\n"
         if l == 2:
@@ -922,7 +930,7 @@ class pdf_latex():
             return ""
 
     @staticmethod
-    def end_list(l):
+    def end_ulist(l):
         if l == 1:
             return "\\end{itemize}\n"
         if l == 2:
@@ -931,17 +939,72 @@ class pdf_latex():
             return "\\end{itemize}\n\\end{itemize}\n\\end{itemize}\n"
 
     @staticmethod
-    def emph_list_text(text):
+    def emph_ulist_text(text):
         text = "{"+text+"}"
         return f"\\item \\textbf{text}\n"
 
     @staticmethod
-    def bold_list_text(text):
+    def bold_ulist_text(text):
         text = "{"+text+"}"
         return f"\\item \\textit{text}\n"
 
     @staticmethod
-    def add_list_text(text):
+    def add_ulist_text(text):
+        return f"\\item {text}\n"
+
+
+    @staticmethod
+    def start_olist():
+        return "\\begin{enumerate}"
+
+    @staticmethod
+    def start_olist_1(l):
+        if l == 1:
+            return ""
+        if l == 2:
+            return "\\end{enumerate}\n"
+        if l == 3:
+            return "\\end{enumerate}\n\\end{enumerate}\n"
+
+    @staticmethod
+    def start_olist_2(l):
+        if l == 1:
+            return "\\begin{enumerate}\n"
+        if l == 2:
+            return ""
+        if l == 3:
+            return "\\end{enumerate}\n"
+
+    @staticmethod
+    def start_olist_3(l):
+        if l == 1:
+            return "\\begin{enumerate}\n\\begin{enumerate}\n"
+        if l == 2:
+            return "\\begin{enumerate}\n"
+        if l == 3:
+            return ""
+
+    @staticmethod
+    def end_olist(l):
+        if l == 1:
+            return "\\end{enumerate}\n"
+        if l == 2:
+            return "\\end{enumerate}\n\\end{enumerate}\n"
+        if l == 3:
+            return "\\end{enumerate}\n\\end{enumerate}\n\\end{enumerate}\n"
+
+    @staticmethod
+    def emph_olist_text(text):
+        text = "{"+text+"}"
+        return f"\\item \\textbf{text}\n"
+
+    @staticmethod
+    def bold_olist_text(text):
+        text = "{"+text+"}"
+        return f"\\item \\textit{text}\n"
+
+    @staticmethod
+    def add_olist_text(text):
         return f"\\item {text}\n"
 
     # TODO: set path to pdflatex
@@ -966,7 +1029,7 @@ class pdf_latex():
             if os.name == "nt":
                 if out.index:
                     with open(f"{path}lol.ist", 'w+') as index_style:
-                        index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"heading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"")
+                        index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
                 if out.toc:
                     o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -977,7 +1040,7 @@ class pdf_latex():
             else:
                 if out.index:
                     with open(f"{path}lol.ist", 'w+') as index_style:
-                        index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"heading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"")
+                        index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
                 if out.toc:
                     o = subprocess.Popen(f"pdflatex -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -1010,7 +1073,7 @@ class pdf_latex():
             return "\\end{multicols}\n\\begin{multicols}{" + text + "}"
         if link == "CPT":
             text = "{"+text+"}"
-            text = "\n\\end{multicols}\n\\chapter" + text + "\n()LTOC()\n\\begin{multicols}{2}"
+            text = "\n\\end{multicols}\n\\chapter" + text + "()LTOC()\n\\clearpage\n\\begin{multicols}{2}"
             return text
         if link == "IDX":
             entry = text
