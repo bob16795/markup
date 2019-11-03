@@ -8,7 +8,7 @@ title_page: True
 toc: True
 chapter_toc: True
 index: True
-paper_size: a5paper
+geometry: a5paper, inner=.25in, outer=.5in, top=.75in, bottom=.75in
 ---
 
 <CPT: 2018-2019>
