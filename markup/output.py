@@ -796,14 +796,14 @@ class pdf_latex():
         if prop.get("index"):
             out += "\n\\makeindex[program=makeindex,options=-s ()IDXPTH()lol.ist]\n"
         """
-        \\indexsetup{level=\\chapter} %
+        %\\indexsetup{level=\\chapter}
         \\setlength{\\columnseprule}{0pt}
         \\etocsetlevel{chapter}{0}
         \\etocsetlevel{section}{1}
         \\etocsetlevel{subsection}{2}
         \\begin{document}
         """
-        out += "\\indexsetup{level=\\section}\n\\setlength{\\columnseprule}{0pt}\n\\etocsetlevel{chapter}{()HL1()}\n\\etocsetlevel{section}{()HL2()}\n\\etocsetlevel{subsection}{()HL3()}"
+        out += "\n\\setlength{\\columnseprule}{0pt}\n\\etocsetlevel{chapter}{()HL1()}\n\\etocsetlevel{section}{()HL2()}\n\\etocsetlevel{subsection}{()HL3()}"
         """
         \\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}
         \\pagestyle{fancy}
@@ -814,7 +814,7 @@ class pdf_latex():
         \\lhead{\\chaptername \\thechaper}
         \\begin{document}
         """
-        out += "\n\\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}\n\\pagestyle{fancy}\n\\fancyhf{}\n\\renewcommand{\\footrulewidth}{1pt}\n\\rfoot{()TTL()}\n\\lfoot{()AUT()}\n\\lhead{\\rightmark}\n\\rhead{\\thepage}\n\\begin{document}\n"
+        out += "\n\\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}\n\\pagestyle{fancy}\n\\fancyhf{}\n\\renewcommand{\\footrulewidth}{1pt}\n\\rfoot{()TTL()}\n\\lfoot{()AUT()}\n\\lhead{\\leftmark}\n\\rhead{\\thepage}\n\\begin{document}\n"
         self.author = prop.get("author")
         self.title = prop.get("title")
         if prop.get("title") and prop.get("title_page"):
@@ -1108,7 +1108,7 @@ class pdf_latex():
             tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
         out += "\n\\end{multicols}"
         if out.index:
-            out += "\n\\printindex\n"
+            out += "\n\\printindex\n\\pagestyle{fancy}\n"
         out += "\n\\end{document}\n"
         out.out = out.out.replace("&", "\\&").replace("%", "\\%").replace("#", "\\#").replace(
             "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|").replace("\n\\\\\n", "\n\n")
@@ -1121,14 +1121,27 @@ class pdf_latex():
         try:
             if os.name == "nt":
                 if out.index:
-                    with open(f"{path}lol.ist", 'w+') as index_style:
+                    with open(f"{path}lol.ist", 'w+') as index_style:    
+                        """
+                        headings_flag 1
+                        
+                        heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
+                        \\\\noindent\\\\textbf{\"
+                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
+                        
+                        item_0 \"\\n \\\\item \\\\small \"
+                        delim_0 \" \\\\hfill \"
+                        delim_1 \" \\\\hfill \"
+                        delim_2 \" \\\\hfill \"
+                        """
                         #index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
                         """
-                        heading_prefix \"\\n\\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
+                        heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
+                        heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
                         headings_flag 1
                         """
-                        index_style.write("heading_prefix \"\\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\nheadings_flag 1")
+                        index_style.write("heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
+
                 if out.toc:
                     o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
@@ -1153,11 +1166,11 @@ class pdf_latex():
                         """
                         #index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
                         """
-                        heading_prefix \"\\n\\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
+                        heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
+                        heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
                         headings_flag 1
                         """
-                        index_style.write("heading_prefix \"\\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\nheadings_flag 1")
+                        index_style.write("heading_prefix \"\\n{\\\\thispagestyle{fancy}\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
                 if out.toc:
                     o = subprocess.Popen(f"pdflatex -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
                                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
@@ -1202,6 +1215,17 @@ class pdf_latex():
             \\begin{multicols}{2}
             """
             text = "\n\\end{multicols}\n\\chapter" + text + "\n\\setlength{\\columnseprule}{1pt}\n\\begin{multicols}{2}\n()LTOC()\n\\end{multicols}\n\\setlength{\\columnseprule}{0pt}\n\\clearpage\n\\begin{multicols}{2}"
+            return text
+        if link == "PRT":
+            text = "{"+text+"}"
+            """
+            \\end{multicols}
+            \clearpage
+            \ifodd\value{page}\hbox{}\newpage\fi
+            \\part{text}
+            \\begin{multicols}{2}
+            """
+            text = "\n\\end{multicols}\n\clearpage\n\\ifodd\\value{page}\\hbox{}\\newpage\\fi\n\\part" + text + "\n\n\\begin{multicols}{2}\n"
             return text
         if link == "IDX":
             entry = text
