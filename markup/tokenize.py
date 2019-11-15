@@ -1,8 +1,10 @@
 from markup.token_class import Token, Token_List
 from markup.doc_props import doc_properties
+from markup.terminal import error, log, debug
 import click
 
-def tokenize(file_cached, prop_app, file_name, verbose):
+
+def tokenize(file_cached, prop_app, file_name, output):
     """
     tokenizes a string
 
@@ -10,8 +12,7 @@ def tokenize(file_cached, prop_app, file_name, verbose):
     prop_app:    the properties to append
     """
 
-    if verbose >= 2:
-        click.echo(f"tokenizing {file_name}")
+    output.add(log, f"tokenizing {file_name}")
 
     props = doc_properties()
     file_cached = file_cached.split("\n")

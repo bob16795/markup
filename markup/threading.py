@@ -1,5 +1,5 @@
 import threading
-import click
+from markup.terminal import error, log, debug
 
 
 class multi_tasker():
@@ -16,24 +16,22 @@ class multi_tasker():
         self.threads.append(x)
 
     @staticmethod
-    def compile(verbose, file, tree=False):
+    def compile(output, file, tree=False):
         from markup.commands import _read, _compile, _output
-        if verbose >= 1:
-            click.echo(f"started {file}")
-        text = _read(file, verbose)
+        output.add(log, f"started {file}")
+        text = _read(file, output)
         text, prop_slave = _compile(
-            text, verbose, "", file, tree)
+            text, output, "", file, tree)
         if not tree:
             if text != "":
-                _output(text, file, prop_slave, verbose)
+                _output(text, file, prop_slave, output)
 
-    def finish(self, verbose):
+    def finish(self, output):
         for index, thread in enumerate(self.threads):
-            if verbose >= 4:
-                click.echo(f"started thread {index}")
+            output.add(debug, f"threading.py: started thread {index}")
             thread.start()
         for thread in self.threads:
             thread.join()
-        if verbose >= 4:
-            click.echo(f"finished {self.threads.__len__()} threads")
+        output.add(
+            debug, f"threading.py: finished {self.threads.__len__()} threads")
         self.threads = list()
