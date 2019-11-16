@@ -1186,9 +1186,9 @@ class pdf_latex():
             if type(out) is tuple:
                 print(out[0].decode("utf-8"))
             pdf = ""
-        # for file in sorted(os.listdir(tmpdir)):
-        #     if re.search(f"{tempin_name}.*", file):
-        #         os.remove(tmpdir + file)
+        for file in sorted(os.listdir(tmpdir)):
+            if re.search(f"{tempin_name}.*", file):
+                os.remove(tmpdir + file)
         return pdf
 
     @staticmethod
