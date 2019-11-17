@@ -6,7 +6,7 @@ import click
 
 from markup.commands import _compile, _output, _read
 from markup.threading import multi_tasker
-from markup.terminal import terminal, log, error
+from markup.terminal import terminal, log, error, warn, debug
 
 
 @click.command()
@@ -34,14 +34,20 @@ def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tre
         found = False
         for file in sorted(os.listdir(path)):
             if pattern.strip(" ") == file:
-                output.add(log, "adding %s to queue" % file)
-                multitasker.add_to_queue(
-                    (output, path + "/" + file, tree))
+                if os.path.isdir(file):
+                    output.add(warn, "%s is not a file" % pattern)
+                else:
+                    output.add(debug, "cli.py: adding %s to queue" % file)
+                    multitasker.add_to_queue(
+                        (output, path + "/" + file, tree))
                 found = True
         if not found:
             output.add(error, "file not found %s" % pattern)
-    output.add(log, "processing queue")
-    multitasker.finish(output)
+    if multitasker.threads != list():
+        output.add(debug, "cli.py: processing queue")
+        multitasker.finish(output)
+    else:
+        output.add(error, "no files to compile")
 
 
 def start():

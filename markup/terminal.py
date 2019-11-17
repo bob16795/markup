@@ -30,7 +30,7 @@ class info:
         self.message = message
 
     def report(self):
-        return "LOG: %s" % self.message, 3
+        return "INFO: %s" % self.message, 3
 
 
 class debug:
@@ -51,6 +51,6 @@ class terminal:
         if self.verbosity >= result:
             if result == 0:
                 click.echo(output)
-                quit()
+                quit(code=1)
             else:
                 click.echo(output)

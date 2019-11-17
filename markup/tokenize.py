@@ -1,6 +1,6 @@
 from markup.token_class import Token, Token_List
 from markup.doc_props import doc_properties
-from markup.terminal import error, log, debug
+from markup.terminal import error, log, debug, info
 import click
 
 
@@ -12,7 +12,7 @@ def tokenize(file_cached, prop_app, file_name, output):
     prop_app:    the properties to append
     """
 
-    output.add(log, "tokenizing %s" % file_name)
+    output.add(info, "tokenizing %s" % file_name)
 
     props = doc_properties()
     file_cached = file_cached.split("\n")

@@ -48,3 +48,21 @@ def test_read_file_include():
             if re.search("^tmp.", file):
                 os.remove("/tmp/" + file)
         assert read == '# lol\n\n---\nslave: True\n---\nthis is tmp_inc file\n---\nslave: False\n--- end'
+
+
+def test_cleanup_newlines():
+    output = markup.terminal.terminal(0)
+    file_cached = "\n" * 30
+    file_cached = markup.commands._cleanup(file_cached, "test", output=output)
+    assert file_cached == "\n\n"
+
+
+def test_cleanup_spaces():
+    output = markup.terminal.terminal(0)
+    file_cached = "\n  \n    \n"
+    file_cached = markup.commands._cleanup(file_cached, "test", output=output)
+    assert file_cached == "\n\t\n\t\t\n"
+    file_cached = "\n    \n        \n"
+    file_cached = markup.commands._cleanup(
+        file_cached, "test", tabs=4, output=output)
+    assert file_cached == "\n\t\n\t\t\n"

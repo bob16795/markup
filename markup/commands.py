@@ -6,7 +6,7 @@ import os
 import re
 from pathlib import Path
 import click
-from markup.terminal import error, log, debug
+from markup.terminal import error, log, debug, info
 
 
 def _read(file, output, inside=False):
@@ -34,9 +34,11 @@ def _read(file, output, inside=False):
                         if re.search(pattern, f):
                             fpath = path + "/" + f
                             if inside:
-                                file_cached = "%s%s\n" % (file_cached, _read(fpath, output, True))
+                                file_cached = "%s%s\n" % (
+                                    file_cached, _read(fpath, output, True))
                             else:
-                                file_cached = "%s\n---\nslave: True\n---\n%s\n---\nslave: False\n---\n" % (file_cached, _read(fpath, output, True))
+                                file_cached = "%s\n---\nslave: True\n---\n%s\n---\nslave: False\n---\n" % (
+                                    file_cached, _read(fpath, output, True))
                 file_cached = file_cached[:-1]
             elif line.split(":")[0] == "Tmp":
                 cwd = os.getcwd()
@@ -47,7 +49,8 @@ def _read(file, output, inside=False):
                         pattern = pattern.split("/")[-1]
                     for f in sorted(os.listdir()):
                         if re.search(pattern, f):
-                            file_cached = "%s%s\n" % (file_cached, _read(fpath, output, True))
+                            file_cached = "%s%s\n" % (
+                                file_cached, _read(fpath, output, True))
                     os.chdir(cwd)
                 file_cached = file_cached[:-1]
             else:
@@ -61,7 +64,7 @@ def _cleanup(file_cached, file_name, tabs=2, output=0):
 
     file_cached: the document to be unstupified
     """
-    output.add(log, "cleaning %s" % file_name)
+    output.add(info, "cleaning %s" % file_name)
     while "\n\n\n" in file_cached:
         file_cached = file_cached.replace("\n\n\n", "\n\n")
     file_cached = file_cached.replace("---\n\n", "---\n")
@@ -91,7 +94,7 @@ def _compile(file_cached, output, prop, file_name="test", tree=False):
         file_new = str(parsed)
     else:
         if not prop.get("ignore"):
-            output.add(log, "creating text for %s" % file_name)
+            output.add(info, "creating text for %s" % file_name)
             file_new = add_to_doc(
                 parsed,
                 prop.get('file_type',     "terminal"),
@@ -109,10 +112,10 @@ def _compile(file_cached, output, prop, file_name="test", tree=False):
                 pattern = pattern.split("/")[-1]
             for file in sorted(os.listdir(path)):
                 if re.search(pattern.strip(" "), file):
-                    output.add(log, "adding %s to queue" % file)
+                    output.add(debug, "commands.py: adding %s to queue" % file)
                     multitasker.add_to_queue(
                         (output, path + "/" + file, tree))
-        output.add(log, "processing queue")
+        output.add(debug, "commands.py: processing queue")
         multitasker.finish(output)
     return file_new, prop
 
