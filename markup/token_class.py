@@ -6,7 +6,7 @@ class Token():
         self.context = context
 
     def __str__(self):
-        return(f"<type: {self.type}, value: {self.value}>")
+        return("<type: %s, value: %s>" % (self.type, self.value))
 
 
 class Token_List():

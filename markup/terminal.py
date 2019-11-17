@@ -6,7 +6,7 @@ class error:
         self.message = message
 
     def report(self):
-        return click.style(f"ERROR: {self.message}", fg='red', bold=True), 0
+        return click.style("ERROR: %s" % self.message, fg='red', bold=True), 0
 
 
 class warn:
@@ -14,7 +14,7 @@ class warn:
         self.message = message
 
     def report(self):
-        return click.style(f"WARNING: {self.message}", fg='red'), 1
+        return click.style("WARNING: %s" % self.message, fg='red'), 1
 
 
 class log:
@@ -22,7 +22,15 @@ class log:
         self.message = message
 
     def report(self):
-        return f"LOG: {self.message}", 2
+        return "LOG: %s" % self.message, 2
+
+
+class info:
+    def __init__(self, message=""):
+        self.message = message
+
+    def report(self):
+        return "LOG: %s" % self.message, 3
 
 
 class debug:
@@ -30,7 +38,7 @@ class debug:
         self.message = message
 
     def report(self):
-        return f"DEBUG {self.message}", 3
+        return "DEBUG %s" % self.message, 4
 
 
 class terminal:

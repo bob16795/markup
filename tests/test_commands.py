@@ -17,7 +17,7 @@ def test_read_file_include():
         ) + tmp_inc.name.split("\\tmp")[-1]
         tmp_inc_name = tmp_inc_name.replace("\\", "\\\\")
         os.chdir("C:\\Users\\Preston.precourt\\Downloads")
-        tmp_master.write(f"# lol\nInc: {tmp_inc_name}\n end".encode("utf-8"))
+        tmp_master.write(("# lol\nInc: %s\n end" % tmp_inc_name).encode("utf-8"))
         tmp_inc.write("this is tmp_inc file".encode("utf-8"))
         tmp_master.close()
         tmp_inc.close()
@@ -36,7 +36,7 @@ def test_read_file_include():
         tmp_inc_name = tempfile.gettempprefix(
         ) + tmp_inc.name.split("/tmp")[-1]
         os.chdir("/tmp/")
-        tmp_master.write(f"# lol\nInc: {tmp_inc_name}\n end".encode("utf-8"))
+        tmp_master.write(("# lol\nInc: %s\n end" % tmp_inc_name).encode("utf-8"))
         tmp_inc.write("this is tmp_inc file".encode("utf-8"))
         tmp_master.close()
         tmp_inc.close()

@@ -41,11 +41,11 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
                         out += adder.start_ulist_3()(ulist_level)
                         ulist_level = 3
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "TEXT":
-                        out += adder.add_ulist_text()(f"{sentence.value} ")
+                        out += adder.add_ulist_text()(sentence.value + " ")
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "EMPH":
-                        out += adder.emph_ulist_text()(f"{sentence.value} ")
+                        out += adder.emph_ulist_text()(sentence.value + " ")
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
-                        out += adder.bold_ulist_text()(f"{sentence.value} ")
+                        out += adder.bold_ulist_text()(sentence.value + " ")
                 out += adder.end_ulist()(ulist_level)
             elif type(node) is ListNode and "O" in  node.sentences[0].type:
                 out += adder.start_olist()()
@@ -61,11 +61,11 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
                         out += adder.start_olist_3()(olist_level)
                         olist_level = 3
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "TEXT":
-                        out += adder.add_olist_text()(f"{sentence.value} ")
+                        out += adder.add_olist_text()(sentence.value + " ")
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "EMPH":
-                        out += adder.emph_olist_text()(f"{sentence.value} ")
+                        out += adder.emph_olist_text()(sentence.value + " ")
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
-                        out += adder.bold_olist_text()(f"{sentence.value} ")
+                        out += adder.bold_olist_text()(sentence.value + " ")
                 out += adder.end_olist()(olist_level)
                 
             elif type(node) is CodeNode:
@@ -83,10 +83,10 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
             else:
                 for sentence in node.sentences:
                     if sentence.type == "TEXT":
-                        out += adder.add_text()(f"{sentence.value}")
+                        out += adder.add_text()(sentence.value)
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "EMPH":
-                        out += adder.emph_text()(f"{sentence.value}")
+                        out += adder.emph_text()(sentence.value)
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
-                        out += adder.bold_text()(f"{sentence.value}")
+                        out += adder.bold_text()(sentence.value)
                 out += adder.add_new_line()()
     return adder.end()(out)

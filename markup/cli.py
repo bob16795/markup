@@ -34,13 +34,13 @@ def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tre
         found = False
         for file in sorted(os.listdir(path)):
             if pattern.strip(" ") == file:
-                output.add(log, f"adding {file} to queue")
+                output.add(log, "adding %s to queue" % file)
                 multitasker.add_to_queue(
                     (output, path + "/" + file, tree))
                 found = True
         if not found:
-            output.add(error, f"file not found {pattern}")
-    output.add(log, f"processing queue")
+            output.add(error, "file not found %s" % pattern)
+    output.add(log, "processing queue")
     multitasker.finish(output)
 
 

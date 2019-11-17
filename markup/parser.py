@@ -12,7 +12,7 @@ def parse_markdown(tokens):
     if body.consumed != -1 + tokens.length():
         if not tokens.grab(body.consumed-1).context == "EOF":
             click.secho(
-                f"error at {tokens.grab(body.consumed-1).at}\n{tokens.grab(body.consumed-1).context}", fg="red",
+                "error at %s\n%s" % (tokens.grab(body.consumed-1).at, tokens.grab(body.consumed-1).context), fg="red",
                 err=True)
     return body
 

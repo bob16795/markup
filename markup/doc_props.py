@@ -5,7 +5,7 @@ class doc_properties():
 
         props: starting propeties
         """
-        props = f"slave: False\n{props}".strip("\n")
+        props = ("slave: False\n%s" % props).strip("\n")
         self.prop_d = {}
         for i in props.split("\n"):
             self.set(i)

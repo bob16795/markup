@@ -18,7 +18,7 @@ class multi_tasker():
     @staticmethod
     def compile(output, file, tree=False):
         from markup.commands import _read, _compile, _output
-        output.add(log, f"started {file}")
+        output.add(log, "started %s" % file)
         text = _read(file, output)
         text, prop_slave = _compile(
             text, output, "", file, tree)
@@ -28,10 +28,10 @@ class multi_tasker():
 
     def finish(self, output):
         for index, thread in enumerate(self.threads):
-            output.add(debug, f"threading.py: started thread {index}")
+            output.add(debug, "threading.py: started thread %s" % index)
             thread.start()
         for thread in self.threads:
             thread.join()
         output.add(
-            debug, f"threading.py: finished {self.threads.__len__()} threads")
+            debug, "threading.py: finished %s threads" % self.threads.__len__())
         self.threads = list()

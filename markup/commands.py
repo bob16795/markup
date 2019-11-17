@@ -17,7 +17,7 @@ def _read(file, output, inside=False):
     inside: should always be false unless being called by anothrer document
     """
 
-    output.add(debug, f"commands.py: reading {file}")
+    output.add(debug, "commands.py: reading %s" % file)
     with open(file, encoding='utf-8') as filew:
         file_cached = ""
         for line in filew:
@@ -34,9 +34,9 @@ def _read(file, output, inside=False):
                         if re.search(pattern, f):
                             fpath = path + "/" + f
                             if inside:
-                                file_cached = f"{file_cached}{_read(fpath, output, True)}\n"
+                                file_cached = "%s%s\n" % (file_cached, _read(fpath, output, True))
                             else:
-                                file_cached = f"{file_cached}\n---\nslave: True\n---\n{_read(fpath, output, True)}\n---\nslave: False\n---\n"
+                                file_cached = "%s\n---\nslave: True\n---\n%s\n---\nslave: False\n---\n" % (file_cached, _read(fpath, output, True))
                 file_cached = file_cached[:-1]
             elif line.split(":")[0] == "Tmp":
                 cwd = os.getcwd()
@@ -47,11 +47,11 @@ def _read(file, output, inside=False):
                         pattern = pattern.split("/")[-1]
                     for f in sorted(os.listdir()):
                         if re.search(pattern, f):
-                            file_cached = f"{file_cached}{_read(f, output, True)}\n"
+                            file_cached = "%s%s\n" % (file_cached, _read(fpath, output, True))
                     os.chdir(cwd)
                 file_cached = file_cached[:-1]
             else:
-                file_cached = f"{file_cached}{line}"
+                file_cached = "%s%s" % (file_cached, line)
     return file_cached
 
 
@@ -61,7 +61,7 @@ def _cleanup(file_cached, file_name, tabs=2, output=0):
 
     file_cached: the document to be unstupified
     """
-    output.add(log, f"cleaning {file_name}")
+    output.add(log, "cleaning %s" % file_name)
     while "\n\n\n" in file_cached:
         file_cached = file_cached.replace("\n\n\n", "\n\n")
     file_cached = file_cached.replace("---\n\n", "---\n")
@@ -91,7 +91,7 @@ def _compile(file_cached, output, prop, file_name="test", tree=False):
         file_new = str(parsed)
     else:
         if not prop.get("ignore"):
-            output.add(log, f"creating text for {file_name}")
+            output.add(log, "creating text for %s" % file_name)
             file_new = add_to_doc(
                 parsed,
                 prop.get('file_type',     "terminal"),
@@ -109,10 +109,10 @@ def _compile(file_cached, output, prop, file_name="test", tree=False):
                 pattern = pattern.split("/")[-1]
             for file in sorted(os.listdir(path)):
                 if re.search(pattern.strip(" "), file):
-                    output.add(log, f"adding {file} to queue")
+                    output.add(log, "adding %s to queue" % file)
                     multitasker.add_to_queue(
                         (output, path + "/" + file, tree))
-        output.add(log, f"processing queue")
+        output.add(log, "processing queue")
         multitasker.finish(output)
     return file_new, prop
 
@@ -127,6 +127,6 @@ def _output(bytes_out, file, prop, output):
     """
     to = prop.get("output", file.replace(file.split(
         ".")[-1], prop.get("file_type", "terminal")))
-    output.add(log, f"writing {to}")
+    output.add(log, "writing %s" % to)
     with open(to, "wb+") as f:
         f.write(bytes_out)

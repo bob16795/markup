@@ -148,7 +148,7 @@ class terminal():
 
     @staticmethod
     def tag(text):
-        return f"link: [{text}]"
+        return "link: [%s]" % text
 
 
 @Formater
@@ -369,7 +369,7 @@ class html():
             text = text.split(": ")
             link = text[0]
             text = text[-1]
-        return f"<a href={text}> {link} </a><br/>"
+        return "<a href=%s> %s </a><br/>" % (text, link)
 
 
 @Formater
@@ -493,23 +493,23 @@ class docx():
 
     @staticmethod
     def emph_text(text):
-        return [f"EMPH: {text}"]
+        return ["EMPH: " % text]
 
     @staticmethod
     def bold_text(text):
-        return [f"BOLD: {text}"]
+        return ["BOLD: " % text]
 
     @staticmethod
     def add_header_1(text):
-        return [f"H1: {text}"]
+        return ["H1: " % text]
 
     @staticmethod
     def add_header_2(text):
-        return [f"H2: {text}"]
+        return ["H2: " % text]
 
     @staticmethod
     def add_header_3(text):
-        return [f"H3: {text}"]
+        return ["H3: " % text]
 
     @staticmethod
     def start_code():
@@ -529,15 +529,15 @@ class docx():
 
     @staticmethod
     def start_ulist_1(l):
-        return [f"L1: "]
+        return ["L1: "]
 
     @staticmethod
     def start_ulist_2(l):
-        return [f"L2: "]
+        return ["L2: "]
 
     @staticmethod
     def start_ulist_3(l):
-        return [f"L3: "]
+        return ["L3: "]
 
     @staticmethod
     def end_ulist(l):
@@ -545,15 +545,15 @@ class docx():
 
     @staticmethod
     def emph_ulist_text(text):
-        return [f"EMPH: {text}"]
+        return ["EMPH: " % text]
 
     @staticmethod
     def bold_ulist_text(text):
-        return [f"BOLD: {text}"]
+        return ["BOLD: " % text]
 
     @staticmethod
     def add_ulist_text(text):
-        return [f"{text}"]
+        return [text]
 
     @staticmethod
     def end(out):
@@ -572,7 +572,7 @@ class docx():
             text = text.split(": ")
             link = text[0]
             text = text[-1]
-        return [f"<a href={text}> {link} </a><br/>"]
+        return ["<a href=%s> %s </a><br/>" % (text, link)]
 
 
 @Formater
@@ -642,33 +642,33 @@ class pdf_groff():
                 indent = len(value)-len(value.strip(" "))
             if lastval.strip(" "):
                 color = self.styles[lasttype][0]
-                val = lastval.replace('\n', f'\n.in {float(indent/6)}c\n')
-                outfile += f".defcolor pyg rgb #{color}\n.gcolor pyg\n{val}\n.gcolor\n"
+                val = lastval.replace('\n', '\n.in %sc\n' % float(indent/6))
+                outfile += ".defcolor pyg rgb #%s\n.gcolor pyg\n%s\n.gcolor\n" % (color, val)
             # set lastval/lasttype to current values
             lastval = value
             lasttype = ttype
         if lastval.strip(" "):
             color = self.styles[lasttype][0]
-            val = lastval.replace('\n', f'\n.in {float(indent/6)}c\n')
-            outfile += f".defcolor pyg rgb #{color}\n.gcolor pyg\n{val}\n.gcolor\n"
+            val = lastval.replace('\n', '\n.in %sc\n' % float(indent/6))
+            outfile += ".defcolor pyg rgb #%s\n.gcolor pyg\n%s\n.gcolor\n" % (color, val)
         # set lastval/lasttype to current values
         lastval = value
         lasttype = ttype
-        outfile += f".fcolor\n"
+        outfile += ".fcolor\n"
 
     @staticmethod
     def add_new_line():
-        return f"\n"
+        return "\n"
 
     @staticmethod
     def add_text(text):
         if text.strip(" ") != "":
-            return f"{text}\n"
+            return "%s\n" % text
         return ""
 
     @staticmethod
     def emph_text(text):
-        return f".UL \"{text}\"\n"
+        return ".UL \"%s\"\n" % text
 
     @staticmethod
     def start():
@@ -678,19 +678,19 @@ class pdf_groff():
 
     @staticmethod
     def bold_text(text):
-        return f".B {text}\n"
+        return ".B %s\n" % text
 
     @staticmethod
     def add_header_1(text):
-        return f".OH '%'-{text}-''\n.EH ''-{text}-'%'\n.bp\n.NH ()HL1()\n{text}\n.XS\n.B\n{text}\n.XE\n.PP\n"
+        return ".OH '%'-%s-''\n.EH ''-%s-'%'\n.bp\n.NH ()HL1()\n%s\n.XS\n.B\n%s\n.XE\n.PP\n" % (text, text, text, text)
 
     @staticmethod
     def add_header_2(text):
-        return f".NH ()HL2()\n{text}\n.XS\n\t{text}\n.XE\n.PP\n"
+        return ".NH ()HL2()\n%s\n.XS\n\t%s\n.XE\n.PP\n" % (text, text)
 
     @staticmethod
     def add_header_3(text):
-        return f".NH ()HL3()\n{text}\n.XS\n\t\t{text}\n.XE\n.PP\n"
+        return ".NH ()HL3()\n%s\n.XS\n\t\t{text}\n.XE\n.PP\n" % (text, text)
 
     @staticmethod
     def start_ulist():
@@ -747,21 +747,21 @@ class pdf_groff():
 
     @staticmethod
     def emph_ulist_text(text):
-        return f"LI;{text}"
+        return "LI;%s" % text
 
     @staticmethod
     def bold_ulist_text(text):
-        return f"LI;{text}"
+        return "LI;%s" % text
 
     @staticmethod
     def add_ulist_text(text):
-        return f"LI;{text}"
+        return "LI;%s" % text
 
     @staticmethod
     def end(out):
         out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC"
         out.out = out.out.replace("\n\n", "\n")
-        o = subprocess.Popen(f"groff -Tpdf -dpaper=a4 -P-pa4 -ms".split(" "),
+        o = subprocess.Popen("groff -Tpdf -dpaper=a4 -P-pa4 -ms".split(" "),
                              stdin=subprocess.PIPE, stdout=subprocess.PIPE)
         return o.communicate(input=out.out.encode())[0]
 
@@ -777,13 +777,13 @@ class pdf_groff():
             text = text[-1]
         if link == "COL":
             # TODO: calculate coloums automatically
-            return f"\n.MC {text}i\n"
+            return "\n.MC %si\n" % text
         if link == "CPT":
             if text[-1] == "!":
-                return f"\n.bp\n.NH 0\n{text[:-1]}\n"
+                return "\n.bp\n.NH 0\n%s\n" % text[:-1]
             else:
-                return f".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n{text}\n.rm toc*div\n.rm toc*num\n"
-        return f"{text}\n"
+                return ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n%s\n.rm toc*div\n.rm toc*num\n" % text
+        return "%s\n" % text
 
 
 # TODO: chapter numbers
@@ -913,32 +913,22 @@ class pdf_latex():
                 color_r = int(self.styles[lasttype][0], 16) & int("FF0000", 16)
                 color_g = int(self.styles[lasttype][0], 16) & int("00FF00", 16)
                 color_b = int(self.styles[lasttype][0], 16) & int("0000FF", 16)
-                color_r = str(float(color_r + 1)/float(256))
-                color_g = str(float(color_g + 1)/float(256))
-                color_b = str(float(color_b + 1)/float(256))
-                color = "{" + f"{color_r}, {color_g}, {color_b}" + "}"
-                ind = "{" + str(indent*8) + "pt}"
-                val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n",f"\\\\\n\\setlength\\parindent{ind}\n") #.replace('[', '\\[').replace(']', '\\]')
-                code = "{code}"
-                rgb = "{rgb}"
-                outfile += f"\\definecolor{code}{rgb}{color}" + \
-                "\n{" + f"\\color{code} {val}" + "}"
+                color_r = str(float(color_r)/int("10000", 16))
+                color_g = str(float(color_g)/int("100", 16))
+                color_b = str(float(color_b))
+                val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n","\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8) #.replace('[', '\\[').replace(']', '\\]')                code = "{code}"
+                outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color\{code\} %s}" % (color_r, color_g, color_b, val)
             lastval = value
             lasttype = ttype
         if lastval.strip(" "):
             color_r = int(self.styles[lasttype][0], 16) & int("FF0000", 16)
-            color_g = int(self.styles[lasttype][0], 16) & int("FF00", 16)
-            color_b = int(self.styles[lasttype][0], 16) & int("FF", 16)
-            color_r = str(float(color_r + 1)/float(256))
-            color_g = str(float(color_g + 1)/float(256))
-            color_b = str(float(color_b + 1)/float(256))
-            color = "{" + f"{color_r}, {color_g}, {color_b}" + "}"
-            val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n","\\\\\n") #.replace('[', '\\[').replace(']', '\\]')
-            code = "{code}"
-            rgb = "{rgb}"
-            outfile += f"\\definecolor{code}{rgb}{color}" + \
-                "\n{" + f"\\color{code} {val}" + "}"
-        outfile += "}}\n\\end{flushleft}\n"
+            color_g = int(self.styles[lasttype][0], 16) & int("00FF00", 16)
+            color_b = int(self.styles[lasttype][0], 16) & int("0000FF", 16)
+            color_r = str(float(color_r)/int("10000", 16))
+            color_g = str(float(color_g)/int("100", 16))
+            color_b = str(float(color_b))
+            val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n","\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8) #.replace('[', '\\[').replace(']', '\\]')                code = "{code}"
+            outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color\{code\} %s}" % (color_r, color_g, color_b, val)
 
     @staticmethod
     def add_new_line():
@@ -947,13 +937,12 @@ class pdf_latex():
     @staticmethod
     def add_text(text):
         if text.strip(" ") != "":
-            return f"{text}\n"
+            return "%s\n" % text
         return ""
 
     @staticmethod
     def emph_text(text):
-        text = "{"+text+"}"
-        return f"\\emph{text}\n"
+        return "\\emph{%s}\n" % text
 
     @staticmethod
     def start():
@@ -961,23 +950,19 @@ class pdf_latex():
 
     @staticmethod
     def bold_text(text):
-        text = "{"+text+"}"
-        return f"\\textbf{text}\n"
+        return "\\textbf{%s}\n" % text
 
     @staticmethod
     def add_header_1(text):
-        text = "{"+text+"}"
-        return f"\n\\section{text}\n"
+        return "\n\\section{%s}\n" % text
 
     @staticmethod
     def add_header_2(text):
-        text = "{"+text+"}"
-        return f"\n\\subsection{text}\n"
+        return "\n\\subsection{%s}\n" % text
 
     @staticmethod
     def add_header_3(text):
-        text = "{"+text+"}"
-        return f"\n\\subsubsection{text}\n"
+        return "\n\\subsubsection{%s}\n" % text
 
     @staticmethod
     def start_ulist():
@@ -1033,17 +1018,15 @@ class pdf_latex():
 
     @staticmethod
     def emph_ulist_text(text):
-        text = "{"+text+"}"
-        return f"\\item \\textbf{text}\n"
+        return "\\item \\textbf{%s}\n" % text
 
     @staticmethod
     def bold_ulist_text(text):
-        text = "{"+text+"}"
-        return f"\\item \\textit{text}\n"
+        return "\\item \\textit{%s}\n" % text
 
     @staticmethod
     def add_ulist_text(text):
-        return f"\\item {text}\n"
+        return "\\item %s\n" % text
 
 
     @staticmethod
@@ -1088,17 +1071,15 @@ class pdf_latex():
 
     @staticmethod
     def emph_olist_text(text):
-        text = "{"+text+"}"
-        return f"\\item \\textbf{text}\n"
+        return "\\item \\textbf{%s}\n" % text
 
     @staticmethod
     def bold_olist_text(text):
-        text = "{"+text+"}"
-        return f"\\item \\textit{text}\n"
+        return "\\item \\textit{%s}\n" % text
 
     @staticmethod
     def add_olist_text(text):
-        return f"\\item {text}\n"
+        return "\\item %s\n" % text
 
     # TODO: set path to pdflatex
     @staticmethod
@@ -1112,7 +1093,7 @@ class pdf_latex():
         out += "\n\\end{document}\n"
         out.out = out.out.replace("&", "\\&").replace("%", "\\%").replace("#", "\\#").replace(
             "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|").replace("\n\\\\\n", "\n\n")
-        tempin = tempfile.NamedTemporaryFile(dir=f"{tmpdir}", delete=False)
+        tempin = tempfile.NamedTemporaryFile(dir=tmpdir, delete=False)
         tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
         path = tmpdir
         out.out = out.out.replace("()IDXPTH()", path.replace("\\", "/"))
@@ -1121,7 +1102,7 @@ class pdf_latex():
         try:
             if os.name == "nt":
                 if out.index:
-                    with open(f"{path}lol.ist", 'w+') as index_style:    
+                    with open("%slol.ist" % path, 'w+') as index_style:    
                         """
                         headings_flag 1
                         
@@ -1143,15 +1124,15 @@ class pdf_latex():
                         index_style.write("heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
 
                 if out.toc:
-                    o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
+                    o = subprocess.Popen(("C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
                     out = o.communicate()
-                o = subprocess.Popen(f"C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
-                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
+                o = subprocess.Popen(("C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
+                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
                 out = o.communicate()
             else:
                 if out.index:
-                    with open(f"{path}lol.ist", 'w+') as index_style:
+                    with open("%slol.ist" % path, 'w+') as index_style:
                         """
                         headings_flag 1
                         
@@ -1172,13 +1153,13 @@ class pdf_latex():
                         """
                         index_style.write("heading_prefix \"\\n{\\\\thispagestyle{fancy}\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
                 if out.toc:
-                    o = subprocess.Popen(f"pdflatex -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
+                    o = subprocess.Popen(("pdflatex -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
                                             stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
                     out = o.communicate()
-                o = subprocess.Popen(f"pdflatex -output-directory {tmpdir} {tmpdir}/{tempin_name}".split(" "),
+                o = subprocess.Popen(("pdflatex -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
                                         stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
                 out = o.communicate()
-            tempout = open(f"{tmpdir}/{tempin_name}.pdf", 'r+b')
+            tempout = open("%s/%s.pdf" % (tmpdir, tempin_name), 'r+b')
             pdf = tempout.read()
             tempout.close()
         except FileNotFoundError:
@@ -1187,7 +1168,7 @@ class pdf_latex():
                 print(out[0].decode("utf-8"))
             pdf = ""
         for file in sorted(os.listdir(tmpdir)):
-            if re.search(f"{tempin_name}.*", file):
+            if re.search("%s.*" % tempin_name, file):
                 os.remove(tmpdir + file)
         return pdf
 
@@ -1231,9 +1212,8 @@ class pdf_latex():
             entry = text
             text = ""
             for item in entry.split(";"):
-                item = "{" + item.strip(" ") + "}"
-                text += f"\n\\index{item}\n"
-        return f"{text}\n"
+                text += "\n\\index{%s}\n" % item.strip(" ")
+        return text + "\n"
 
 
 # TODO: finish code

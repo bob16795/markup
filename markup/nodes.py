@@ -5,7 +5,7 @@ class Node():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<Sentence type: {self.type}, value: \"{self.value}\", Consumed: {self.consumed}>")
+        return("<Sentence type: %s, value: \"%s\", Consumed: %s>" % (self.type, self.value, self.consumed))
 
 
 class nullNode():
@@ -14,7 +14,7 @@ class nullNode():
         self.consumed = 1
 
     def __str__(self):
-        return(f"<Null Consumed: {self.consumed}>")
+        return("<Null Consumed: %s>" % self.consumed)
 
 
 class BodyNode():
@@ -26,7 +26,7 @@ class BodyNode():
         j = ""
         for i in self.paragraphs:
             j += i.__str__()
-        return(f"<Body Paragprphs: {j}, Consumed: {self.consumed}>")
+        return("<Body Paragprphs: %s, Consumed: %s>" % (j, self.consumed))
 
 
 class ParagraphNode():
@@ -38,7 +38,7 @@ class ParagraphNode():
         j = ""
         for i in self.sentences:
             j += i.__str__() + ","
-        return(f"<Paragraph sentences: {j[:-1]}, Consumed: {self.consumed}>")
+        return("<Paragraph sentences: %s, Consumed: %s>" % (j[:-1], self.consumed))
 
 
 class ListNode():
@@ -50,7 +50,7 @@ class ListNode():
         j = ""
         for i in self.sentences:
             j += i.__str__() + ","
-        return(f"<List sentences: {j[:-1]}, Consumed: {self.consumed}>")
+        return("<List sentences: %s, Consumed: %s>" % (j[:-1], self.consumed))
 
 
 class CodeNode():
@@ -63,7 +63,7 @@ class CodeNode():
         j = ""
         for i in self.sentences:
             j += i.__str__() + ","
-        return(f"<Code Type: {self.value}, sentences: {j[:-1]}, Consumed: {self.consumed}>")
+        return("<Code sentences: %s, Consumed: %s>" % (j[:-1], self.consumed))
 
 
 class HeadNode():
@@ -73,4 +73,4 @@ class HeadNode():
         self.consumed = consumed
 
     def __str__(self):
-        return(f"<Head type: {self.type}, value: \"{self.value}\", Consumed: {self.consumed}>")
+        return("<Head type: %s, value: \"%s\", Consumed: %s>" % (self.type, self.value, self.consumed))
