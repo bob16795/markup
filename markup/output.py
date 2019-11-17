@@ -1,5 +1,5 @@
-from docx.shared import RGBColor
-from docx import Document
+#from docx.shared import RGBColor
+#from docx import Document
 from markup.decorators import Formater
 from pygments.formatter import Formatter
 import subprocess

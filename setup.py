@@ -10,7 +10,7 @@ setup(
     install_requires=[
         'click',
         'pathlib',
-        'python-docx',
+#        'python-docx',
         'pygments'
     ],
     entry_points={
