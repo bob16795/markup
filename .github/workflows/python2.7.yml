@@ -3,7 +3,7 @@ name: Python application
 on: [push]
 
 jobs:
-  build 2.7:
+  build:
     runs-on: ubuntu-latest
 
     steps:
