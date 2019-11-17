@@ -43,7 +43,7 @@ def tokenize(file_cached, prop_app, file_name, output):
                 for y, j in enumerate(i):
                     if ignore != 0:
                         ignore -= 1
-                        text = text + str({j})
+                        text = text + str(j)
                     else:
                         if j == "\\":
                             ignore = 1
