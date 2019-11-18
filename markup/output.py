@@ -1,5 +1,5 @@
-#from docx.shared import RGBColor
-#from docx import Document
+# from docx.shared import RGBColor
+# from docx import Document
 from markup.decorators import Formater
 from pygments.formatter import Formatter
 import subprocess
@@ -794,7 +794,7 @@ class pdf_latex():
         self.pp = False
         self.title_heading_level = 0
         if prop.get("index"):
-            out += "\n\\makeindex[program=makeindex,options=-s ()IDXPTH()lol.ist]\n"
+            out += "\n\\makeindex[program=makeindex,options=-s ()IDXPTH().ist]\n"
         """
         %\\indexsetup{level=\\chapter}
         \\setlength{\\columnseprule}{0pt}
@@ -1085,8 +1085,10 @@ class pdf_latex():
     @staticmethod
     def end(out):
         tmpdir = "/tmp/"
+        latex = "pdflatex"
         if os.name == "nt":
             tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
+            latex = "C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe"
         out += "\n\\end{multicols}"
         if out.index:
             out += "\n\\printindex\n\\pagestyle{fancy}\n"
@@ -1100,65 +1102,34 @@ class pdf_latex():
         tempin.write(out.out.encode())
         tempin.close()
         try:
-            if os.name == "nt":
-                if out.index:
-                    with open("%slol.ist" % path, 'w+') as index_style:    
-                        """
-                        headings_flag 1
-                        
-                        heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
-                        \\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
-                        
-                        item_0 \"\\n \\\\item \\\\small \"
-                        delim_0 \" \\\\hfill \"
-                        delim_1 \" \\\\hfill \"
-                        delim_2 \" \\\\hfill \"
-                        """
-                        #index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
-                        """
-                        heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
-                        headings_flag 1
-                        """
-                        index_style.write("heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
-
-                if out.toc:
-                    o = subprocess.Popen(("C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
-                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
-                    out = o.communicate()
-                o = subprocess.Popen(("C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
+            if out.index:
+                with open("%s.ist" % path, 'w+') as index_style:    
+                    """
+                    headings_flag 1
+                    
+                    heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
+                    \\\\noindent\\\\textbf{\"
+                    heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
+                    
+                    item_0 \"\\n \\\\item \\\\small \"
+                    delim_0 \" \\\\hfill \"
+                    delim_1 \" \\\\hfill \"
+                    delim_2 \" \\\\hfill \"
+                    """
+                    #index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
+                    """
+                    heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
+                    heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
+                    headings_flag 1
+                    """
+                    index_style.write("heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
+            if out.toc:
+                o = subprocess.Popen(("%s -output-directory %s %s/%s" % (latex, tmpdir, tmpdir, tempin_name)).split(" "),
                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
                 out = o.communicate()
-            else:
-                if out.index:
-                    with open("%slol.ist" % path, 'w+') as index_style:
-                        """
-                        headings_flag 1
-                        
-                        heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
-                        \\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
-                        
-                        item_0 \"\\n \\\\item \\\\small \"
-                        delim_0 \" \\\\hfill \"
-                        delim_1 \" \\\\hfill \"
-                        delim_2 \" \\\\hfill \"
-                        """
-                        #index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
-                        """
-                        heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
-                        headings_flag 1
-                        """
-                        index_style.write("heading_prefix \"\\n{\\\\thispagestyle{fancy}\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
-                if out.toc:
-                    o = subprocess.Popen(("pdflatex -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
-                                            stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
-                    out = o.communicate()
-                o = subprocess.Popen(("pdflatex -output-directory %s %s/%s" % (tmpdir, tmpdir, tempin_name)).split(" "),
-                                        stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
-                out = o.communicate()
+            o = subprocess.Popen(("%s -output-directory %s %s/%s" % (latex, tmpdir, tmpdir, tempin_name)).split(" "),
+                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
+            out = o.communicate()
             tempout = open("%s/%s.pdf" % (tmpdir, tempin_name), 'r+b')
             pdf = tempout.read()
             tempout.close()
