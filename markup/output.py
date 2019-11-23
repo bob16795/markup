@@ -208,8 +208,14 @@ class html():
 
     @staticmethod
     def start():
-        return "<!DOCTYPE html>\\n<html>\n<head>\n<link rel=\"stylesheet\""\
-               "href=\"main.css\">\n</head>\n<body>\n<div id=\"page\">"
+        return """
+               <!DOCTYPE html>\\n<html>
+               <head>
+               <link rel=\"stylesheet\" href=\"main.css\">
+               </head>
+               <body>
+               <div id=\"page\">
+               """
 
     @staticmethod
     def add_text(text):
@@ -679,8 +685,14 @@ class pdf_groff():
     def start():
         # \\X'papersize=5.5i,8.5i'\n
         # \n.nr PO .3i\n.nr LL 6.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i
-        return "\n.OH '''%'\n.EH '''%'\n.color 1\n.OF '()AUT()'''\n.EF"\
-               "'''()TTL()'\n"
+        return """
+               .OH '''%'
+               .EH '''%'
+               .color 1
+               .OF '()AUT()'''
+               .EF
+               '''()TTL()'
+               """
 
     @staticmethod
     def bold_text(text):
@@ -688,9 +700,18 @@ class pdf_groff():
 
     @staticmethod
     def add_header_1(text):
-        return ".OH '%'-%s-''\n.EH ''-%s-'%'\n.bp\n"\
-               ".NH ()HL1()\n%s\n.XS\n.B\n%s\n.XE\n.PP\n" %\
-               (text, text, text, text)
+        return """
+               .OH '%'-%s-''
+               .EH ''-%s-'%'
+               .bp
+               .NH ()HL1()
+               %s
+               .XS
+               .B
+               %s
+               .XE
+               .PP
+               """ % (text, text, text, text)
 
     @staticmethod
     def add_header_2(text):
@@ -767,8 +788,16 @@ class pdf_groff():
 
     @staticmethod
     def end(out):
-        out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n"\
-               ".de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC"
+        out += """
+               .OH '%'-Table Of Contents-''
+               .EH ''-Table Of Contents-'%'
+               .de TOC
+               .MC 200p .3i
+               .SH
+               Table Of Contents
+               ..
+               .TC
+               """
         out.out = out.out.replace("\n\n", "\n")
         o = subprocess.Popen("groff -Tpdf -dpaper=a4 -P-pa4 -ms".split(" "),
                              stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -791,8 +820,21 @@ class pdf_groff():
             if text[-1] == "!":
                 return "\n.bp\n.NH 0\n%s\n" % text[:-1]
             else:
-                return ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents"\
-                       "-'%%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n%s\n.rm toc*div\n.rm toc*num\n" % text
+                return """
+                       .OH '%'-Table Of Contents-''
+                       .EH ''-Table Of Contents-'%%'
+                       .de TOC
+                       .MC 200p .3i
+                       .SH
+                       Table Of Contents
+                       ..
+                       .TC
+                       .bp
+                       .NH 0
+                       %s
+                       .rm toc*div
+                       .rm toc*num
+                       """ % text
         return "%s\n" % text
 
 
@@ -804,42 +846,40 @@ class pdf_latex():
         self.pp = False
         self.title_heading_level = 0
         if prop.get("index"):
-            out += "\n\\makeindex[program=makeindex,options=-s ()IDXPTH().ist]\n"
-        """
-        %\\indexsetup{level=\\chapter}
-        \\setlength{\\columnseprule}{0pt}
-        \\etocsetlevel{chapter}{0}
-        \\etocsetlevel{section}{1}
-        \\etocsetlevel{subsection}{2}
-        \\begin{document}
-        """
-        out += "\n\\setlength{\\columnseprule}{0pt}\n\\etocsetlevel{chapter}{()HL1()}\n\\etocsetlevel{section}{()HL2()}\n\\etocsetlevel{subsection}{()HL3()}"
-        """
-        \\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}
-        \\pagestyle{fancy}
-        \\fancyhf{}
-        \\renewcommand{\footrulewidth}{.5pt}
-        \\rfoot{()TTL()}
-        \\lfoot{()AUT()}
-        \\lhead{\\chaptername \\thechaper}
-        \\begin{document}
-        """
-        out += "\n\\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}\n\\pagestyle{fancy}\n\\fancyhf{}\n\\renewcommand{\\footrulewidth}{1pt}\n\\rfoot{()TTL()}\n\\lfoot{()AUT()}\n\\lhead{\\leftmark}\n\\rhead{\\thepage}\n\\begin{document}\n"
+            out += """
+                   \\makeindex[program=makeindex,options=-s ()IDXPTH().ist]
+                   """
+        out += """
+               \\setlength{\\columnseprule}{0pt}
+               \\etocsetlevel{chapter}{()HL1()}
+               \\etocsetlevel{section}{()HL2()}
+               \\etocsetlevel{subsection}{()HL3()}
+               \\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}
+               \\pagestyle{fancy}
+               \\fancyhf{}
+               \\renewcommand{\\footrulewidth}{1pt}
+               \\rfoot{()TTL()}
+               \\lfoot{()AUT()}
+               \\lhead{\\leftmark}
+               \\rhead{\\thepage}
+               \\begin{document}
+               """
         self.author = prop.get("author")
         self.title = prop.get("title")
         if prop.get("title") and prop.get("title_page"):
-            """
-            \\begin{titlepage}
-                \\begin{center}
-                \\vspace*{1cm}
-                \\textbf{()TTL())}
-                \\vspace{0.5cm}
-                \\textbf{()AUT()}
-                \\vfill
-                \\end{center}
-            \\end{titlepage}
-            """
-            out += "\n\\begin{titlepage}\n\\begin{center}\n\\vspace*{1cm}\n\\textbf{()TTL()}\n\n\\vspace{0.5cm}\n\n\\textbf{By: ()AUT()}\n\\vfill\n\\end{center}\n\\end{titlepage}\n"
+            out += """
+                   \\begin{titlepage}
+                   \\begin{center}
+                   \\vspace*{1cm}
+                   \\textbf{()TTL()}
+
+                   \\vspace{0.5cm}
+
+                   \\textbf{By: ()AUT()}
+                   \\vfill
+                   \\end{center}
+                   \\end{titlepage}
+                   """
         self.title_heading_level = int(prop.get("title_head", "0"))
         self.geometry = prop.get("geometry", "a4paper")
         self.index = False
@@ -851,17 +891,16 @@ class pdf_latex():
         self.toc = False
         if prop.get("toc"):
             self.toc = True
-            """
-            \\setlength{\\columnseprule}{1pt}
-            \\begin{multicols}{2}
-            \\tableofcontents
-            \\clearpage
-            \\end{multicols}
-            \\etocsettocstyle{\\subsection*{This Chapter contains:}}
+            out += """
+                   \\setlength{\\columnseprule}{1pt}
+                   \\begin{multicols}{2}
+                   \\tableofcontents
+                   \\end{multicols}
+                   \\clearpage
+                   \\etocsettocstyle{\\subsection*{This Chapter contains:}}
 
-            \\setlength{\\columnseprule}{0pt}
-            """
-            out += "\n\\setlength{\\columnseprule}{1pt}\n\\begin{multicols}{2}\n\\tableofcontents\n\\end{multicols}\n\\clearpage\n\\etocsettocstyle{\\subsection*{This Chapter contains:}}\n\n\\setlength{\\columnseprule}{0pt}\n"
+                   \\setlength{\\columnseprule}{0pt}
+                   """
         out = out.replace("()HL1()", str(self.title_heading_level + 0))
         out = out.replace("()HL2()", str(self.title_heading_level + 1))
         out = out.replace("()HL3()", str(self.title_heading_level + 2))
@@ -926,8 +965,19 @@ class pdf_latex():
                 color_r = str(float(color_r)/int("10000", 16))
                 color_g = str(float(color_g)/int("100", 16))
                 color_b = str(float(color_b))
-                val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n", "\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8)  # .replace('[', '\\[').replace(']', '\\]')                code = "{code}"
-                outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color{code} %s}" % (color_r, color_g, color_b, val)
+                val = lastval.replace("\\", "{\\textbackslash}")\
+                    .replace('{', '\\{')\
+                    .replace('$', '\\$')\
+                    .replace('}', '\\}')\
+                    .replace("\n",
+                             """
+                             \\\\
+                             \\setlength\\parindent{%ipt}
+                             """ % indent*8)
+                outfile += """{
+                           \\definecolor{code}{rgb}{%s, %s, %s}
+                           \\color{code} %s}
+                           """ % (color_r, color_g, color_b, val)
             lastval = value
             lasttype = ttype
         if lastval.strip(" "):
@@ -937,8 +987,17 @@ class pdf_latex():
             color_r = str(float(color_r)/int("10000", 16))
             color_g = str(float(color_g)/int("100", 16))
             color_b = str(float(color_b))
-            val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n", "\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8)  # .replace('[', '\\[').replace(']', '\\]')                code = "{code}"
-            outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color{code} %s}" % (color_r, color_g, color_b, val)
+            val = lastval.replace("\\", "{\\textbackslash}")\
+                .replace('{', '\\{')\
+                .replace('$', '\\$')\
+                .replace('}', '\\}')\
+                .replace("\n", """\\\\
+                               \\setlength\\parindent{%ipt}
+                               """ % indent*8)
+            outfile += """{
+                       \\definecolor{code}{rgb}{%s, %s, %s}
+                       \\color{code} %s}
+                       """ % (color_r, color_g, color_b, val)
 
     @staticmethod
     def add_new_line():
@@ -956,7 +1015,16 @@ class pdf_latex():
 
     @staticmethod
     def start():
-        return "\\documentclass{book}\n\\usepackage{fancyhdr}\n\\usepackage{etoolbox}\n\\usepackage{multicol}\n\\usepackage{etoc}\n\\usepackage[()PPR()]{geometry}\n\\usepackage{xcolor}\n\\usepackage{imakeidx}\n"
+        return """
+               \\documentclass{book}
+               \\usepackage{fancyhdr}
+               \\usepackage{etoolbox}
+               \\usepackage{multicol}
+               \\usepackage{etoc}
+               \\usepackage[()PPR()]{geometry}
+               \\usepackage{xcolor}
+               \\usepackage{imakeidx}
+               """
 
     @staticmethod
     def bold_text(text):
@@ -1102,8 +1170,12 @@ class pdf_latex():
         if out.index:
             out += "\n\\printindex\n\\pagestyle{fancy}\n"
         out += "\n\\end{document}\n"
-        out.out = out.out.replace("&", "\\&").replace("%", "\\%").replace("#", "\\#").replace(
-            "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|").replace("\n\\\\\n", "\n\n")
+        out.out = out.out.replace("&", "\\&")\
+            .replace("%", "\\%")\
+            .replace("#", "\\#")\
+            .replace("\\n", "{\\textbackslash}n")\
+            .replace("_", "\\_").replace("|", "\\|")\
+            .replace("\n\\\\\n", "\n\n")
         tempin = tempfile.NamedTemporaryFile(dir=tmpdir, delete=False)
         tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
         path = tmpdir
@@ -1113,31 +1185,40 @@ class pdf_latex():
         try:
             if out.index:
                 with open("%s.ist" % path, 'w+') as index_style:
-                    """
-                    headings_flag 1
+                    index_style.write(
+                        """
+                        headings_flag 1
 
-                    heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
-                    \\\\noindent\\\\textbf{\"
-                    heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
+                        heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
+                        \\\\noindent\\\\textbf{\"
+                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
 
-                    item_0 \"\\n \\\\item \\\\small \"
-                    delim_0 \" \\\\hfill \"
-                    delim_1 \" \\\\hfill \"
-                    delim_2 \" \\\\hfill \"
-                    """
-                    # index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
-                    """
-                    heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
-                    heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
-                    headings_flag 1
-                    """
-                    index_style.write("heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
+                        item_0 \"\\n \\\\item \\\\small \"
+                        delim_0 \" \\\\hfill \"
+                        delim_1 \" \\\\hfill \"
+                        delim_2 \" \\\\hfill \"
+                        """)
+                    index_style.write(
+                        """heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
+                        heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
+                        headings_flag 1
+                        """)
             if out.toc:
-                o = subprocess.Popen(("%s -output-directory %s %s/%s" % (latex, tmpdir, tmpdir, tempin_name)).split(" "),
-                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
+                o = subprocess.Popen(("%s -output-directory %s %s/%s" %
+                                     (latex, tmpdir, tmpdir, tempin_name))
+                                     .split(" "),
+                                     stdin=subprocess.PIPE,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
+                                     cwd=path)
                 out = o.communicate()
-            o = subprocess.Popen(("%s -output-directory %s %s/%s" % (latex, tmpdir, tmpdir, tempin_name)).split(" "),
-                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
+            o = subprocess.Popen(("%s -output-directory %s %s/%s" %
+                                 (latex, tmpdir, tmpdir, tempin_name))
+                                 .split(" "),
+                                 stdin=subprocess.PIPE,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 cwd=path)
             out = o.communicate()
             tempout = open("%s/%s.pdf" % (tmpdir, tempin_name), 'r+b')
             pdf = tempout.read()
@@ -1163,30 +1244,26 @@ class pdf_latex():
         if link == "COL":
             return "\\end{multicols}\n\\begin{multicols}{" + text + "}"
         if link == "CPT":
-            text = "{"+text+"}"
-            """
-            \\end{multicols}
-            \\chapter{text}
-            \\setlength{\\columnseprule}{1pt}
-            \\begin{multicols}{2}
-            ()LTOC()
-            \\end{multicols}
-            \\setlength{\\columnseprule}{0pt}
-            \\clearpage
-            \\begin{multicols}{2}
-            """
-            text = "\n\\end{multicols}\n\\chapter" + text + "\n\\setlength{\\columnseprule}{1pt}\n\\begin{multicols}{2}\n()LTOC()\n\\end{multicols}\n\\setlength{\\columnseprule}{0pt}\n\\clearpage\n\\begin{multicols}{2}"
+            text = """
+                   \\end{multicols}
+                   \\chapter{%s}\\setlength{\\columnseprule}{1pt}
+                   \\begin{multicols}{2}
+                   ()LTOC()
+                   \\end{multicols}
+                   \\setlength{\\columnseprule}{0pt}
+                   \\clearpage
+                   \\begin{multicols}{2}
+                   """ % text
             return text
         if link == "PRT":
-            text = "{"+text+"}"
-            """
-            \\end{multicols}
-            \\clearpage
-            \\ifodd\\value{page}\\hbox{}\\newpage\\fi
-            \\part{text}
-            \\begin{multicols}{2}
-            """
-            text = "\n\\end{multicols}\n\\clearpage\n\\ifodd\\value{page}\\hbox{}\\newpage\\fi\n\\part" + text + "\n\n\\begin{multicols}{2}\n"
+            text = """
+                   \\end{multicols}
+                   \\clearpage
+                   \\ifodd\\value{page}\\hbox{}\\newpage\\fi
+                   \\part{%s}
+
+                   \\begin{multicols}{2}
+                   """ % text
             return text
         if link == "IDX":
             entry = text
@@ -1194,13 +1271,3 @@ class pdf_latex():
             for item in entry.split(";"):
                 text += "\n\\index{%s}\n" % item.strip(" ")
         return text + "\n"
-
-
-# TODO: finish code
-# class latex(pdf_latex):
-#     @staticmethod
-#     def end(out):
-#         out += "\\end{multicols}\n\\end{document}"
-#         out.out = out.out.replace("&", "\\&").replace("#", "\\#").replace(
-#             "\\n", "{\\textbackslash}n").replace("_", "\\_").replace("|", "\\|")
-#         return out.out.encode("utf-8")
