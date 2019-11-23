@@ -86,19 +86,19 @@ class terminal():
         return ""
 
     @staticmethod
-    def start_ulist_1(l):
+    def start_ulist_1(level):
         return "\n-"
 
     @staticmethod
-    def start_ulist_2(l):
+    def start_ulist_2(level):
         return "\n  -"
 
     @staticmethod
-    def start_ulist_3(l):
+    def start_ulist_3(level):
         return "\n    -"
 
     @staticmethod
-    def end_ulist(l):
+    def end_ulist(level):
         return "\n"
 
     @staticmethod
@@ -114,19 +114,19 @@ class terminal():
         return text
 
     @staticmethod
-    def start_olist_1(l):
+    def start_olist_1(level):
         return "\n*"
 
     @staticmethod
-    def start_olist_2(l):
+    def start_olist_2(level):
         return "\n  *"
 
     @staticmethod
-    def start_olist_3(l):
+    def start_olist_3(level):
         return "\n    *"
 
     @staticmethod
-    def end_olist(l):
+    def end_olist(level):
         return "\n"
 
     @staticmethod
@@ -208,7 +208,8 @@ class html():
 
     @staticmethod
     def start():
-        return "<!DOCTYPE html>\n<html>\n<head>\n<link rel=\"stylesheet\" href=\"main.css\">\n</head>\n<body>\n<div id=\"page\">"
+        return "<!DOCTYPE html>\\n<html>\n<head>\n<link rel=\"stylesheet\""\
+               "href=\"main.css\">\n</head>\n<body>\n<div id=\"page\">"
 
     @staticmethod
     def add_text(text):
@@ -255,39 +256,39 @@ class html():
         return "<ul><li>"
 
     @staticmethod
-    def start_ulist_1(l):
-        if l == 1:
+    def start_ulist_1(level):
+        if level == 1:
             return "</li><li>"
-        if l == 2:
+        if level == 2:
             return "</li></ul><li>"
-        if l == 3:
+        if level == 3:
             return "</li></ul></ul><li>"
 
     @staticmethod
-    def start_ulist_2(l):
-        if l == 1:
+    def start_ulist_2(level):
+        if level == 1:
             return "</li><ul><li>"
-        if l == 2:
+        if level == 2:
             return "</li><li>"
-        if l == 3:
+        if level == 3:
             return "</li></ul><li>"
 
     @staticmethod
-    def start_ulist_3(l):
-        if l == 1:
+    def start_ulist_3(level):
+        if level == 1:
             return "</li><ul><ul><li>"
-        if l == 2:
+        if level == 2:
             return "</li><ul><li>"
-        if l == 3:
+        if level == 3:
             return "</li><li>"
 
     @staticmethod
-    def end_ulist(l):
-        if l == 1:
+    def end_ulist(level):
+        if level == 1:
             return "</li></ul>"
-        if l == 2:
+        if level == 2:
             return "</li></ul></ul>"
-        if l == 3:
+        if level == 3:
             return "</li></ul></ul></ul>"
 
     @staticmethod
@@ -307,39 +308,39 @@ class html():
         return "<ol><li>"
 
     @staticmethod
-    def start_olist_1(l):
-        if l == 1:
+    def start_olist_1(level):
+        if level == 1:
             return "</li><li>"
-        if l == 2:
+        if level == 2:
             return "</li></ol><li>"
-        if l == 3:
+        if level == 3:
             return "</li></ol></ol><li>"
 
     @staticmethod
-    def start_olist_2(l):
-        if l == 1:
+    def start_olist_2(level):
+        if level == 1:
             return "</li><ol><li>"
-        if l == 2:
+        if level == 2:
             return "</li><li>"
-        if l == 3:
+        if level == 3:
             return "</li></ol><li>"
 
     @staticmethod
-    def start_olist_3(l):
-        if l == 1:
+    def start_olist_3(level):
+        if level == 1:
             return "</li><ol><ol><li>"
-        if l == 2:
+        if level == 2:
             return "</li><ol><li>"
-        if l == 3:
+        if level == 3:
             return "</li><li>"
 
     @staticmethod
-    def end_olist(l):
-        if l == 1:
+    def end_olist(level):
+        if level == 1:
             return "</li></ol>"
-        if l == 2:
+        if level == 2:
             return "</li></ol></ol>"
-        if l == 3:
+        if level == 3:
             return "</li></ol></ol></ol>"
 
     @staticmethod
@@ -372,6 +373,7 @@ class html():
         return "<a href=%s> %s </a><br/>" % (text, link)
 
 
+"""
 @Formater
 class docx():
     @staticmethod
@@ -395,17 +397,17 @@ class docx():
                 self.doc.add_heading(text, 3)
                 self.p = None
             elif ttype == "BOLD":
-                if self.p == None:
+                if self.p is None:
                     self.p = self.doc.add_paragraph()
                 self.r = self.p.add_run(text)
                 self.r.bold = True
             elif ttype == "EMPH":
-                if self.p == None:
+                if self.p is None:
                     self.p = self.doc.add_paragraph()
                 self.r = self.p.add_run(text)
                 self.r.italic = True
             else:
-                if self.p == None:
+                if self.p is None:
                     self.p = self.doc.add_paragraph()
                 self.r = self.p.add_run(text)
         return self
@@ -528,19 +530,19 @@ class docx():
         return []
 
     @staticmethod
-    def start_ulist_1(l):
+    def start_ulist_1(level):
         return ["L1: "]
 
     @staticmethod
-    def start_ulist_2(l):
+    def start_ulist_2(level):
         return ["L2: "]
 
     @staticmethod
-    def start_ulist_3(l):
+    def start_ulist_3(level):
         return ["L3: "]
 
     @staticmethod
-    def end_ulist(l):
+    def end_ulist(level):
         return []
 
     @staticmethod
@@ -573,6 +575,7 @@ class docx():
             link = text[0]
             text = text[-1]
         return ["<a href=%s> %s </a><br/>" % (text, link)]
+"""
 
 
 @Formater
@@ -610,7 +613,7 @@ class pdf_groff():
                 elif self.out[-1] != "\n":
                     self.out += "\n"
                 self.pp = False
-            elif self.pp == False:
+            elif self.pp is False:
                 if self.out[-1] != "\n":
                     self.out += "\n"
                 self.pp = True
@@ -624,7 +627,7 @@ class pdf_groff():
         Formatter.__init__(self, **options)
         self.styles = {}
         for token, style in self.style:
-            if style['color'] == None:
+            if style['color'] is None:
                 color = "000000"
             else:
                 color = style['color']
@@ -643,14 +646,16 @@ class pdf_groff():
             if lastval.strip(" "):
                 color = self.styles[lasttype][0]
                 val = lastval.replace('\n', '\n.in %sc\n' % float(indent/6))
-                outfile += ".defcolor pyg rgb #%s\n.gcolor pyg\n%s\n.gcolor\n" % (color, val)
+                outfile += ".defcolor pyg rgb #%s\n.gcolor pyg\n%s\n.gcolor\n"
+                outfile = outfile % (color, val)
             # set lastval/lasttype to current values
             lastval = value
             lasttype = ttype
         if lastval.strip(" "):
             color = self.styles[lasttype][0]
             val = lastval.replace('\n', '\n.in %sc\n' % float(indent/6))
-            outfile += ".defcolor pyg rgb #%s\n.gcolor pyg\n%s\n.gcolor\n" % (color, val)
+            outfile += ".defcolor pyg rgb #%s\n.gcolor pyg\n%s\n.gcolor\n"
+            outfile = outfile % (color, val)
         # set lastval/lasttype to current values
         lastval = value
         lasttype = ttype
@@ -674,7 +679,8 @@ class pdf_groff():
     def start():
         # \\X'papersize=5.5i,8.5i'\n
         # \n.nr PO .3i\n.nr LL 6.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i
-        return "\n.OH '''%'\n.EH '''%'\n.color 1\n.OF '()AUT()'''\n.EF '''()TTL()'\n"
+        return "\n.OH '''%'\n.EH '''%'\n.color 1\n.OF '()AUT()'''\n.EF"\
+               "'''()TTL()'\n"
 
     @staticmethod
     def bold_text(text):
@@ -682,7 +688,9 @@ class pdf_groff():
 
     @staticmethod
     def add_header_1(text):
-        return ".OH '%'-%s-''\n.EH ''-%s-'%'\n.bp\n.NH ()HL1()\n%s\n.XS\n.B\n%s\n.XE\n.PP\n" % (text, text, text, text)
+        return ".OH '%'-%s-''\n.EH ''-%s-'%'\n.bp\n"\
+               ".NH ()HL1()\n%s\n.XS\n.B\n%s\n.XE\n.PP\n" %\
+               (text, text, text, text)
 
     @staticmethod
     def add_header_2(text):
@@ -710,39 +718,39 @@ class pdf_groff():
         return ""
 
     @staticmethod
-    def start_ulist_1(l):
-        if l == 1:
+    def start_ulist_1(level):
+        if level == 1:
             return ".IP \\(bu 2\n"
-        if l == 2:
+        if level == 2:
             return ".RE\n.IP \\(bu 2\n"
-        if l == 3:
+        if level == 3:
             return ".RE\n.RE\n.IP \\(bu 2\n"
 
     @staticmethod
-    def start_ulist_2(l):
-        if l == 1:
+    def start_ulist_2(level):
+        if level == 1:
             return ".RS\n.IP \\(bu 2\n"
-        if l == 2:
+        if level == 2:
             return ".IP \\(bu 2\n"
-        if l == 3:
+        if level == 3:
             return ".RE\n.IP \\(bu 2\n"
 
     @staticmethod
-    def start_ulist_3(l):
-        if l == 1:
+    def start_ulist_3(level):
+        if level == 1:
             return ".RS\n.RS\n.IP \\(bu 2\n"
-        if l == 2:
+        if level == 2:
             return ".RS\n.IP \\(bu 2\n"
-        if l == 3:
+        if level == 3:
             return ".IP \\(bu 2\n"
 
     @staticmethod
-    def end_ulist(l):
-        if l == 1:
+    def end_ulist(level):
+        if level == 1:
             return ""
-        if l == 2:
+        if level == 2:
             return ".RE\n"
-        if l == 3:
+        if level == 3:
             return ".RE\n.RE\n"
 
     @staticmethod
@@ -759,7 +767,8 @@ class pdf_groff():
 
     @staticmethod
     def end(out):
-        out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC"
+        out += ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%'\n"\
+               ".de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC"
         out.out = out.out.replace("\n\n", "\n")
         o = subprocess.Popen("groff -Tpdf -dpaper=a4 -P-pa4 -ms".split(" "),
                              stdin=subprocess.PIPE, stdout=subprocess.PIPE)
@@ -782,7 +791,8 @@ class pdf_groff():
             if text[-1] == "!":
                 return "\n.bp\n.NH 0\n%s\n" % text[:-1]
             else:
-                return ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents-'%%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n%s\n.rm toc*div\n.rm toc*num\n" % text
+                return ".OH '%'-Table Of Contents-''\n.EH ''-Table Of Contents"\
+                       "-'%%'\n.de TOC\n.MC 200p .3i\n.SH\nTable Of Contents\n..\n.TC\n.bp\n.NH 0\n%s\n.rm toc*div\n.rm toc*num\n" % text
         return "%s\n" % text
 
 
@@ -851,13 +861,13 @@ class pdf_latex():
 
             \\setlength{\\columnseprule}{0pt}
             """
-            out+="\n\\setlength{\\columnseprule}{1pt}\n\\begin{multicols}{2}\n\\tableofcontents\n\\end{multicols}\n\\clearpage\n\\etocsettocstyle{\\subsection*{This Chapter contains:}}\n\n\\setlength{\\columnseprule}{0pt}\n"
+            out += "\n\\setlength{\\columnseprule}{1pt}\n\\begin{multicols}{2}\n\\tableofcontents\n\\end{multicols}\n\\clearpage\n\\etocsettocstyle{\\subsection*{This Chapter contains:}}\n\n\\setlength{\\columnseprule}{0pt}\n"
         out = out.replace("()HL1()", str(self.title_heading_level + 0))
         out = out.replace("()HL2()", str(self.title_heading_level + 1))
         out = out.replace("()HL3()", str(self.title_heading_level + 2))
         out = out.replace("()TTL()", self.title)
         if self.author:
-            out = out.replace("()AUT()",self.author)
+            out = out.replace("()AUT()", self.author)
         else:
             out = out.replace("()AUT()", "")
         out = out.replace("()PPR()", self.geometry)
@@ -893,7 +903,7 @@ class pdf_latex():
         Formatter.__init__(self, **options)
         self.styles = {}
         for token, style in self.style:
-            if style['color'] == None:
+            if style['color'] is None:
                 color = "000000"
             else:
                 color = style['color']
@@ -916,8 +926,8 @@ class pdf_latex():
                 color_r = str(float(color_r)/int("10000", 16))
                 color_g = str(float(color_g)/int("100", 16))
                 color_b = str(float(color_b))
-                val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n","\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8) #.replace('[', '\\[').replace(']', '\\]')                code = "{code}"
-                outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color\{code\} %s}" % (color_r, color_g, color_b, val)
+                val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n", "\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8)  # .replace('[', '\\[').replace(']', '\\]')                code = "{code}"
+                outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color{code} %s}" % (color_r, color_g, color_b, val)
             lastval = value
             lasttype = ttype
         if lastval.strip(" "):
@@ -927,8 +937,8 @@ class pdf_latex():
             color_r = str(float(color_r)/int("10000", 16))
             color_g = str(float(color_g)/int("100", 16))
             color_b = str(float(color_b))
-            val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n","\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8) #.replace('[', '\\[').replace(']', '\\]')                code = "{code}"
-            outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color\{code\} %s}" % (color_r, color_g, color_b, val)
+            val = lastval.replace("\\", "{\\textbackslash}").replace('{', '\\{').replace('$', '\\$').replace('}', '\\}').replace("\n", "\\\\\n\\setlength\\parindent{%ipt}\n" % indent*8)  # .replace('[', '\\[').replace(']', '\\]')                code = "{code}"
+            outfile += "{\n\\definecolor{code}{rgb}{%s, %s, %s}\n\\color{code} %s}" % (color_r, color_g, color_b, val)
 
     @staticmethod
     def add_new_line():
@@ -981,39 +991,39 @@ class pdf_latex():
         return ""
 
     @staticmethod
-    def start_ulist_1(l):
-        if l == 1:
+    def start_ulist_1(level):
+        if level == 1:
             return ""
-        if l == 2:
+        if level == 2:
             return "\\end{itemize}\n"
-        if l == 3:
+        if level == 3:
             return "\\end{itemize}\n\\end{itemize}\n"
 
     @staticmethod
-    def start_ulist_2(l):
-        if l == 1:
+    def start_ulist_2(level):
+        if level == 1:
             return "\\begin{itemize}\n"
-        if l == 2:
+        if level == 2:
             return ""
-        if l == 3:
+        if level == 3:
             return "\\end{itemize}\n"
 
     @staticmethod
-    def start_ulist_3(l):
-        if l == 1:
+    def start_ulist_3(level):
+        if level == 1:
             return "\\begin{itemize}\n\\begin{itemize}\n"
-        if l == 2:
+        if level == 2:
             return "\\begin{itemize}\n"
-        if l == 3:
+        if level == 3:
             return ""
 
     @staticmethod
-    def end_ulist(l):
-        if l == 1:
+    def end_ulist(level):
+        if level == 1:
             return "\\end{itemize}\n"
-        if l == 2:
+        if level == 2:
             return "\\end{itemize}\n\\end{itemize}\n"
-        if l == 3:
+        if level == 3:
             return "\\end{itemize}\n\\end{itemize}\n\\end{itemize}\n"
 
     @staticmethod
@@ -1028,45 +1038,44 @@ class pdf_latex():
     def add_ulist_text(text):
         return "\\item %s\n" % text
 
-
     @staticmethod
     def start_olist():
         return "\\begin{enumerate}"
 
     @staticmethod
-    def start_olist_1(l):
-        if l == 1:
+    def start_olist_1(level):
+        if level == 1:
             return ""
-        if l == 2:
+        if level == 2:
             return "\\end{enumerate}\n"
-        if l == 3:
+        if level == 3:
             return "\\end{enumerate}\n\\end{enumerate}\n"
 
     @staticmethod
-    def start_olist_2(l):
-        if l == 1:
+    def start_olist_2(level):
+        if level == 1:
             return "\\begin{enumerate}\n"
-        if l == 2:
+        if level == 2:
             return ""
-        if l == 3:
+        if level == 3:
             return "\\end{enumerate}\n"
 
     @staticmethod
-    def start_olist_3(l):
-        if l == 1:
+    def start_olist_3(level):
+        if level == 1:
             return "\\begin{enumerate}\n\\begin{enumerate}\n"
-        if l == 2:
+        if level == 2:
             return "\\begin{enumerate}\n"
-        if l == 3:
+        if level == 3:
             return ""
 
     @staticmethod
-    def end_olist(l):
-        if l == 1:
+    def end_olist(level):
+        if level == 1:
             return "\\end{enumerate}\n"
-        if l == 2:
+        if level == 2:
             return "\\end{enumerate}\n\\end{enumerate}\n"
-        if l == 3:
+        if level == 3:
             return "\\end{enumerate}\n\\end{enumerate}\n\\end{enumerate}\n"
 
     @staticmethod
@@ -1103,20 +1112,20 @@ class pdf_latex():
         tempin.close()
         try:
             if out.index:
-                with open("%s.ist" % path, 'w+') as index_style:    
+                with open("%s.ist" % path, 'w+') as index_style:
                     """
                     headings_flag 1
-                    
+
                     heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
                     \\\\noindent\\\\textbf{\"
                     heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
-                    
+
                     item_0 \"\\n \\\\item \\\\small \"
                     delim_0 \" \\\\hfill \"
                     delim_1 \" \\\\hfill \"
                     delim_2 \" \\\\hfill \"
                     """
-                    #index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
+                    # index_style.write("headings_flag 1\n\nheading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%\n\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n\"\n\nitem_0 \"\\n \\\\item \\\\small \"\ndelim_0 \" \\\\hfill \"\ndelim_1 \" \\\\hfill \"\ndelim_2 \" \\\\hfill \"\n")
                     """
                     heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
                     heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
@@ -1125,10 +1134,10 @@ class pdf_latex():
                     index_style.write("heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"\nheading_suffix \"}\\\\par\\\\nopagebreak\\n}\"\nheadings_flag 1")
             if out.toc:
                 o = subprocess.Popen(("%s -output-directory %s %s/%s" % (latex, tmpdir, tmpdir, tempin_name)).split(" "),
-                                    stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
+                                     stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
                 out = o.communicate()
             o = subprocess.Popen(("%s -output-directory %s %s/%s" % (latex, tmpdir, tmpdir, tempin_name)).split(" "),
-                                stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
+                                 stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=path)
             out = o.communicate()
             tempout = open("%s/%s.pdf" % (tmpdir, tempin_name), 'r+b')
             pdf = tempout.read()
@@ -1172,12 +1181,12 @@ class pdf_latex():
             text = "{"+text+"}"
             """
             \\end{multicols}
-            \clearpage
-            \ifodd\value{page}\hbox{}\newpage\fi
+            \\clearpage
+            \\ifodd\\value{page}\\hbox{}\\newpage\\fi
             \\part{text}
             \\begin{multicols}{2}
             """
-            text = "\n\\end{multicols}\n\clearpage\n\\ifodd\\value{page}\\hbox{}\\newpage\\fi\n\\part" + text + "\n\n\\begin{multicols}{2}\n"
+            text = "\n\\end{multicols}\n\\clearpage\n\\ifodd\\value{page}\\hbox{}\\newpage\\fi\n\\part" + text + "\n\n\\begin{multicols}{2}\n"
             return text
         if link == "IDX":
             entry = text
