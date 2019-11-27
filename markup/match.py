@@ -24,13 +24,14 @@ def match_star(tokens, With):
     parser = With
     sym_dict = {
         "UNDERSCORE": "_",
+        "DOLLAR": "$",
         "GRAVE": "`",
         "STAR": "*",
         "PLUS": "+",
         "MINUS": "-",
         "HASH": "#",
         "TAGO": "<",
-        "TAGC": ">",  # FIX: dupe tokens
+        "TAGC": ">",
         "TAB": "\t",
         "NEWLINE": "\n",
     }
@@ -64,6 +65,7 @@ def match_star_merge(tokens, With):
     parser = With
     sym_dict = {
         "UNDERSCORE": "_",
+        "DOLLAR": "$",
         "GRAVE": "`",
         "STAR": "*",
         "PLUS": "+",
@@ -131,6 +133,7 @@ def match_multi_star_until(tokens, matches, until):
     consumed = 0
     sym_dict = {
         "UNDERSCORE": "_",
+        "DOLLAR": "$",
         "GRAVE": "`",
         "STAR": "*",
         "PLUS": "+",

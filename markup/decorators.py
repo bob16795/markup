@@ -156,3 +156,8 @@ class Formater():
     def end_ulist(self, *args, **kwargs):
         f = self.f.end_ulist
         return f
+
+    # equations
+    def add_equation(self, *args, **kwargs):
+        f = self.f.add_equation
+        return f

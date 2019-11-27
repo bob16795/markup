@@ -19,10 +19,11 @@ def tokenize(file_cached, prop_app, file_name, output):
     mu = True
     token_dict = {
         "_": ["UNDERSCORE", "SYM"],
+        "$": ["DOLLAR", "SYM"],
         "`": ["GRAVE", "SYM"],
+        "-": ["MINUS", "SYM"],
         "*": ["STAR", "SYM"],
         "+": ["PLUS", "SYM"],
-        "-": ["MINUS", "SYM"],
         "#": ["HASH", "SYM"],
         "<": ["TAGO", "SYM"],
         ">": ["TAGC", "SYM"],
@@ -82,7 +83,7 @@ def tokenize(file_cached, prop_app, file_name, output):
                         md_tokens.append(
                             Token("TEXT", text, "end of last line in file", i))
                 md_tokens.append(
-                    Token("NEWLINE", "", "end of line {x+1}", i))
+                    Token("NEWLINE", "", "end of line %s" % (x+1), i))
             else:
                 props.set(i)
     md_tokens.append(

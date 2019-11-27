@@ -85,7 +85,7 @@ def test_list_different_spaces():
         - f
 
     '<Body Paragprphs:
-      <List sentences: 
+      <List sentences:
         <Sentence type: TEXT, value: " a \t", Consumed: 3>,
         <Sentence type: ULIST2, value: "", Consumed: 1>,
         <Sentence type: TEXT, value: " b \t\t", Consumed: 3>,
@@ -132,7 +132,7 @@ def test_list_different_tabs():
         - f
 
     '<Body Paragprphs:
-      <List sentences: 
+      <List sentences:
         <Sentence type: TEXT, value: " a \t", Consumed: 3>,
         <Sentence type: ULIST2, value: "", Consumed: 1>,
         <Sentence type: TEXT, value: " b \t\t", Consumed: 3>,
@@ -179,7 +179,7 @@ def test_list_minus():
         - f
 
     '<Body Paragprphs:
-      <List sentences: 
+      <List sentences:
         <Sentence type: TEXT, value: " a \t", Consumed: 3>,
         <Sentence type: ULIST2, value: "", Consumed: 1>,
         <Sentence type: TEXT, value: " b \t\t", Consumed: 3>,

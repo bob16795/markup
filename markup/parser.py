@@ -1,6 +1,7 @@
-from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, ParagraphNode, BodyNode
+from markup.nodes import Node, nullNode, HeadNode, ListNode, CodeNode, ParagraphNode, BodyNode, EquationNode
 from markup.match import match_first, match_star, match_star_err, match_multi_star_until, match_star_merge
 import click
+
 
 def parse_markdown(tokens):
     """
@@ -11,15 +12,20 @@ def parse_markdown(tokens):
     body = Body_Parser(tokens)
     if body.consumed != -1 + tokens.length():
         if not tokens.grab(body.consumed-1).context == "EOF":
+            list = tokens.grab_num(body.consumed-3, 5)
+            context = ""
+            for i in list:
+                context += i.context + "\n"
             click.secho(
-                "error at %s\n%s" % (tokens.grab(body.consumed-1).at, tokens.grab(body.consumed-1).context), fg="red",
+                "error at %s\n%s" % (tokens.grab(body.consumed-1).at, context), fg="red",
                 err=True)
     return body
 
+# ADD: inline equations
 # ADD: inline code
 # ADD: indent code
 # ADD: tables
-# ADD: equations
+# ADD: inline equations
 
 
 def Text_Parser(tokens):
@@ -57,37 +63,45 @@ def Multinewline_Parser(tokens):
     return node
 
 
+def Bold_Parser_End(tokens):
+    if tokens.peek_or([["STAR", "STAR", "NEWLINE"], ["UNDERSCORE", "UNDERSCORE", "NEWLINE"]]):
+        return Node("MATCH", "lol", 3)
+    return nullNode()
+
+
 def Bold_Parser(tokens):
-    """
-    Bold:
-        ( "**"
-          Text
-          "**" ) |
-        ( "__"
-          Text
-          "__")
-    """
-    if tokens.peek_or([["STAR", "STAR", "TEXT", "STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE", "TEXT", "UNDERSCORE", "UNDERSCORE"]]):
-        return Node("BOLD", tokens.grab(2).value, 5)
-    if tokens.peek_or([["STAR", "STAR", "NUM", "STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE", "NUM", "UNDERSCORE", "UNDERSCORE"]]):
-        return Node("BOLD", tokens.grab(2).value, 5)
+    if tokens.peek_or([["STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE"]]):
+        nodes, consumed = match_multi_star_until(
+            tokens.offset(2), [Text_Parser], Bold_Parser_End)
+        return Node("BOLD", nodes[0].value, 5+consumed)
+    return nullNode()
+
+
+def Emph_Parser_End(tokens):
+    if tokens.peek_or([["STAR", "NEWLINE"], ["UNDERSCORE", "NEWLINE"]]):
+        return Node("MATCH", "lol", 2)
     return nullNode()
 
 
 def Emph_Parser(tokens):
-    """
-    Emph:
-        ( "*"
-          Text
-          "*" ) |
-        ( "_"
-          Text
-          "_")
-    """
-    if tokens.peek_or([["STAR", "TEXT", "STAR"], ["UNDERSCORE", "TEXT", "UNDERSCORE"]]):
-        return Node("EMPH", tokens.grab(1).value, 3)
-    if tokens.peek_or([["STAR", "NUM", "STAR"], ["UNDERSCORE", "NUM", "UNDERSCORE"]]):
-        return Node("EMPH", tokens.grab(1).value, 3)
+    if tokens.peek_or([["STAR"], ["UNDERSCORE"]]):
+        nodes, consumed = match_multi_star_until(
+            tokens.offset(1), [Text_Parser], Emph_Parser_End)
+        return Node("EMPH", nodes[0].value, 3+consumed)
+    return nullNode()
+
+
+def Equation_Parser_End(tokens):
+    if tokens.peek(["DOLLAR", "DOLLAR", "NEWLINE"]):
+        return Node("MATCH", "lol", 3)
+    return nullNode()
+
+
+def Equation_Parser(tokens):
+    if tokens.peek(["DOLLAR", "DOLLAR"]):
+        nodes, consumed = match_multi_star_until(
+            tokens.offset(2), [Text_Parser], Equation_Parser_End)
+        return EquationNode(nodes[0].value, consumed+5)
     return nullNode()
 
 
@@ -197,6 +211,7 @@ def Bullet_Parser(tokens):
         return Node("TEXT", "", 1)
     return nullNode()
 
+
 def Number_Parser(tokens):
     """
     Number:
@@ -271,6 +286,7 @@ def OL3_Parser(tokens):
         return Node("OLIST3", "", 4)
     return nullNode()
 
+
 def Item_Parser(tokens):
     """
     Item:
@@ -325,6 +341,7 @@ def Tab_Parser(tokens):
         return Node("TEXT", "\t", 1)
     return nullNode()
 
+
 def Code_Parser(tokens):
     """
     Code:
@@ -362,7 +379,7 @@ def Sentence_Parser(tokens):
     Sentence:
         Text | Emph | Bold | Single_NL
     """
-    return match_first(tokens, [Text_Parser, Emph_Parser, Bold_Parser, Singlenewline_Parser])
+    return match_first(tokens, [Text_Parser, Bold_Parser, Emph_Parser, Singlenewline_Parser])
 
 
 def Sentences_NL_Parser(tokens):
@@ -403,7 +420,7 @@ def Paragraph_Parser(tokens):
     Paragraph:
         Tags | Code_Multi_Line | Header | List | Sentence_NL | Sentence_EOF
     """
-    return match_first(tokens, [Multi_Tag_Parser, Code_Multi_line_Parser, Header_Parser, List_Parser, Sentences_NL_Parser, Sentences_EOF_Parser])
+    return match_first(tokens, [Multi_Tag_Parser, Equation_Parser, Code_Multi_line_Parser, Header_Parser, List_Parser, Sentences_NL_Parser, Sentences_EOF_Parser])
 
 
 def Body_Parser(tokens):

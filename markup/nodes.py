@@ -65,6 +65,15 @@ class CodeNode():
             j += i.__str__() + ","
         return("<Code sentences: %s, Consumed: %s>" % (j[:-1], self.consumed))
 
+class EquationNode():
+    def __init__(self, value, consumed):
+        self.consumed = consumed
+        self.value = value
+
+    def __str__(self):
+        j = ""
+        return("<Equation value: %s, Consumed: %s>" % (self.value, self.consumed))
+
 
 class HeadNode():
     def __init__(self, type, value, consumed):

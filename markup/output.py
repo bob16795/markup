@@ -379,211 +379,6 @@ class html():
         return "<a href=%s> %s </a><br/>" % (text, link)
 
 
-"""
-@Formater
-class docx():
-    @staticmethod
-    def outer_init(self, out, prop):
-        self.doc = Document(prop.get("template"))
-
-    @staticmethod
-    def outer_add(self, out):
-        for i in out:
-            ttype = i.split(": ")[0]
-            text = i.split(": ")[-1]
-            if ttype == "\n":
-                self.p = None
-            elif ttype == "H1":
-                self.doc.add_heading(text, 1)
-                self.p = None
-            elif ttype == "H2":
-                self.doc.add_heading(text, 2)
-                self.p = None
-            elif ttype == "H3":
-                self.doc.add_heading(text, 3)
-                self.p = None
-            elif ttype == "BOLD":
-                if self.p is None:
-                    self.p = self.doc.add_paragraph()
-                self.r = self.p.add_run(text)
-                self.r.bold = True
-            elif ttype == "EMPH":
-                if self.p is None:
-                    self.p = self.doc.add_paragraph()
-                self.r = self.p.add_run(text)
-                self.r.italic = True
-            else:
-                if self.p is None:
-                    self.p = self.doc.add_paragraph()
-                self.r = self.p.add_run(text)
-        return self
-
-    @staticmethod
-    def fmt_init(self, **options):
-        Formatter.__init__(self, **options)
-
-        # create a dict of (start, end) tuples that wrap the
-        # value of a token so that we can use it in the format
-        # method later
-        self.styles = {}
-
-        # we iterate over the `_styles` attribute of a style item
-        # that contains the parsed style values.
-        for token, style in self.style:
-            # a style item is a tuple in the following form:
-            # colors are readily specified in hex: 'RRGGBB'
-            if style['color'] == None:
-                color = RGBColor.from_string("000000")
-            else:
-                color = RGBColor.from_string(style['color'])
-            self.styles[token] = (color, style['bold'],
-                                  style['italic'], style['underline'])
-
-    @staticmethod
-    def fmt_format(self, tokensource, outfile):
-        # lastval is a string we use for caching
-        # because it's possible that an lexer yields a number
-        # of consecutive tokens with the same token type.
-        # to minimize the size of the generated html markup we
-        # try to join the values of same-type tokens here
-        lastval = ''
-        lasttype = None
-        doc = outfile
-        self.p = doc.add_paragraph(style="Source Code")
-        # wrap the whole output with <pre>
-
-        for ttype, value in tokensource:
-            # if the token type doesn't exist in the stylemap
-            # we try it with the parent of the token type
-            # eg: parent of Token.Literal.String.Double is
-            # Token.Literal.String
-            while ttype not in self.styles:
-                ttype = ttype.parent
-            if ttype == lasttype:
-                # the current token type is the same of the last
-                # iteration. cache it
-                lastval += value
-            else:
-                # not the same token as last iteration, but we
-                # have some data in the buffer. wrap it with the
-                # defined style and write it to the output file
-                if lastval:
-                    color, bold, italic, underline = self.styles[lasttype]
-                    r = self.p.add_run(lastval)
-                    r.font.color.rgb = color
-                    r.font.bold = bold
-                    r.font.italic = italic
-                    r.font.underline = underline
-                # set lastval/lasttype to current5 values
-                lastval = value
-                lasttype = ttype
-
-        # if something is left in the buffer, write it to the
-        if lastval:
-            color, bold, italic, underline = self.styles[lasttype]
-            r = self.p.add_run(lastval.replace("\n", ""))
-            r.font.color.rgb = color
-            r.font.bold = bold
-            r.font.italic = italic
-            r.font.underline = underline
-
-    @staticmethod
-    def start():
-        return []
-
-    @staticmethod
-    def add_text(text):
-        return [text]
-
-    @staticmethod
-    def add_new_line():
-        return ["\n"]
-
-    @staticmethod
-    def emph_text(text):
-        return ["EMPH: " % text]
-
-    @staticmethod
-    def bold_text(text):
-        return ["BOLD: " % text]
-
-    @staticmethod
-    def add_header_1(text):
-        return ["H1: " % text]
-
-    @staticmethod
-    def add_header_2(text):
-        return ["H2: " % text]
-
-    @staticmethod
-    def add_header_3(text):
-        return ["H3: " % text]
-
-    @staticmethod
-    def start_code():
-        return ["\n"]
-
-    @staticmethod
-    def code_line(text):
-        return [text, "\n"]
-
-    @staticmethod
-    def end_code():
-        return []
-
-    @staticmethod
-    def start_ulist():
-        return []
-
-    @staticmethod
-    def start_ulist_1(level):
-        return ["L1: "]
-
-    @staticmethod
-    def start_ulist_2(level):
-        return ["L2: "]
-
-    @staticmethod
-    def start_ulist_3(level):
-        return ["L3: "]
-
-    @staticmethod
-    def end_ulist(level):
-        return []
-
-    @staticmethod
-    def emph_ulist_text(text):
-        return ["EMPH: " % text]
-
-    @staticmethod
-    def bold_ulist_text(text):
-        return ["BOLD: " % text]
-
-    @staticmethod
-    def add_ulist_text(text):
-        return [text]
-
-    @staticmethod
-    def end(out):
-        out.doc.save("/tmp/tmp.docx")
-        with open("/tmp/tmp.docx", "rb") as f:
-            text = f.read()
-        return text
-
-    @staticmethod
-    def tag(text):
-        if "](" in text:
-            text = text.split("](")
-            link = text[0]
-            text = text[-1]
-        else:
-            text = text.split(": ")
-            link = text[0]
-            text = text[-1]
-        return ["<a href=%s> %s </a><br/>" % (text, link)]
-"""
-
-
 @Formater
 class pdf_groff():
     """
@@ -683,8 +478,6 @@ class pdf_groff():
 
     @staticmethod
     def start():
-        # \\X'papersize=5.5i,8.5i'\n
-        # \n.nr PO .3i\n.nr LL 6.4i\n.nr FM .5i\n.nr HM .3i\n.nr LT 7.4i
         return """
                .OH '''%'
                .EH '''%'
@@ -844,7 +637,6 @@ class pdf_latex():
     @staticmethod
     def outer_init(self, out, prop):
         self.pp = False
-        self.title_heading_level = 0
         if prop.get("index"):
             out += """
                    \\makeindex[program=makeindex,options=-s ()IDXPTH().ist]
@@ -862,6 +654,7 @@ class pdf_latex():
                \\lfoot{()AUT()}
                \\lhead{\\leftmark}
                \\rhead{\\thepage}
+               \\renewcommand*\\thesection{\\arabic{section}}
                \\begin{document}
                """
         self.author = prop.get("author")
@@ -910,8 +703,10 @@ class pdf_latex():
         else:
             out = out.replace("()AUT()", "")
         out = out.replace("()PPR()", self.geometry)
-        if not prop.get("no_col"):
-            out += "\\begin{multicols}{1}"
+        self.cols = False
+        if prop.get("multicols"):
+            self.cols = True
+            out += "\\begin{multicols}{2}"
         self.out = out
 
     @staticmethod
@@ -1151,12 +946,20 @@ class pdf_latex():
         return "\\item \\textbf{%s}\n" % text
 
     @staticmethod
+    def emph_olist_text(text):
+        return "\\item \\textbf{%s}\n" % text
+
+    @staticmethod
     def bold_olist_text(text):
         return "\\item \\textit{%s}\n" % text
 
     @staticmethod
     def add_olist_text(text):
         return "\\item %s\n" % text
+
+    @staticmethod
+    def add_equation(text):
+        return "$$%s$$" % text.replace("_", "()US()")
 
     # TODO: set path to pdflatex
     @staticmethod
@@ -1166,7 +969,8 @@ class pdf_latex():
         if os.name == "nt":
             tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
             latex = "C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe"
-        out += "\n\\end{multicols}"
+        if out.cols == True:
+            out += "\n\\end{multicols}"
         if out.index:
             out += "\n\\printindex\n\\pagestyle{fancy}\n"
         out += "\n\\end{document}\n"
@@ -1174,13 +978,16 @@ class pdf_latex():
             .replace("%", "\\%")\
             .replace("#", "\\#")\
             .replace("\\n", "{\\textbackslash}n")\
-            .replace("_", "\\_").replace("|", "\\|")\
+            .replace("_", "\\_")\
+            .replace("()US()", "_")\
+            .replace("|", "\\|")\
             .replace("\n\\\\\n", "\n\n")
         tempin = tempfile.NamedTemporaryFile(dir=tmpdir, delete=False)
         tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
         path = tmpdir
         out.out = out.out.replace("()IDXPTH()", path.replace("\\", "/"))
         tempin.write(out.out.encode())
+        debug = out.out.encode()
         tempin.close()
         try:
             if out.index:
@@ -1205,7 +1012,7 @@ class pdf_latex():
                         """)
             if out.toc:
                 o = subprocess.Popen(("%s -output-directory %s %s/%s" %
-                                     (latex, tmpdir, tmpdir, tempin_name))
+                                      (latex, tmpdir, tmpdir, tempin_name))
                                      .split(" "),
                                      stdin=subprocess.PIPE,
                                      stdout=subprocess.PIPE,
@@ -1213,7 +1020,7 @@ class pdf_latex():
                                      cwd=path)
                 out = o.communicate()
             o = subprocess.Popen(("%s -output-directory %s %s/%s" %
-                                 (latex, tmpdir, tmpdir, tempin_name))
+                                  (latex, tmpdir, tmpdir, tempin_name))
                                  .split(" "),
                                  stdin=subprocess.PIPE,
                                  stdout=subprocess.PIPE,
@@ -1227,6 +1034,7 @@ class pdf_latex():
             print("error")
             if type(out) is tuple:
                 print(out[0].decode("utf-8"))
+            print(debug.decode())
             pdf = ""
         for file in sorted(os.listdir(tmpdir)):
             if re.search("%s.*" % tempin_name, file):
@@ -1239,6 +1047,8 @@ class pdf_latex():
             text = text.split(":")
             link = text[0].strip(" ")
             text = text[-1].strip(" ")
+        elif text == "NEWPAGE":
+            return "\n\\clearpage\n"
         else:
             return ""
         if link == "COL":
@@ -1246,7 +1056,8 @@ class pdf_latex():
         if link == "CPT":
             text = """
                    \\end{multicols}
-                   \\chapter{%s}\\setlength{\\columnseprule}{1pt}
+                   \\chapter{%s}
+                   \\setlength{\\columnseprule}{1pt}
                    \\begin{multicols}{2}
                    ()LTOC()
                    \\end{multicols}

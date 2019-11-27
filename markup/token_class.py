@@ -48,3 +48,6 @@ class Token_List():
 
     def grab(self, index):
         return self.tokens[index]
+
+    def grab_num(self, index, num):
+        return self.tokens[index:index+num]

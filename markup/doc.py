@@ -1,5 +1,5 @@
 from pygments.lexers import get_lexer_by_name
-from markup.nodes import nullNode, Node, HeadNode, ListNode, CodeNode
+from markup.nodes import nullNode, Node, HeadNode, ListNode, CodeNode, EquationNode
 from pygments import highlight
 import importlib
 
@@ -47,7 +47,9 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
                         out += adder.bold_ulist_text()(sentence.value + " ")
                 out += adder.end_ulist()(ulist_level)
-            elif type(node) is ListNode and "O" in  node.sentences[0].type:
+            elif type(node) is EquationNode:
+                out += adder.add_equation()(node.value)
+            elif type(node) is ListNode and "O" in node.sentences[0].type:
                 out += adder.start_olist()()
                 olist_level = 1
                 for sentence in node.sentences:
@@ -67,7 +69,7 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
                         out += adder.bold_olist_text()(sentence.value + " ")
                 out += adder.end_olist()(olist_level)
-                
+
             elif type(node) is CodeNode:
                 out += adder.start_code()()
                 code = ""
