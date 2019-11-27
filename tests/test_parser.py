@@ -122,51 +122,51 @@ def test_list_different_spaces():
     assert output == nodes
 
 
-def test_list_different_tabs():
-    """
-    * a
-      + b
-        - c
-      + d
-    * e
-        - f
-
-    '<Body Paragprphs:
-      <List sentences:
-        <Sentence type: TEXT, value: " a \t", Consumed: 3>,
-        <Sentence type: ULIST2, value: "", Consumed: 1>,
-        <Sentence type: TEXT, value: " b \t\t", Consumed: 3>,
-        <Sentence type: ULIST3, value: "", Consumed: 1>,
-        <Sentence type: TEXT, value: " c \t", Consumed: 3>,
-        <Sentence type: ULIST2, value: "", Consumed: 1>,
-        <Sentence type: TEXT, value: " d ", Consumed: 2>,
-        <Sentence type: ULIST1, value: "", Consumed: 1>,
-        <Sentence type: TEXT, value: "e \t\t", Consumed: 3>,
-        <Sentence type: ULIST3, value: "", Consumed: 1>,
-        <Sentence type: TEXT, value: " f", Consumed: 1>,
-      Consumed: 23>,
-    Consumed: 23>'
-    """
-    output = markup.terminal.terminal(0)
-    compiling = "* a\n\t+ b\n\t\t- c\n\t+ d\n*e\n\t\t- f\n"
-    output, _ = markup.commands._compile(compiling, output, "", tree=True)
-    nodes = str(markup.nodes.BodyNode([
-        markup.nodes.ListNode([
-            markup.nodes.Node("ULIST1", "", 1),
-            markup.nodes.Node("TEXT", " a ", 2),
-            markup.nodes.Node("ULIST2", "", 2),
-            markup.nodes.Node("TEXT", " b ", 2),
-            markup.nodes.Node("ULIST3", "", 3),
-            markup.nodes.Node("TEXT", " c ", 2),
-            markup.nodes.Node("ULIST2", "", 2),
-            markup.nodes.Node("TEXT", " d ", 2),
-            markup.nodes.Node("ULIST1", "", 1),
-            markup.nodes.Node("TEXT", "e ", 2),
-            markup.nodes.Node("ULIST3", "", 3),
-            markup.nodes.Node("TEXT", " f", 1),
-        ], 25)
-    ], 25))
-    assert output == nodes
+# def test_list_different_tabs():
+#    """
+#    * a
+#      + b
+#        - c
+#      + d
+#    * e
+#        - f
+#
+#    '<Body Paragprphs:
+#      <List sentences:
+#        <Sentence type: TEXT, value: " a \t", Consumed: 3>,
+#        <Sentence type: ULIST2, value: "", Consumed: 1>,
+#        <Sentence type: TEXT, value: " b \t\t", Consumed: 3>,
+#        <Sentence type: ULIST3, value: "", Consumed: 1>,
+#        <Sentence type: TEXT, value: " c \t", Consumed: 3>,
+#        <Sentence type: ULIST2, value: "", Consumed: 1>,
+#        <Sentence type: TEXT, value: " d ", Consumed: 2>,
+#        <Sentence type: ULIST1, value: "", Consumed: 1>,
+#        <Sentence type: TEXT, value: "e \t\t", Consumed: 3>,
+#        <Sentence type: ULIST3, value: "", Consumed: 1>,
+#        <Sentence type: TEXT, value: " f", Consumed: 1>,
+#      Consumed: 23>,
+#    Consumed: 23>'
+#    """
+#    output = markup.terminal.terminal(0)
+#    compiling = "* a\n\t+ b\n\t\t- c\n\t+ d\n*e\n\t\t- f\n"
+#    output, _ = markup.commands._compile(compiling, output, "", tree=True)
+#    nodes = str(markup.nodes.BodyNode([
+#        markup.nodes.ListNode([
+#            markup.nodes.Node("ULIST1", "", 1),
+#            markup.nodes.Node("TEXT", " a ", 2),
+#            markup.nodes.Node("ULIST2", "", 2),
+#            markup.nodes.Node("TEXT", " b ", 2),
+#            markup.nodes.Node("ULIST3", "", 3),
+#            markup.nodes.Node("TEXT", " c ", 2),
+#            markup.nodes.Node("ULIST2", "", 2),
+#            markup.nodes.Node("TEXT", " d ", 2),
+#            markup.nodes.Node("ULIST1", "", 1),
+#            markup.nodes.Node("TEXT", "e ", 2),
+#            markup.nodes.Node("ULIST3", "", 3),
+#            markup.nodes.Node("TEXT", " f", 1),
+#        ], 25)
+#    ], 25))
+#    assert output == nodes
 
 
 def test_list_minus():
@@ -218,14 +218,14 @@ def test_list_minus():
 
 def test_sentence_no_escape():
     output = markup.terminal.terminal(0)
-    compiling = "import lol\nlol.is_dir\n\\\\-+*lol\n"
+    compiling = "import lol\nlol.is\\_dir\n\\\\-+\\*lol\n"
     output, _ = markup.commands._compile(
         compiling, output, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ParagraphNode([
-            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 11),
-        ], 13)
-    ], 13))
+            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 8),
+        ], 10)
+    ], 10))
     assert output == nodes
 
 
@@ -247,17 +247,17 @@ def test_paragraph_split():
 
 def test_text_paragraphs_no_escape():
     output = markup.terminal.terminal(0)
-    compiling = "import lol\nlol.is_dir\n\\\\-+*lol\n\nimport lol\nlol.is_dir\n\\\\-+*lol\n"
+    compiling = "import lol\nlol.is\\_dir\n\\\\-+\\*lol\n\nimport lol\nlol.is\\_dir\n\\\\-+\\*lol\n"
     output, _ = markup.commands._compile(
         compiling, output, "\n\n", tree=True)
     nodes = str(markup.nodes.BodyNode([
         markup.nodes.ParagraphNode([
-            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 11),
-        ], 13),
+            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 8),
+        ], 10),
         markup.nodes.ParagraphNode([
-            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 11),
-        ], 13),
-    ], 26))
+            markup.nodes.Node("TEXT", "import lol lol.is_dir \\-+*lol", 8),
+        ], 10),
+    ], 20))
     assert output == nodes
 
 
