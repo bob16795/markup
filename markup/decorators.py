@@ -161,3 +161,7 @@ class Formater():
     def add_equation(self, *args, **kwargs):
         f = self.f.add_equation
         return f
+
+    def add_equation_inline(self, *args, **kwargs):
+        f = self.f.add_equation_inline
+        return f

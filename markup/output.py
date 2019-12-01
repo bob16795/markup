@@ -1,5 +1,3 @@
-# from docx.shared import RGBColor
-# from docx import Document
 from markup.decorators import Formater
 from pygments.formatter import Formatter
 import subprocess
@@ -664,6 +662,469 @@ class pdf_latex():
                    \\begin{titlepage}
                    \\begin{center}
                    \\vspace*{1cm}
+                   
+                   \\rule{8cm}{0.4pt}
+                   
+                   \\vspace{0.4cm}
+                   
+                   {\\huge\\textbf{()TTL()}}
+
+                   \\rule{8cm}{0.4pt}
+                   
+                   \\vspace{0.5cm}
+
+                   \\textbf{By: ()AUT()}
+                   \\vfill
+                   \\end{center}
+                   \\end{titlepage}"""
+        self.title_heading_level = int(prop.get("title_head", "0"))
+        self.geometry = prop.get("geometry", "a4paper")
+        self.index = False
+        if prop.get("index"):
+            self.index = True
+        self.chapter_toc = False
+        if prop.get("chapter_toc"):
+            self.chapter_toc = True
+        self.toc = False
+        if prop.get("toc"):
+            self.toc = True
+            out += """
+                   \\setlength{\\columnseprule}{1pt}
+
+                   \\begin{multicols}{2}
+                   {\\tableofcontents}
+                   \\end{multicols}
+                   \\etocsettocstyle{\\subsection*{This Chapter contains:}}
+
+                   \\setlength{\\columnseprule}{0pt}
+                   """
+        out = out.replace("()HL1()", str(self.title_heading_level + 0))
+        out = out.replace("()HL2()", str(self.title_heading_level + 1))
+        out = out.replace("()HL3()", str(self.title_heading_level + 2))
+        out = out.replace("()TTL()", self.title)
+        if self.author:
+            out = out.replace("()AUT()", self.author)
+        else:
+            out = out.replace("()AUT()", "")
+        out = out.replace("()PPR()", self.geometry)
+        self.cols = False
+        if prop.get("multicols"):
+            self.cols = True
+            out += "\\begin{multicols}{2}"
+        self.out = out
+
+    @staticmethod
+    def outer_add(self, out):
+        if self.chapter_toc:
+            out = out.replace("()LTOC()", "\n\\localtableofcontents\n")
+        out = out.replace("()LTOC()", "")
+        if self.author:
+            out = out.replace("()AUT()", "by: " + self.author)
+        else:
+            out = out.replace("()AUT()", "")
+        if self.geometry:
+            out = out.replace("()PPR()", self.geometry)
+        else:
+            out = out.replace("()PPR()", "a4paper")
+        if self.title:
+            out = out.replace("()TTL()", self.title)
+        else:
+            out = out.replace("()TTL()", "")
+        if self.out[-1] != "\n":
+            self.out += "\n"
+        if not out == "\n":
+            self.out += out
+        return self
+
+    @staticmethod
+    def fmt_init(self, **options):
+        Formatter.__init__(self, **options)
+        self.styles = {}
+        for token, style in self.style:
+            if style['color'] is None:
+                color = "000000"
+            else:
+                color = style['color']
+            self.styles[token] = (color, style['bold'],
+                                  style['italic'], style['underline'])
+
+    @staticmethod
+    def fmt_format(self, tokensource, outfile):
+        lastval = ''
+        lasttype = None
+        indent = 0
+        outfile += "\\begin{flushleft}\n{\\texttt{\n"
+        for ttype, value in tokensource:
+            if not(value.strip(" ")):
+                indent = len(value)-len(value.strip(" "))
+            if lastval.strip(" "):
+                color_r = int(self.styles[lasttype][0], 16) & int("FF0000", 16)
+                color_g = int(self.styles[lasttype][0], 16) & int("00FF00", 16)
+                color_b = int(self.styles[lasttype][0], 16) & int("0000FF", 16)
+                color_r = str(float(color_r)/int("10000", 16))
+                color_g = str(float(color_g)/int("100", 16))
+                color_b = str(float(color_b))
+                val = lastval.replace("\\", "{\\textbackslash}")\
+                    .replace('{', '\\{')\
+                    .replace('$', '\\$')\
+                    .replace('}', '\\}')\
+                    .replace("\n",
+                             """
+                             \\\\
+                             \\setlength\\parindent{%ipt}
+                             """ % indent*8)
+                outfile += """{
+                           \\definecolor{code}{rgb}{%s, %s, %s}
+                           \\color{code} %s}
+                           """ % (color_r, color_g, color_b, val)
+            lastval = value
+            lasttype = ttype
+        if lastval.strip(" "):
+            color_r = int(self.styles[lasttype][0], 16) & int("FF0000", 16)
+            color_g = int(self.styles[lasttype][0], 16) & int("00FF00", 16)
+            color_b = int(self.styles[lasttype][0], 16) & int("0000FF", 16)
+            color_r = str(float(color_r)/int("10000", 16))
+            color_g = str(float(color_g)/int("100", 16))
+            color_b = str(float(color_b))
+            val = lastval.replace("\\", "{\\textbackslash}")\
+                .replace('{', '\\{')\
+                .replace('$', '\\$')\
+                .replace('}', '\\}')\
+                .replace("\n", """\\\\
+                               \\setlength\\parindent{%ipt}
+                               """ % indent*8)
+            outfile += """{
+                       \\definecolor{code}{rgb}{%s, %s, %s}
+                       \\color{code} %s}
+                       """ % (color_r, color_g, color_b, val)
+
+    @staticmethod
+    def add_new_line():
+        return "{\\\\}\n"
+
+    @staticmethod
+    def add_text(text):
+        if text.strip(" ") != "":
+            return "%s\n" % text
+        return ""
+
+    @staticmethod
+    def emph_text(text):
+        return "\\emph{%s}\n" % text
+
+    @staticmethod
+    def start():
+        return """
+               \\documentclass{book}
+               \\usepackage{fancyhdr}
+               \\usepackage{etoolbox}
+               \\usepackage{multicol}
+               \\usepackage{etoc}
+               \\usepackage[()PPR()]{geometry}
+               \\usepackage{indentfirst}
+               \\usepackage{xcolor}
+               \\usepackage{imakeidx}
+               """
+
+    @staticmethod
+    def bold_text(text):
+        return "\\textbf{%s}\n" % text
+
+    @staticmethod
+    def add_header_1(text):
+        return "\n\\section{%s}\n" % text
+
+    @staticmethod
+    def add_header_2(text):
+        return "\n\\subsection{%s}\n" % text
+
+    @staticmethod
+    def add_header_3(text):
+        return "\n\\subsubsection{%s}\n" % text
+
+    @staticmethod
+    def start_ulist():
+        return "\\begin{itemize}"
+
+    @staticmethod
+    def start_code():
+        return ""
+
+    @staticmethod
+    def code_line(text):
+        return text+"\n"
+
+    @staticmethod
+    def end_code():
+        return ""
+
+    @staticmethod
+    def start_ulist_1(level):
+        if level == 1:
+            return ""
+        if level == 2:
+            return "\\end{itemize}\n"
+        if level == 3:
+            return "\\end{itemize}\n\\end{itemize}\n"
+
+    @staticmethod
+    def start_ulist_2(level):
+        if level == 1:
+            return "\\begin{itemize}\n"
+        if level == 2:
+            return ""
+        if level == 3:
+            return "\\end{itemize}\n"
+
+    @staticmethod
+    def start_ulist_3(level):
+        if level == 1:
+            return "\\begin{itemize}\n\\begin{itemize}\n"
+        if level == 2:
+            return "\\begin{itemize}\n"
+        if level == 3:
+            return ""
+
+    @staticmethod
+    def end_ulist(level):
+        if level == 1:
+            return "\\end{itemize}\n"
+        if level == 2:
+            return "\\end{itemize}\n\\end{itemize}\n"
+        if level == 3:
+            return "\\end{itemize}\n\\end{itemize}\n\\end{itemize}\n"
+
+    @staticmethod
+    def emph_ulist_text(text):
+        return "\\item \\textbf{%s}\n" % text
+
+    @staticmethod
+    def bold_ulist_text(text):
+        return "\\item \\textit{%s}\n" % text
+
+    @staticmethod
+    def add_ulist_text(text):
+        return "\\item %s\n" % text
+
+    @staticmethod
+    def start_olist():
+        return "\\begin{enumerate}"
+
+    @staticmethod
+    def start_olist_1(level):
+        if level == 1:
+            return ""
+        if level == 2:
+            return "\\end{enumerate}\n"
+        if level == 3:
+            return "\\end{enumerate}\n\\end{enumerate}\n"
+
+    @staticmethod
+    def start_olist_2(level):
+        if level == 1:
+            return "\\begin{enumerate}\n"
+        if level == 2:
+            return ""
+        if level == 3:
+            return "\\end{enumerate}\n"
+
+    @staticmethod
+    def start_olist_3(level):
+        if level == 1:
+            return "\\begin{enumerate}\n\\begin{enumerate}\n"
+        if level == 2:
+            return "\\begin{enumerate}\n"
+        if level == 3:
+            return ""
+
+    @staticmethod
+    def end_olist(level):
+        if level == 1:
+            return "\\end{enumerate}\n"
+        if level == 2:
+            return "\\end{enumerate}\n\\end{enumerate}\n"
+        if level == 3:
+            return "\\end{enumerate}\n\\end{enumerate}\n\\end{enumerate}\n"
+
+    @staticmethod
+    def emph_olist_text(text):
+        return "\\item \\textbf{%s}\n" % text
+
+    @staticmethod
+    def emph_olist_text(text):
+        return "\\item \\textbf{%s}\n" % text
+
+    @staticmethod
+    def bold_olist_text(text):
+        return "\\item \\textit{%s}\n" % text
+
+    @staticmethod
+    def add_olist_text(text):
+        return "\\item %s\n" % text
+
+    @staticmethod
+    def add_equation(text):
+        return "$$%s$$" % text.replace("_", "()US()")
+
+    @staticmethod
+    def add_equation_inline(text):
+        return "$%s$" % text.replace("_", "()US()")
+
+    # TODO: set path to pdflatex
+    @staticmethod
+    def end(out):
+        tmpdir = "/tmp/"
+        latex = "pdflatex"
+        if os.name == "nt":
+            tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
+            latex = "C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe"
+        if out.cols == True:
+            out += "\n\\end{multicols}"
+        if out.index:
+            out += "\n\\printindex\n\\pagestyle{fancy}\n"
+        out += "\n\\end{document}\n"
+        out.out = out.out.replace("&", "\\&")\
+            .replace("%", "\\%")\
+            .replace("#", "\\#")\
+            .replace("_", "\\_")\
+            .replace("()US()", "_")\
+            .replace("|", "\\|")\
+            .replace("\n\\\\\n", "\n\n\n")
+        tempin = tempfile.NamedTemporaryFile(dir=tmpdir, delete=False)
+        tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
+        path = tmpdir
+        out.out = out.out.replace("()IDXPTH()", path.replace("\\", "/"))
+        tempin.write(out.out.encode())
+        debug = out.out.encode()
+        tempin.close()
+        try:
+            if out.index:
+                with open("%s.ist" % path, 'w+') as index_style:
+                    index_style.write(
+                        """
+                        headings_flag 1
+
+                        heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
+                        \\\\noindent\\\\textbf{\"
+                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
+
+                        item_0 \"\\n \\\\item \\\\small \"
+                        delim_0 \" \\\\hfill \"
+                        delim_1 \" \\\\hfill \"
+                        delim_2 \" \\\\hfill \"
+                        """)
+                    index_style.write(
+                        """heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
+                        heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
+                        headings_flag 1
+                        """)
+            if out.toc:
+                o = subprocess.Popen(("%s -output-directory %s %s/%s" %
+                                      (latex, tmpdir, tmpdir, tempin_name))
+                                     .split(" "),
+                                     stdin=subprocess.PIPE,
+                                     stdout=subprocess.PIPE,
+                                     stderr=subprocess.PIPE,
+                                     cwd=path)
+                out = o.communicate()
+            o = subprocess.Popen(("%s -output-directory %s %s/%s" %
+                                  (latex, tmpdir, tmpdir, tempin_name))
+                                 .split(" "),
+                                 stdin=subprocess.PIPE,
+                                 stdout=subprocess.PIPE,
+                                 stderr=subprocess.PIPE,
+                                 cwd=path)
+            out = o.communicate()
+            tempout = open("%s/%s.pdf" % (tmpdir, tempin_name), 'r+b')
+            pdf = tempout.read()
+            tempout.close()
+        except FileNotFoundError:
+            print("error")
+            if type(out) is tuple:
+                print(out[0].decode("utf-8"))
+            print(debug.decode())
+            pdf = ""
+        for file in sorted(os.listdir(tmpdir)):
+            if re.search("%s.*" % tempin_name, file):
+                os.remove(tmpdir + file)
+        return pdf
+
+    @staticmethod
+    def tag(text):
+        if ":" in text:
+            text = text.split(":")
+            link = text[0].strip(" ")
+            text = text[-1].strip(" ")
+        elif text == "NEWPAGE":
+            return "\n\\clearpage\n"
+        else:
+            return ""
+        if link == "COL":
+            return "\\end{multicols}\n\\begin{multicols}{" + text + "}"
+        if link == "CPT":
+            text = """
+                   \\end{multicols}
+                   \\chapter{%s}
+                   \\setlength{\\columnseprule}{1pt}
+                   \\begin{multicols}{2}
+                   ()LTOC()
+                   \\end{multicols}
+                   \\setlength{\\columnseprule}{0pt}
+                   \\clearpage
+                   \\begin{multicols}{2}
+                   """ % text
+            return text
+        if link == "PRT":
+            text = """
+                   \\end{multicols}
+                   \\clearpage\\ifodd\\value{page}\\else\\null\\clearpage\\fi\\null\\clearpage
+                   \\part{%s}
+
+                   \\begin{multicols}{2}
+                   """ % text
+            return text
+        if link == "IDX":
+            entry = text
+            text = ""
+            for item in entry.split(";"):
+                text += "\n\\index{%s}\n" % item.strip(" ")
+        return text + "\n"
+
+
+# TODO: chapter numbers
+@Formater
+class latex():
+    @staticmethod
+    def outer_init(self, out, prop):
+        self.pp = False
+        if prop.get("index"):
+            out += """
+                   \\makeindex[program=makeindex,options=-s ()IDXPTH().ist]
+                   """
+        out += """
+               \\setlength{\\columnseprule}{0pt}
+               \\etocsetlevel{chapter}{()HL1()}
+               \\etocsetlevel{section}{()HL2()}
+               \\etocsetlevel{subsection}{()HL3()}
+               \\patchcmd{\\chapter}{\\thispagestyle{plain}}{\\thispagestyle{fancy}}{}{}
+               \\pagestyle{fancy}
+               \\fancyhf{}
+               \\renewcommand{\\footrulewidth}{1pt}
+               \\rfoot{()TTL()}
+               \\lfoot{()AUT()}
+               \\lhead{\\leftmark}
+               \\rhead{\\thepage}
+               \\renewcommand*\\thesection{\\arabic{section}}
+               \\begin{document}
+               \\fontsize{12pt}{12pt}\\selectfont
+               """
+        self.author = prop.get("author")
+        self.title = prop.get("title")
+        if prop.get("title") and prop.get("title_page"):
+            out += """
+                   \\begin{titlepage}
+                   \\begin{center}
+                   \\vspace*{1cm}
                    \\textbf{()TTL()}
 
                    \\vspace{0.5cm}
@@ -796,7 +1257,7 @@ class pdf_latex():
 
     @staticmethod
     def add_new_line():
-        return "{\\\\}\n"
+        return "\\\\\n"
 
     @staticmethod
     def add_text(text):
@@ -946,10 +1407,6 @@ class pdf_latex():
         return "\\item \\textbf{%s}\n" % text
 
     @staticmethod
-    def emph_olist_text(text):
-        return "\\item \\textbf{%s}\n" % text
-
-    @staticmethod
     def bold_olist_text(text):
         return "\\item \\textit{%s}\n" % text
 
@@ -961,14 +1418,12 @@ class pdf_latex():
     def add_equation(text):
         return "$$%s$$" % text.replace("_", "()US()")
 
-    # TODO: set path to pdflatex
+    @staticmethod
+    def add_equation_inline(text):
+        return "$%s$" % text.replace("_", "()US()")
+
     @staticmethod
     def end(out):
-        tmpdir = "/tmp/"
-        latex = "pdflatex"
-        if os.name == "nt":
-            tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
-            latex = "C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe"
         if out.cols == True:
             out += "\n\\end{multicols}"
         if out.index:
@@ -982,64 +1437,8 @@ class pdf_latex():
             .replace("()US()", "_")\
             .replace("|", "\\|")\
             .replace("\n\\\\\n", "\n\n")
-        tempin = tempfile.NamedTemporaryFile(dir=tmpdir, delete=False)
-        tempin_name = tempfile.gettempprefix() + tempin.name.split("tmp")[-1]
-        path = tmpdir
-        out.out = out.out.replace("()IDXPTH()", path.replace("\\", "/"))
-        tempin.write(out.out.encode())
-        debug = out.out.encode()
-        tempin.close()
-        try:
-            if out.index:
-                with open("%s.ist" % path, 'w+') as index_style:
-                    index_style.write(
-                        """
-                        headings_flag 1
-
-                        heading_prefix \"\\n\\\\centering\\\\large\\\\sffamily\\\\bfseries%
-                        \\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n\"
-
-                        item_0 \"\\n \\\\item \\\\small \"
-                        delim_0 \" \\\\hfill \"
-                        delim_1 \" \\\\hfill \"
-                        delim_2 \" \\\\hfill \"
-                        """)
-                    index_style.write(
-                        """heading_prefix \"\\n{\\\\centering\\\\noindent\\\\textbf{\"
-                        heading_suffix \"}\\\\par\\\\nopagebreak\\n}\"
-                        headings_flag 1
-                        """)
-            if out.toc:
-                o = subprocess.Popen(("%s -output-directory %s %s/%s" %
-                                      (latex, tmpdir, tmpdir, tempin_name))
-                                     .split(" "),
-                                     stdin=subprocess.PIPE,
-                                     stdout=subprocess.PIPE,
-                                     stderr=subprocess.PIPE,
-                                     cwd=path)
-                out = o.communicate()
-            o = subprocess.Popen(("%s -output-directory %s %s/%s" %
-                                  (latex, tmpdir, tmpdir, tempin_name))
-                                 .split(" "),
-                                 stdin=subprocess.PIPE,
-                                 stdout=subprocess.PIPE,
-                                 stderr=subprocess.PIPE,
-                                 cwd=path)
-            out = o.communicate()
-            tempout = open("%s/%s.pdf" % (tmpdir, tempin_name), 'r+b')
-            pdf = tempout.read()
-            tempout.close()
-        except FileNotFoundError:
-            print("error")
-            if type(out) is tuple:
-                print(out[0].decode("utf-8"))
-            print(debug.decode())
-            pdf = ""
-        for file in sorted(os.listdir(tmpdir)):
-            if re.search("%s.*" % tempin_name, file):
-                os.remove(tmpdir + file)
-        return pdf
+        out.out = out.out.replace("()IDXPTH()", "lol.idx")
+        return out.out.encode()
 
     @staticmethod
     def tag(text):

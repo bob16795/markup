@@ -90,5 +90,7 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
                         out += adder.emph_text()(sentence.value)
                     elif sentence.value != "" and sentence.value != " " and sentence.type == "BOLD":
                         out += adder.bold_text()(sentence.value)
+                    elif sentence.value != "" and sentence.value != " " and sentence.type == "EQU":
+                        out += adder.add_equation_inline()(sentence.value)
                 out += adder.add_new_line()()
     return adder.end()(out)

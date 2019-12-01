@@ -64,8 +64,8 @@ def Multinewline_Parser(tokens):
 
 
 def Bold_Parser_End(tokens):
-    if tokens.peek_or([["STAR", "STAR", "NEWLINE"], ["UNDERSCORE", "UNDERSCORE", "NEWLINE"]]):
-        return Node("MATCH", "lol", 3)
+    if tokens.peek_or([["STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE"]]):
+        return Node("MATCH", "lol", 2)
     return nullNode()
 
 
@@ -73,13 +73,13 @@ def Bold_Parser(tokens):
     if tokens.peek_or([["STAR", "STAR"], ["UNDERSCORE", "UNDERSCORE"]]):
         nodes, consumed = match_multi_star_until(
             tokens.offset(2), [Text_Parser], Bold_Parser_End)
-        return Node("BOLD", nodes[0].value, 5+consumed)
+        return Node("BOLD", nodes[0].value, 3+consumed)
     return nullNode()
 
 
 def Emph_Parser_End(tokens):
-    if tokens.peek_or([["STAR", "NEWLINE"], ["UNDERSCORE", "NEWLINE"]]):
-        return Node("MATCH", "lol", 2)
+    if tokens.peek_or([["STAR"], ["UNDERSCORE"]]):
+        return Node("MATCH", "lol", 1)
     return nullNode()
 
 
@@ -87,7 +87,7 @@ def Emph_Parser(tokens):
     if tokens.peek_or([["STAR"], ["UNDERSCORE"]]):
         nodes, consumed = match_multi_star_until(
             tokens.offset(1), [Text_Parser], Emph_Parser_End)
-        return Node("EMPH", nodes[0].value, 3+consumed)
+        return Node("EMPH", nodes[0].value, 1+consumed)
     return nullNode()
 
 
@@ -102,6 +102,20 @@ def Equation_Parser(tokens):
         nodes, consumed = match_multi_star_until(
             tokens.offset(2), [Text_Parser], Equation_Parser_End)
         return EquationNode(nodes[0].value, consumed+5)
+    return nullNode()
+
+
+def Equation_Parser_Inline_End(tokens):
+    if tokens.peek(["DOLLAR"]):
+        return Node("MATCH", "lol", 1)
+    return nullNode()
+
+
+def Equation_Parser_Inline(tokens):
+    if tokens.peek(["DOLLAR"]):
+        nodes, consumed = match_multi_star_until(
+            tokens.offset(1), [Text_Parser], Equation_Parser_Inline_End)
+        return Node("EQU", nodes[0].value, 1+consumed)
     return nullNode()
 
 
@@ -379,7 +393,7 @@ def Sentence_Parser(tokens):
     Sentence:
         Text | Emph | Bold | Single_NL
     """
-    return match_first(tokens, [Text_Parser, Bold_Parser, Emph_Parser, Singlenewline_Parser])
+    return match_first(tokens, [Text_Parser, Equation_Parser_Inline, Bold_Parser, Emph_Parser, Singlenewline_Parser])
 
 
 def Sentences_NL_Parser(tokens):
