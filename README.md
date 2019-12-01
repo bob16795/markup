@@ -29,31 +29,31 @@ markup [options] file
 
 ### options
 
-`--help`|`-h`  
+`--help`|`-h`
 Show help and exit.
 
 `--verbose`|`-v`
 Increases the verbosity, can be used more than once, overrides quiet. default `-vv`
 
-`--fullverbose`|`-V`  
+`--fullverbose`|`-V`
 Sets verbosity to 1000.
 
 `--quiet`|`-q`
 Set verbosity to zero.
 
-`--appendprop`|`-p`  
+`--appendprop`|`-p`
 Appends property to the document overriding any property.
 
-`--output`|`-o`  
+`--output`|`-o`
 Appends prop to override the output of a document. same as `-p output:`
 
-`--tree`|`-t`  
+`--tree`|`-t`
 writes the document tree to output (mainly for debug).
 
-`--fileout`  
+`--fileout`
 forces the document to output to a file.
 
-`--stdout`  
+`--stdout`
 forces the document to output to stdout.
 
 ### tricks
@@ -64,7 +64,7 @@ to include the text from another document verbatim use `Inc: file`
 
 `[[!]req [= "req_value"]|] property: value`
 
-- !: reverses the req to be false 
+- !: reverses the req to be false
 - req: the requirement to be req_value
 - req_value: the expected value of req
 - property: the property to set
@@ -90,6 +90,10 @@ to include the text from another document verbatim use `Inc: file`
 #### special
 
 - slave: true if the file reader is in a `Inc:` statement
+
+#### html
+
+- css_path: the path to a css style sheet
 
 #### pdf_groff
 
@@ -119,7 +123,7 @@ to include the text from another document verbatim use `Inc: file`
 
 #### pdf_latex & latex
 
-- COL: sets column number in documentIn the column on the left hand side are 10 of the most essential terms for this unit’s content.  In the second column, write the definition on your own words. 
+- COL: sets column number in documentIn the column on the left hand side are 10 of the most essential terms for this unit’s content.  In the second column, write the definition on your own words.
 - CPT: starts a chapter
 - IDX: adds an index entry in current position
 

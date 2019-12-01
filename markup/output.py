@@ -153,6 +153,7 @@ class terminal():
 class html():
     @staticmethod
     def outer_init(self, out, prop):
+        out = out.replace("()css()", prop.get("css_path", "main.css"))
         self.out = out
 
     @staticmethod
@@ -207,9 +208,10 @@ class html():
     @staticmethod
     def start():
         return """
-               <!DOCTYPE html>\\n<html>
+               <!DOCTYPE html>
+               <html>
                <head>
-               <link rel=\"stylesheet\" href=\"main.css\">
+               <link rel=\"stylesheet\" href=\"()css()\">
                </head>
                <body>
                <div id=\"page\">
@@ -366,14 +368,10 @@ class html():
 
     @staticmethod
     def tag(text):
-        if "](" in text:
-            text = text.split("](")
-            link = text[0]
-            text = text[-1]
-        else:
-            text = text.split(": ")
-            link = text[0]
-            text = text[-1]
+        if ":" in text:
+            text = text.split(":")
+            link = text[0].strip(" ")
+            text = text[-1].strip(" ")
         return "<a href=%s> %s </a><br/>" % (text, link)
 
 
@@ -662,15 +660,15 @@ class pdf_latex():
                    \\begin{titlepage}
                    \\begin{center}
                    \\vspace*{1cm}
-                   
+
                    \\rule{8cm}{0.4pt}
-                   
+
                    \\vspace{0.4cm}
-                   
+
                    {\\huge\\textbf{()TTL()}}
 
                    \\rule{8cm}{0.4pt}
-                   
+
                    \\vspace{0.5cm}
 
                    \\textbf{By: ()AUT()}
