@@ -1,3 +1,4 @@
 click
 pathlib
 pygments
+PIL

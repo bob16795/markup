@@ -4,8 +4,8 @@ import subprocess
 import tempfile
 import os
 import re
-
-
+import pdfer
+from pdfer import files as pdfer
 @Formater
 class terminal():
     def outer_init(self, out, prop):
@@ -1483,3 +1483,162 @@ class latex():
             for item in entry.split(";"):
                 text += "\n\\index{%s}\n" % item.strip(" ")
         return text + "\n"
+
+@Formater
+class straight_pdf():
+    def outer_init(self, out, prop):
+        self.out = pdfer.pdf_file()
+
+    def outer_add(self, out):
+        for i in out.split("\n"):
+            cmd = i.split(" ")[0]
+            if cmd == "List":
+                self.list = " ".join(i.split(" ")[1:-1])
+            if cmd == "Item":
+                self.out.add_text(self.list + " ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
+            if cmd == "Text":
+                self.out.add_text(" ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
+        return self
+
+    def fmt_init(self, **options):
+        Formatter.__init__(self, **options)
+
+    def fmt_format(self, tokensource, outfile):
+        lastval = ''
+        lasttype = None
+        for ttype, value in tokensource:
+            if ttype == lasttype:
+                lastval += value
+            else:
+                if lastval:
+                    outfile += lastval
+                lastval = value
+                lasttype = ttype
+        if lastval:
+            outfile += lastval.replace("\n", "")
+
+    @staticmethod
+    def add_new_line():
+        return "\n"
+
+    @staticmethod
+    def add_text(text):
+        return f"Text {text} 12"
+
+    @staticmethod
+    def emph_text(text):
+        return text
+
+    @staticmethod
+    def start():
+        return ""
+
+    @staticmethod
+    def bold_text(text):
+        return text
+
+    @staticmethod
+    def add_header_1(text):
+        return f"Text {text} 32"
+
+    @staticmethod
+    def add_header_2(text):
+        return f"Text {text} 24"
+
+    @staticmethod
+    def add_header_3(text):
+        return f"Text {text} 16"
+
+
+    @staticmethod
+    def start_code():
+        return "\n"
+
+    @staticmethod
+    def code_line(text):
+        return ">  " + text + "\n"
+
+    @staticmethod
+    def end_code():
+        return ""
+
+    @staticmethod
+    def start_olist():
+        return f"List * 12"
+
+    @staticmethod
+    def start_olist_1(level):
+        return f"List * 12"
+
+    @staticmethod
+    def start_olist_2(level):
+        return f"List   * 12"
+
+    @staticmethod
+    def start_olist_3(level):
+        return f"List     * 12"
+
+    @staticmethod
+    def end_olist(level):
+        return ""
+
+    @staticmethod
+    def emph_olist_text(List):
+        return f"Item {List} 12"
+
+    @staticmethod
+    def bold_olist_text(List):
+        return f"Item {List} 12"
+
+    @staticmethod
+    def add_olist_text(List):
+        return f"Item {List} 12"
+
+    @staticmethod
+    def start_ulist():
+        return f"List * 12"
+
+    @staticmethod
+    def start_ulist_1(level):
+        return f"List * 12"
+
+    @staticmethod
+    def start_ulist_2(level):
+        return f"List   * 12"
+
+    @staticmethod
+    def start_ulist_3(level):
+        return f"List     * 12"
+
+    @staticmethod
+    def end_ulist(level):
+        return ""
+
+    @staticmethod
+    def emph_ulist_text(List):
+        return f"Item {List} 12"
+
+    @staticmethod
+    def bold_ulist_text(List):
+        return f"Item {List} 12"
+
+    @staticmethod
+    def add_ulist_text(List):
+        return f"Item {List} 12"
+
+    @staticmethod
+    def end(out):
+        out += "\n"
+        return out.out.__str__().encode()
+
+    @staticmethod
+    def tag(text):
+        return "link: [%s]" % text
+
+    @staticmethod
+    def add_equation_inline(text):
+        return f"Text {text} 12"
+
+    @staticmethod
+    def add_equation(text):
+        return f"Text {text} 12"
