@@ -973,9 +973,11 @@ class pdf_latex():
     def end(out):
         tmpdir = "/tmp/"
         latex = "pdflatex"
+        tmpwsl = False
         if os.name == "nt":
-            tmpdir = "C:\\Users\\Preston.precourt\\Downloads\\"
-            latex = "C:\\Users\\Preston.precourt\\AppData\\Local\\Programs\\texlive\\texlive\\2019\\bin\\win32\\pdflatex.exe"
+            tmpdir = "D:\\tmp\\"
+            tmpwsl = True
+            latex = "wsl -e pdflatex"
         if out.cols == True:
             out += "\n\\end{multicols}"
         if out.index:
@@ -995,6 +997,8 @@ class pdf_latex():
         tempin.write(out.out.encode())
         debug = out.out.encode()
         tempin.close()
+        if tmpwsl:
+            tmpdir = "/mnt/"+ path[0].lower() + "/" + path[3:].replace("\\", "/")
         try:
             if out.index:
                 with open("%s.ist" % path, 'w+') as index_style:
@@ -1033,18 +1037,18 @@ class pdf_latex():
                                  stderr=subprocess.PIPE,
                                  cwd=path)
             out = o.communicate()
-            tempout = open("%s/%s.pdf" % (tmpdir, tempin_name), 'r+b')
+            tempout = open("%s/%s.pdf" % (path, tempin_name), 'r+b')
             pdf = tempout.read()
             tempout.close()
         except FileNotFoundError:
             print("error")
             if type(out) is tuple:
                 print(out[0].decode("utf-8"))
-            print(debug.decode())
+            # print(debug.decode()) 
             pdf = ""
-        for file in sorted(os.listdir(tmpdir)):
+        for file in sorted(os.listdir(path)):
             if re.search("%s.*" % tempin_name, file):
-                os.remove(tmpdir + file)
+                os.remove(path + file)
         return pdf
 
     @staticmethod

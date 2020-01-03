@@ -6,7 +6,7 @@ setup(
     name="markup",
     version="0.1.0",
     keywords="markdown compiler python script",
-    packages=['markup'],
+    packages=['markup', 'pdfer'],
     install_requires=[
         'click',
         'pathlib',
