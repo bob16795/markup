@@ -88,7 +88,7 @@ class font_object():
   << /Type /Font
   /Subtype /Type1
   /Name /F1
-  /BaseFont /Helvetica
+  /BaseFont /Times 
   /Encoding /MacRomanEncoding
   >>
   """
@@ -96,7 +96,7 @@ class font_object():
     self.dict = {"/Type": "/Font",
                  "/Subtype": "/Type1",
                  "/Name": name,
-                 "/BaseFont": "/Helvetica",
+                 "/BaseFont": "/Times",
                  "/Encoding": "/MacRomanEncoding"}
 
   def add_pages(self, pages):

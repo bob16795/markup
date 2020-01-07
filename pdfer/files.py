@@ -33,8 +33,8 @@ class pdf_file():
                         pdf_line.append(word)
                         if lib.get_text_size(' '.join(pdf_line), size) >= 412:
                             spacing =( 412 - lib.get_text_size(' '.join(pdf_line[:-1]), size)) / (len(pdf_line[:-1]) - 1)
-                            text_obj.append(f"{spacing} Tw")
-                            text_obj.append(f"({' '.join(pdf_line[:-1])}) '\n")
+#                            text_obj.append(f" Tw")
+                            text_obj.append(f"{spacing} 0 ({' '.join(pdf_line[:-1])}) \"\n")
                             self.y -= size * 1.2
                             pdf_line = [word]
                             if self.y - (size * 1.2) < 100:
@@ -65,7 +65,7 @@ class pdf_file():
             objects_ordered.append(page)
             for text in page.text_objs:
                 objects_ordered.append(text)
-        objects_ordered.append(self.font)
+        objects_ordered.append(self.font)   
         return objects_ordered
 
     def __str__(self):
