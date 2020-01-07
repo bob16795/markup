@@ -1488,16 +1488,23 @@ class latex():
 class straight_pdf():
     def outer_init(self, out, prop):
         self.out = pdfer.pdf_file()
+        self.page = True
 
     def outer_add(self, out):
         for i in out.split("\n"):
             cmd = i.split(" ")[0]
+            if cmd == "Page":
+                if not self.page:
+                    self.out.add_page()
+                    self.page = True
+                    return self
             if cmd == "List":
                 self.list = " ".join(i.split(" ")[1:-1])
             if cmd == "Item":
                 self.out.add_text(self.list + " ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
             if cmd == "Text":
                 self.out.add_text(" ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
+        self.page = False
         return self
 
     def fmt_init(self, **options):
@@ -1633,7 +1640,23 @@ class straight_pdf():
 
     @staticmethod
     def tag(text):
-        return "link: [%s]" % text
+        if ":" in text:
+            text = text.split(":")
+            link = text[0].strip(" ")
+            text = text[-1].strip(" ")
+        elif text == "NEWPAGE":
+            return "Page"
+        else:
+            return ""
+        if link == "COL":
+            text = f""
+        if link == "CPT":
+            text = f"Page\nText {text} 40"
+            return text
+        if link == "PRT":
+            text = f"Page\nText {text} 45\nPage"
+            return text
+        return text + "\n"
 
     @staticmethod
     def add_equation_inline(text):

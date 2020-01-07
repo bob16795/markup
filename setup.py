@@ -10,7 +10,8 @@ setup(
     install_requires=[
         'click',
         'pathlib',
-        'pygments'
+        'pygments',
+        'Pillow'
     ],
     entry_points={
         'console_scripts': ['markup = markup.cli:start',
