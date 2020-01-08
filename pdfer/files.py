@@ -18,7 +18,7 @@ class pdf_file():
             self.add_text(text, size)
 
 
-    def add_text(self, text, size):
+    def add_text(self, text, size = 12):
         if self.y - (size * 1.2) < 100:
             self.add_page(text, size)
         else:
@@ -43,9 +43,10 @@ class pdf_file():
                     else:
                         overfill.append(word)
                 if not full:
-                    text_obj.append(f"({' '.join(pdf_line)}) '\n() '\n")
-                    self.y -= size * 1.2
-                    self.y -= size * 1.2
+                    if pdf_line:
+                        text_obj.append(f"({' '.join(pdf_line)}) '\n")
+                        self.y -= size * 1.2
+                        self.y -= size * 1.2
                 else:
                     if overfill:
                         overfill[-1] += "\n"
