@@ -27,6 +27,10 @@ def tokenize(file_cached, prop_app, file_name, output):
         "#": ["HASH", "SYM"],
         "<": ["TAGO", "SYM"],
         ">": ["TAGC", "SYM"],
+        "[": ["BRKO", "SYM"],
+        "]": ["BRKC", "SYM"],
+        "(": ["PARO", "SYM"],
+        ")": ["PARC", "SYM"],
         "\t": ["TAB", ""],
         "\n": ["NEWLINE", ""],
     }

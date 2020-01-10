@@ -31,6 +31,10 @@ def match_star(tokens, With):
         "MINUS": "-",
         "HASH": "#",
         "TAGO": "<",
+        "BRKO": "[",
+        "BRKC": "]",
+        "PARO": "(",
+        "PARC": ")",
         "TAGC": ">",
         "TAB": "\t",
         "NEWLINE": "\n",
@@ -72,7 +76,11 @@ def match_star_merge(tokens, With):
         "MINUS": "-",
         "HASH": "#",
         "TAGO": "<",
-        "TAGC": ">",  # FIX: dupe tokens
+        "TAGC": ">",
+        "BRKO": "[",
+        "BRKC": "]",
+        "PARO": "(",
+        "PARC": ")",  # FIX: dupe tokens
         "TAB": "\t",
         "NEWLINE": "\n",
     }
@@ -141,6 +149,10 @@ def match_multi_star_until(tokens, matches, until):
         "HASH": "#",
         "TAGO": "<",
         "TAGC": ">",
+        "BRKO": "[",
+        "BRKC": "]",
+        "PARO": "(",
+        "PARC": ")",
         "TAB": "\t",
         "NEWLINE": "\n",
     }
@@ -167,4 +179,3 @@ def match_multi_star_until(tokens, matches, until):
         matched_nodes.append(node_cached)
         consumed += node.consumed
     return matched_nodes, consumed
-

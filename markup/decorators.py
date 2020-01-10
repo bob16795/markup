@@ -47,6 +47,10 @@ class Formater():
     def tag(self, *args, **kwargs):
         f = self.f.tag
         return f
+
+    def link(self, *args, **kwargs):
+        f = self.f.link
+        return f
     # text
 
     def add_new_line(self, *args, **kwargs):

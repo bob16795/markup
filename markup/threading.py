@@ -16,13 +16,13 @@ class multi_tasker():
         self.threads.append(x)
 
     @staticmethod
-    def compile(output, file, tree=False):
+    def compile(output, file, tree=False, token_tree=False):
         from markup.commands import _read, _compile, _output
         output.add(log, "started %s" % file)
         text = _read(file, output)
         text, prop_slave = _compile(
-            text, output, "", file, tree)
-        if not tree:
+            text, output, "", file, tree, token_tree)
+        if not (tree or token_tree):
             if text != "":
                 _output(text, file, prop_slave, output)
 

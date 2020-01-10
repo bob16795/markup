@@ -37,6 +37,24 @@ def Text_Parser(tokens):
         return Node("TEXT", tokens.grab(0).value, 1)
     return nullNode()
 
+def link_Parser(tokens):
+    """
+    BTAG
+    PTAG
+    """
+    first = match_first(tokens, [BTag_Parser])
+    if (type(first) is nullNode):
+        return nullNode()
+    second = match_first(tokens.offset(first.consumed), [PTag_Parser])
+    if (type(second) is nullNode):
+        return nullNode()
+    consumed = first.consumed + second.consumed
+    if tokens.peek_at(consumed, ['NEWLINE']):
+        consumed += 1
+    if tokens.peek_at(consumed, ['EOF']):
+        consumed += 1
+    return Node("LINK", "%s: %s" % (first.value, second.value), consumed)
+
 
 def Singlenewline_Parser(tokens):
     """
@@ -132,9 +150,40 @@ def Tag_Parser(tokens):
         for node in nodes:
             text += node.value
         if tokens.offset(consumed).peek(["TAGC"]):
-            return Node("TAG", text[:-1], consumed+1)
+            return Node("TAG", text, consumed+1)
     return nullNode()
 
+def BTag_Parser(tokens):
+    """
+    Tag:
+        "["
+        Text *
+        "]"
+    """
+    if tokens.peek(["BRKO"]):
+        nodes, consumed = match_star_err(tokens.offset(1), Text_Parser)
+        text = ""
+        for node in nodes:
+            text += node.value
+        if tokens.offset(consumed+1).peek(["BRKC"]):
+            return Node("BTAG", text, consumed+2)
+    return nullNode()
+
+def PTag_Parser(tokens):
+    """
+    Tag:
+        "["
+        Text *
+        "]"
+    """
+    if tokens.peek(["PARO"]):
+        nodes, consumed = match_star_err(tokens.offset(1), Text_Parser)
+        text = ""
+        for node in nodes:
+            text += node.value
+        if tokens.offset(consumed+1).peek(["PARC"]):
+            return Node("PTAG", text, consumed+2)
+    return nullNode()
 
 def Multi_Tag_Parser(tokens):
     """
@@ -429,12 +478,14 @@ def Sentences_EOF_Parser(tokens):
     return ParagraphNode(nodes, consumed)
 
 
+
+
 def Paragraph_Parser(tokens):
     """
     Paragraph:
         Tags | Code_Multi_Line | Header | List | Sentence_NL | Sentence_EOF
     """
-    return match_first(tokens, [Multi_Tag_Parser, Equation_Parser, Code_Multi_line_Parser, Header_Parser, List_Parser, Sentences_NL_Parser, Sentences_EOF_Parser])
+    return match_first(tokens, [link_Parser, Multi_Tag_Parser, Equation_Parser, Code_Multi_line_Parser, Header_Parser, List_Parser, Sentences_NL_Parser, Sentences_EOF_Parser])
 
 
 def Body_Parser(tokens):

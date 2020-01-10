@@ -27,6 +27,8 @@ def add_to_doc(parsed, adderstr, addermodstr, prop):
                     out += adder.add_header_3()(node.value.strip(" "))
                 if node.type == "TAG":
                     out += adder.tag()(node.value)
+                if node.type == "LINK":
+                    out += adder.link()(node.value)
             elif type(node) is ListNode and "U" in node.sentences[0].type:
                 out += adder.start_ulist()()
                 ulist_level = 1

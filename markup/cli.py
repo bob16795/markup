@@ -18,7 +18,8 @@ from markup.terminal import terminal, log, error, warn, debug
 @click.option('--appendprop', '-p', help='append property to document.', multiple=True)
 @click.option('--output', '-o', help='forces output to a file.')
 @click.option('--tree', '-t', help='prints a parser tree for the document.', is_flag=True)
-def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tree):
+@click.option('--token-tree', '-k', help='prints the tokens in the document.', is_flag=True)
+def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tree, token_tree):
     """Compiles docments using Markup."""
     if quiet or tree:
         verbose = 0
@@ -39,7 +40,7 @@ def compile(files, fileout, verbose, quiet, fullverbose, appendprop, output, tre
                 else:
                     output.add(debug, "cli.py: adding %s to queue" % file)
                     multitasker.add_to_queue(
-                        (output, path + "/" + file, tree))
+                        (output, path + "/" + file, tree, token_tree))
                 found = True
         if not found:
             output.add(error, "file not found %s" % pattern)

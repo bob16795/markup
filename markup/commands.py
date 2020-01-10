@@ -73,7 +73,7 @@ def _cleanup(file_cached, file_name, tabs=2, output=0):
     return file_cached
 
 
-def _compile(file_cached, output, prop, file_name="test", tree=False):
+def _compile(file_cached, output, prop, file_name="test", tree=False, token_tree=False):
     """
     comples a srting using markup
 
@@ -89,19 +89,23 @@ def _compile(file_cached, output, prop, file_name="test", tree=False):
         file_cached = _cleanup(file_cached, file_name, output=output)
     tokens, prop = tokenize.tokenize(file_cached, file_name, prop, output)
     parsed = parser.parse_markdown(tokens)
-    if tree:
-        print(parsed)
+    if token_tree:
+        print(tokens)
         file_new = str(parsed)
     else:
-        if not prop.get("ignore"):
-            output.add(info, "creating text for %s" % file_name)
-            file_new = add_to_doc(
-                parsed,
-                prop.get('file_type',     "terminal"),
-                prop.get('output_module', "markup.output"),
-                prop)
+        if tree:
+            print(parsed)
+            file_new = str(parsed)
         else:
-            file_new = ""
+            if not prop.get("ignore"):
+                output.add(info, "creating text for %s" % file_name)
+                file_new = add_to_doc(
+                    parsed,
+                    prop.get('file_type',     "terminal"),
+                    prop.get('output_module', "markup.output"),
+                    prop)
+            else:
+                file_new = ""
     if prop.get("use"):
         use = prop.get("use")
         multitasker = multi_tasker()
@@ -114,7 +118,7 @@ def _compile(file_cached, output, prop, file_name="test", tree=False):
                 if re.search(pattern.strip(" "), file):
                     output.add(debug, "commands.py: adding %s to queue" % file)
                     multitasker.add_to_queue(
-                        (output, path + "/" + file, tree))
+                        (output, path + "/" + file, tree, token_tree))
         output.add(debug, "commands.py: processing queue")
         multitasker.finish(output)
     return file_new, prop

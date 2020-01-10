@@ -147,6 +147,10 @@ class terminal():
     @staticmethod
     def tag(text):
         return "link: [%s]" % text
+        
+    @staticmethod
+    def link(text):
+        return "link: [%s]" % text
 
 
 @Formater
@@ -1657,6 +1661,10 @@ class straight_pdf():
             text = f"Page\nText {text} 45\nPage"
             return text
         return text + "\n"
+
+    @staticmethod
+    def link(text):
+        return "Text %s 12" % text
 
     @staticmethod
     def add_equation_inline(text):
