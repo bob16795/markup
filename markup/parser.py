@@ -150,7 +150,7 @@ def Tag_Parser(tokens):
         for node in nodes:
             text += node.value
         if tokens.offset(consumed).peek(["TAGC"]):
-            return Node("TAG", text, consumed+1)
+            return Node("TAG", text[:-1], consumed+1)
     return nullNode()
 
 def BTag_Parser(tokens):

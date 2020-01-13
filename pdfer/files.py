@@ -8,6 +8,9 @@ class pdf_file():
         self.catalog.add_pages(self.pages)
         self.outlines = objs.outlines_object()
         self.font = objs.font_object("/F1")
+        self.level = [0, 0, 0]
+        self.cpt = 0
+        self.prt = 0
         self.add_page()
 
     def add_page(self, text = None, size = None):
@@ -17,6 +20,47 @@ class pdf_file():
         if text:
             self.add_text(text, size)
 
+    def add_space(self, space):
+        self.y -= (space)
+        if self.y < 100:
+            self.add_page()
+
+    def add_heading(self, text, level):
+        size = 32
+        number = f""
+        if level > 0:
+            self.level[level-1] += 1
+            for i in range(level - 1):
+                self.level[i] = 0
+            levels = [i.__str__() for i in self.level]
+            number = ".".join(levels) + " "
+            while "0." in number:
+                number = number.replace("0.", "")
+        else:
+            number = ""
+            self.level = [0, 0, 0]
+            if level == -1:
+                self.cpt += 1
+                size = 40
+                if self.pages.pages[-1].text_objs != []:
+                    self.add_page()
+                self.add_space(250)
+                self.add_text(f"Chapter {self.cpt}", size)
+            if level == -2:
+                self.cpt = 0
+                self.prt += 1
+                size = 45
+                if self.pages.pages[-1].text_objs != []:
+                    self.add_page()
+                self.add_space(200)
+                self.add_text(f"Part {self.prt}", size)
+        if level == 2:
+            size = 24
+        if level == 3:
+            size = 16
+        self.add_text(f"{text}", size)
+        if level == -2:
+            self.add_page()
 
     def add_text(self, text, size = 12):
         if self.y - (size * 1.2) < 100:
@@ -33,7 +77,6 @@ class pdf_file():
                         pdf_line.append(word)
                         if lib.get_text_size(' '.join(pdf_line), size) >= 412:
                             spacing =( 412 - lib.get_text_size(' '.join(pdf_line[:-1]), size)) / (len(pdf_line[:-1]) - 1)
-#                            text_obj.append(f" Tw")
                             text_obj.append(f"{spacing} 0 ({' '.join(pdf_line[:-1])}) \"\n")
                             self.y -= size * 1.2
                             pdf_line = [word]
@@ -44,7 +87,7 @@ class pdf_file():
                         overfill.append(word)
                 if not full:
                     if pdf_line:
-                        text_obj.append(f"({' '.join(pdf_line)}) '\n")
+                        text_obj.append(f"({' '.join(pdf_line)}) '\n() '\n")
                         self.y -= size * 1.2
                         self.y -= size * 1.2
                 else:

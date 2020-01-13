@@ -2,7 +2,7 @@ from fontTools.ttLib import TTFont
 from fontTools.ttLib.tables._c_m_a_p import CmapSubtable
 import os
 
-font = TTFont('times.ttf')
+font = TTFont('/usr/share/fonts/gnu-free/FreeSerif.otf')
 cmap = font['cmap']
 t = cmap.getcmap(3, 1).cmap
 s = font.getGlyphSet()
@@ -16,4 +16,4 @@ def get_text_size(text, font_size):
         else:
             total+= s['.notdef'].width
     total = total*float(font_size)/units_per_em;
-    return total
+    return int(total)

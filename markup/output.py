@@ -1508,6 +1508,10 @@ class straight_pdf():
                 self.out.add_text(self.list + " ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
             if cmd == "Text":
                 self.out.add_text(" ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
+            if cmd == "Head":
+                self.out.add_heading(" ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
+            if cmd == "Space":
+                self.out.add_space(int(i.split(" ")[-1]))
         self.page = False
         return self
 
@@ -1550,15 +1554,15 @@ class straight_pdf():
 
     @staticmethod
     def add_header_1(text):
-        return f"Text {text} 32"
+        return f"Head {text} 1"
 
     @staticmethod
     def add_header_2(text):
-        return f"Text {text} 24"
+        return f"Head {text} 2"
 
     @staticmethod
     def add_header_3(text):
-        return f"Text {text} 16"
+        return f"Head {text} 3"
 
 
     @staticmethod
@@ -1629,7 +1633,7 @@ class straight_pdf():
     def emph_ulist_text(List):
         return f"Item {List} 12"
 
-    @staticmethod
+    @staticmethod 
     def bold_ulist_text(List):
         return f"Item {List} 12"
 
@@ -1654,11 +1658,13 @@ class straight_pdf():
             return ""
         if link == "COL":
             text = f""
-        if link == "CPT":
-            text = f"Page\nText {text} 40"
+        elif link == "CPT":
+            # text = f"Page\nSpace 300\nText {text} 40"
+            text = f"Head {text} -1"
             return text
-        if link == "PRT":
-            text = f"Page\nText {text} 45\nPage"
+        elif link == "PRT":
+            # text = f"Page\nSpace 300\nText {text} 45\nPage"
+            text = f"Head {text} -2"
             return text
         return text + "\n"
 
