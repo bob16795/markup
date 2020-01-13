@@ -11,7 +11,7 @@ setup(
         'click',
         'pathlib',
         'pygments',
-        'Pillow'
+        'fonttools'
     ],
     entry_points={
         'console_scripts': ['markup = markup.cli:start',

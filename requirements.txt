@@ -1,4 +1,4 @@
 click
 pathlib
+fonttools
 pygments
-PIL
