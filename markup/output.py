@@ -1512,6 +1512,8 @@ class straight_pdf():
                 self.out.add_heading(" ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
             if cmd == "Space":
                 self.out.add_space(int(i.split(" ")[-1]))
+            if cmd == "Col":
+                self.out.columns = (int(i.split(" ")[-1]))
         self.page = False
         return self
 
@@ -1657,7 +1659,7 @@ class straight_pdf():
         else:
             return ""
         if link == "COL":
-            text = f""
+            text = f"Col {text}"
         elif link == "CPT":
             # text = f"Page\nSpace 300\nText {text} 40"
             text = f"Head {text} -1"
