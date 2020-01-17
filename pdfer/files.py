@@ -16,7 +16,21 @@ class pdf_file():
         self.current_column = 1
         self._columns = 1
         self.media_box = [612, 792]
+        self.title = ""
+        self.title_page = False
+        self.index = {}
+        self.toc = {}
         self.add_page()
+        
+    def add_index_entry(self, entrys):
+        for entry in entrys.split(";"):
+            entry = entry.strip(" ")
+            if entry[0] not in self.index:
+                self.index[entry[0]] = {}
+            if entry not in self.index[entry[0]]:
+                self.index[entry[0]][entry] = []
+            if not len(self.pages.pages) in self.index[entry[0]][entry]:
+                self.index[entry[0]][entry].append(len(self.pages.pages))
 
     def add_page(self, text = None, size = None, odd = None):
         self.y = 692
@@ -44,9 +58,10 @@ class pdf_file():
             for i in range(level + 1, 2):
                 self.level[i] = 0
             levels = [i.__str__() for i in self.level]
-            number = ".".join(levels[::-1]) + " "
-            while "0." in number:
-                number = number.replace("0.", "")
+            number = ".".join(levels[::1]) + " "
+            while ".0" in number:
+                number = number.replace(".0", "")
+            self.toc[number +text] = (level, (len(self.pages.pages)))
         else:
             self.columns = 1
             number = ""
@@ -85,8 +100,8 @@ class pdf_file():
             self.y_start = self.y
             self._columns = value
             self.current_column = 1
-            # if value != 1:
-            #     self.add_page()
+            if value != 1 and self.current_column != 1:
+                self.add_page()
 
     def add_text(self, text, size = 12):
         if self.y - (size + self.line_spacing) < 100:
@@ -103,7 +118,9 @@ class pdf_file():
             col_x = ((column_size + self.column_spacing) * (self.current_column - 1)) + 100 
             text_obj.append(f"BT\n{size + self.line_spacing} TL\n/F1 {size} Tf\n{col_x} {self.y} Td\n")
             full = False
-            text = lib.addbs(text)
+            text = lib.addbs(text).replace("\n", "\n\t")
+            if "\n" in text:
+                text = "" + text
             for line in text.split("\n"):
                 pdf_line = []
                 for word in line.split(" "):
@@ -143,6 +160,42 @@ class pdf_file():
                     self.current_column += 1
                     self.y = self.y_start
                     self.add_text(' '.join(overfill)[:-1].replace("\\(", "(").replace("\\)", ")").replace("\\\\", "\\"), size)
+
+    def finish(self):
+        toc_file = pdf_file()
+        if self.title_page:
+            toc_file.add_text(self.title, 48)
+            toc_file.add_page()
+        toc_file.add_text("Table Of Contents", 32)
+        toc_file.columns = 2
+        for i in self.toc:
+            toc_file.add_text(("  " * (self.toc[i][0] - 1)) + i + "   " + str(self.toc[i][1]), 12)
+        length = len(toc_file.pages.pages)
+        toc_file = pdf_file()
+        if self.title_page:
+            toc_file.add_text(self.title, 48)
+            toc_file.add_page()
+        toc_file.add_text("Table Of Contents", 32)
+        toc_file.columns = 2
+        for i in self.toc:
+            toc_file.add_text(("  " * (self.toc[i][0] - 1)) + i + "   " + str(self.toc[i][1] + length - 1), 12)
+        self.pages.pages[0:0] = toc_file.pages.pages
+        self.add_page()
+        self.columns = 1
+        self.add_text("INDEX", 32)
+        self.columns = 3
+        for letter in sorted(self.index):
+            self.add_text(letter, 24)
+            for text in self.index[letter]:
+                entry = text + "   " + \
+                    ", ".join([str(i + length - 1) for i in self.index[letter][text]])
+                self.add_text(entry, 12)
+        for i, page in enumerate(self.pages.pages[1:]):
+            number = objs.text_object()
+            number.append(f"BT\n/F1 12 Tf\n100 50 Td\n({i}) Tj\nET")
+            page.append(number)
+
+
     def sequence(self):
         objects_ordered = []
         objects_ordered.append(self.catalog)

@@ -1492,6 +1492,8 @@ class latex():
 class straight_pdf():
     def outer_init(self, out, prop):
         self.out = pdfer.pdf_file()
+        self.out.title = prop.get("title", "")
+        self.out.title_page = prop.get("title_page", "False") == "True"
         self.page = True
 
     def outer_add(self, out):
@@ -1512,6 +1514,8 @@ class straight_pdf():
                 self.out.add_heading(" ".join(i.split(" ")[1:-1]), int(i.split(" ")[-1]))
             if cmd == "Space":
                 self.out.add_space(int(i.split(" ")[-1]))
+            if cmd == "Index":
+                self.out.add_index_entry(" ".join(i.split(" ")[1:]))
             if cmd == "Col":
                 self.out.columns = (int(i.split(" ")[-1]))
         self.page = False
@@ -1645,7 +1649,7 @@ class straight_pdf():
 
     @staticmethod
     def end(out):
-        out += "\n"
+        out.out.finish()
         return out.out.__str__().encode()
 
     @staticmethod
@@ -1660,6 +1664,8 @@ class straight_pdf():
             return ""
         if link == "COL":
             text = f"Col {text}"
+        elif link == "IDX":
+            text = f"Index {text}"
         elif link == "CPT":
             # text = f"Page\nSpace 300\nText {text} 40"
             text = f"Head {text} -1"
